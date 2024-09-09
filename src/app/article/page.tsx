@@ -79,7 +79,7 @@ export default function Article() {
                 <p className="text-gray-400 text-sm mb-4">{post.date}</p>
                 <p className="text-gray-300 mb-6">{post.description}</p>
                 {/* Use dynamic routing for the blog post */}
-                <Link href={`/blog/${post.slug}`} className="text-green-400 hover:underline">
+                <Link href={`/article/${post.slug}`} className="text-green-400 hover:underline">
                   Read more →
                 </Link>
               </div>
