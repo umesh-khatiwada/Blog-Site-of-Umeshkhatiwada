@@ -14,7 +14,7 @@ const categories = [
   { name: 'React JS', link: '/categories/reactjs' },
 ];
 
-export default function Blog() {
+export default function Article() {
   const blogPosts = [
     {
       id: 1,
@@ -62,7 +62,7 @@ export default function Blog() {
       <div className="relative w-full h-80 bg-fixed bg-center bg-cover" style={{ backgroundImage: 'url(/path/to/hexagonal-background.png)' }}>
         <div className="absolute inset-0 bg-black opacity-70"></div>
         <div className="relative z-10 text-center py-20">
-          <h1 className="text-6xl font-bold text-white">Coding Articles</h1>
+          <h1 className="text-6xl font-bold text-white">DevOps/Coding Articles</h1>
         </div>
       </div>
 
