@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation';
 import Header from '../../components/Header'; // Adjust the import path if needed
+import Submenu from '@/app/components/Submenu';
 
 const blogPosts = [
     {
@@ -45,7 +46,7 @@ export default function BlogPost() {
     <div className="min-h-screen bg-gray-900 text-white">
       {/* Header */}
       <Header />
-
+      <Submenu />
       {/* Blog Post Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-3xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
