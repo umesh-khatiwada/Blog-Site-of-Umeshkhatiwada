@@ -1,5 +1,6 @@
-import Image from 'next/image'
-import { FaTwitter, FaInstagram, FaSkype, FaLinkedin } from 'react-icons/fa'
+import Image from 'next/image';
+import { FaTwitter, FaInstagram, FaSkype, FaLinkedin } from 'react-icons/fa';
+import Header from './components/Header'; // Import the Header component
 
 export default function Home() {
   return (
@@ -11,32 +12,13 @@ export default function Home() {
         backgroundPosition: 'center',
       }}
     >
-      {/* Navigation */}
-      <header className="w-full flex justify-between p-8">
-        <div className="flex items-center space-x-4">
-          <Image
-            src="/logo.png" // Your logo image here
-            alt="The Cloud Mechanic Logo"
-            width={60}
-            height={60}
-          />
-          <h1 className="text-2xl font-bold">The Cloud Mechanic</h1>
-        </div>
-        <nav className="flex space-x-8 text-lg">
-          <a href="#" className="hover:text-green-500">Home</a>
-          <a href="#about" className="hover:text-green-500">About</a>
-          <a href="#resume" className="hover:text-green-500">Resume</a>
-          <a href="#services" className="hover:text-green-500">Services</a>
-          <a href="#portfolio" className="hover:text-green-500">Portfolio</a>
-          <a href="#blog" className="hover:text-green-500">Blog</a>
-          <a href="#contact" className="hover:text-green-500">Contact</a>
-        </nav>
-      </header>
+      {/* Dynamically included Header */}
+      <Header />
 
       {/* Main Content */}
       <main className="flex flex-col items-center text-center mt-20">
         <h2 className="text-6xl font-bold mb-4">Umesh Khatiwada</h2>
-        <p className="text-3xl font-semibold mb-6"> Im a DevOps Engineer</p>
+        <p className="text-3xl font-semibold mb-6">I am a DevOps Engineer</p>
 
         <div className="flex space-x-6">
           <a href="https://twitter.com" target="_blank" className="hover:text-blue-500">
@@ -69,5 +51,5 @@ export default function Home() {
         <p className="text-gray-400">&copy; 2024 The Cloud Mechanic</p>
       </footer>
     </div>
-  )
+  );
 }

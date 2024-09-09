@@ -1,8 +1,20 @@
 import Link from 'next/link';
-import Image from 'next/image';
+import Header from '../components/Header';
+
+// Submenu categories
+const categories = [
+  { name: 'HTML', link: '/categories/html' },
+  { name: 'CSS', link: '/categories/css' },
+  { name: 'JS', link: '/categories/js' },
+  { name: 'C', link: '/categories/c' },
+  { name: 'C++', link: '/categories/cpp' },
+  { name: 'Java', link: '/categories/java' },
+  { name: 'Python', link: '/categories/python' },
+  { name: 'PHP', link: '/categories/php' },
+  { name: 'React JS', link: '/categories/reactjs' },
+];
 
 export default function Blog() {
-  // Dummy blog posts data
   const blogPosts = [
     {
       id: 1,
@@ -31,32 +43,26 @@ export default function Blog() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white">
-            <header className="w-full flex justify-between p-8">
-        <div className="flex items-center space-x-4">
-          <Image
-            src="/assets/logo.png" // Your logo image here
-            alt="The Cloud Mechanic Logo"
-            width={200}
-            height={200}
-          />
-      
+    <div className="min-h-screen bg-gray-900 text-white">
+      {/* Dynamically included Header */}
+      <Header />
+
+      {/* Dynamic Submenu */}
+      <div className="bg-gray-800 py-4">
+        <div className="container mx-auto flex justify-center space-x-4">
+          {categories.map((category) => (
+            <Link key={category.name} href={category.link} className="text-purple-400 hover:text-purple-200">
+              {category.name}
+            </Link>
+          ))}
         </div>
-        <nav className="flex space-x-8 text-lg">
-          <a href="#" className="hover:text-green-500">Home</a>
-          <a href="#about" className="hover:text-green-500">About</a>
-          <a href="#resume" className="hover:text-green-500">Resume</a>
-          <a href="#services" className="hover:text-green-500">Services</a>
-          <a href="#portfolio" className="hover:text-green-500">Portfolio</a>
-          <a href="#blog" className="hover:text-green-500">Blog</a>
-          <a href="#contact" className="hover:text-green-500">Contact</a>
-        </nav>
-      </header>
+      </div>
+
       {/* Background Image */}
       <div className="relative w-full h-80 bg-fixed bg-center bg-cover" style={{ backgroundImage: 'url(/path/to/hexagonal-background.png)' }}>
         <div className="absolute inset-0 bg-black opacity-70"></div>
         <div className="relative z-10 text-center py-20">
-          <h1 className="text-6xl font-bold">Blog</h1>
+          <h1 className="text-6xl font-bold text-white">Coding Articles</h1>
         </div>
       </div>
 
@@ -66,12 +72,13 @@ export default function Blog() {
           {blogPosts.map((post) => (
             <div
               key={post.id}
-              className="bg-gray-900 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
+              className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
             >
               <div className="p-6">
                 <h2 className="text-3xl font-semibold mb-2">{post.title}</h2>
                 <p className="text-gray-400 text-sm mb-4">{post.date}</p>
                 <p className="text-gray-300 mb-6">{post.description}</p>
+                {/* Use dynamic routing for the blog post */}
                 <Link href={`/blog/${post.slug}`} className="text-green-400 hover:underline">
                   Read more →
                 </Link>
