@@ -1,8 +1,12 @@
 "use client"; // Mark this component as a Client Component
 
 import { useParams } from 'next/navigation';
-import Header from '../../components/Header'; // Adjust the import path if needed
+import Header from '../../components/Header'; 
 import Submenu from '@/app/components/Submenu';
+
+// Reusable function to fetch data using Axios
+
+
 
 const blogPosts = [
     {
@@ -31,6 +35,9 @@ const blogPosts = [
       },
 
 ];
+
+//function to fetch the data using axios call
+
 
 export default function BlogPost() {
   const { slug } = useParams(); // Get slug from params
