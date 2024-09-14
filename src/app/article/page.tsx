@@ -48,6 +48,19 @@ const fetchBlogData = async (): Promise<BlogPost[]> => {
   }
 };
 
+// Dummy card placeholder component
+const DummyCard = () => (
+  <div className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden animate-pulse">
+    <div className="h-48 bg-gray-700"></div>
+    <div className="p-6">
+      <div className="h-6 bg-gray-600 mb-2"></div>
+      <div className="h-4 bg-gray-500 mb-4"></div>
+      <div className="h-4 bg-gray-500 mb-6"></div>
+      <div className="h-4 bg-gray-600"></div>
+    </div>
+  </div>
+);
+
 export default function Article() {
   const [data, setData] = useState<BlogPost[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -81,7 +94,11 @@ export default function Article() {
       {/* Blog Posts Section */}
       <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {data.length > 0 ? (
+          {data.length === 0 ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <DummyCard key={index} />
+            ))
+          ) : (
             data.map((post) => (
               <div
                 key={post.id}
@@ -105,8 +122,6 @@ export default function Article() {
                 </div>
               </div>
             ))
-          ) : (
-            <div>Loading...</div>
           )}
         </div>
       </div>

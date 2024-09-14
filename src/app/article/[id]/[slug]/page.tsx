@@ -32,7 +32,6 @@ interface ImageAttributes {
   name: string;
   formats: ImageFormats;
   url: string;
-  
 }
 
 interface BlogAttributes {
@@ -61,14 +60,12 @@ const fetchBlogDetailData = async (num: string | undefined): Promise<BlogData> =
     if (response.status === 404) {
       throw new Error('Blog post not found');
     }
-    console.log("API Response:", response.data); // Added logging
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       throw new Error('Blog post not found');
     }
-    console.error('Error fetching data:', error);
-    throw error;
+    throw new Error('Error fetching data');
   }
 };
 
@@ -88,14 +85,13 @@ export default function BlogPost() {
     const fetchData = async () => {
       try {
         if (typeof id === 'string') {
-          console.log("Slug:", slug);
           const postData = await fetchBlogDetailData(id); 
           setData(postData); 
         } else {
           setError('Invalid ID');
         }
-      } catch {
-        setError('Error loading blog post');
+      } catch (error) {
+        setError(error instanceof Error ? error.message : 'Error loading blog post');
       } finally {
         setLoading(false);
       }
@@ -106,7 +102,14 @@ export default function BlogPost() {
 
   const renderContent = () => {
     if (loading) {
-      return <div className="text-center text-white font-bold text-xl py-10">Loading...</div>;
+      return (
+        <div className="text-center text-white font-bold text-xl py-10">
+          <div className="animate-pulse">
+            <div className="bg-gray-700 h-8 mb-4 w-3/4 mx-auto"></div>
+            <div className="bg-gray-700 h-4 mb-4 w-1/2 mx-auto"></div>
+          </div>
+        </div>
+      );
     }
   
     if (error) {
@@ -138,7 +141,6 @@ export default function BlogPost() {
                 </p>
               );
             }
-            // Handle other node types if needed
             return null;
           })}
         </div>

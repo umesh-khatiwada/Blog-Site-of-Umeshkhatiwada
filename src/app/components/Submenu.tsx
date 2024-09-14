@@ -54,6 +54,8 @@ export default function Submenu() {
   const [error, setError] = useState<string | null>(null);
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const [blogSuggestions, setBlogSuggestions] = useState<BlogPost[]>([]);
+  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
+  const [loadingBlogSuggestions, setLoadingBlogSuggestions] = useState<boolean>(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -63,13 +65,16 @@ export default function Submenu() {
       
       if (storedCategories) {
         setCategories(JSON.parse(storedCategories));
+        setLoadingCategories(false);
       } else {
         try {
           const result = await fetchCategories();
           localStorage.setItem('categories', JSON.stringify(result.data));
           setCategories(result.data);
+          setLoadingCategories(false);
         } catch (err) {
           setError("Error fetching categories");
+          setLoadingCategories(false);
         }
       }
     };
@@ -96,8 +101,10 @@ export default function Submenu() {
     const value = e.target.value;
     setBlogSearchTerm(value);
     if (value.length > 2) {
+      setLoadingBlogSuggestions(true);
       const posts = await fetchBlogPosts(value);
       setBlogSuggestions(posts);
+      setLoadingBlogSuggestions(false);
     } else {
       setBlogSuggestions([]);
     }
@@ -139,7 +146,13 @@ export default function Submenu() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-wrap justify-center md:justify-start space-x-4 mb-4 md:mb-0">
-            {categories.length > 0 ? (
+            {loadingCategories ? (
+              <div className="flex space-x-4">
+                <div className="w-24 h-6 bg-gray-600 animate-pulse rounded"></div>
+                <div className="w-24 h-6 bg-gray-600 animate-pulse rounded"></div>
+                <div className="w-24 h-6 bg-gray-600 animate-pulse rounded"></div>
+              </div>
+            ) : categories.length > 0 ? (
               categories.map((item) => (
                 <Link
                   key={item.id}
@@ -171,7 +184,11 @@ export default function Submenu() {
               >
                 <FaSearch />
               </button>
-              {blogSuggestions.length > 0 && (
+              {loadingBlogSuggestions ? (
+                <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-lg">
+                  <div className="px-4 py-2 text-white animate-pulse">Loading...</div>
+                </div>
+              ) : blogSuggestions.length > 0 ? (
                 <div className="absolute z-10 w-full mt-1 bg-gray-900 border border-gray-700 rounded-lg shadow-lg">
                   {blogSuggestions.map((post) => (
                     <Link
@@ -184,7 +201,7 @@ export default function Submenu() {
                     </Link>
                   ))}
                 </div>
-              )}
+              ) : null}
             </div>
             <button onClick={handleSearchClick} className="hidden md:block text-white">
               <FaSearch />
