@@ -47,9 +47,9 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-4 bg-black bg-opacity-75 text-center">
+      {/* <footer className="w-full py-4 bg-black bg-opacity-75 text-center">
         <p className="text-gray-400">&copy; 2024 The Cloud Mechanic</p>
-      </footer>
+      </footer> */}
     </div>
   );
 }

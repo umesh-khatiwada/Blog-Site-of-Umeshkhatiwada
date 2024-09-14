@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from 'next/link';
 import axios from 'axios';
@@ -39,7 +40,7 @@ interface BlogPost {
 // Fetch blog data from API
 const fetchBlogData = async (search: string): Promise<BlogPost[]> => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}&populate=*`);
     console.log("Response:", response.data);
     return response.data.data || []; // Ensure it returns an empty array if data is undefined
   } catch (error) {
