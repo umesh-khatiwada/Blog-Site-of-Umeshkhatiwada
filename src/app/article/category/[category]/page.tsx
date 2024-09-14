@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from 'next/link';
 import axios from 'axios';
@@ -26,48 +27,66 @@ interface BlogPostImage {
 
 interface BlogPostAttributes {
   Title: string;
-  Date: string;
   updatedAt: string;
   slug: string;
   img: BlogPostImage;
+  Date?: string;
 }
 
-interface BlogPost {
+export interface BlogPost {
   id: number;
-  attributes: BlogPostAttributes;
-}
-
-// Define TypeScript interface for category response
-interface CategoryResponse {
-  data: {
-    attributes: {
-      blogs: {
-        data: BlogPost[];
+  attributes: {
+    Title: string;
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    description: any[]; // Adjust type based on your actual description structure
+    slug: string;
+    img?: {
+      data?: {
+        attributes?: {
+          formats?: {
+            small?: { url: string };
+            thumbnail?: { url: string };
+          };
+        };
       };
     };
-  }[];
+    categories?: {
+      data?: Array<{
+        id: number;
+        attributes: {
+          Title: string;
+        };
+      }>;
+    };
+  };
 }
 
-// Fetch blog data from API
-const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
-  const url = `categories?filters[Title][$eq]=${encodeURIComponent(category)}&populate[blogs]=*`;
+export const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
+  const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
   console.log("URL:", url);
+
   try {
-    const response = await axios.get<CategoryResponse>(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
-    const blogPosts = response.data.data.flatMap(item => item.attributes.blogs.data);
-    console.log("Fetched blog posts:", blogPosts);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
+    console.log("Fetched data:", response.data);
+
+    // Extract the blog posts from response data
+    const blogPosts = response.data.data || []; // Ensure we handle cases where data might be undefined or null
+    console.log("Blog posts extracted:", blogPosts);
+
     return blogPosts;
   } catch (error) {
     console.error('Error fetching data:', error);
-    throw error;
+    throw new Error('Unable to fetch blog posts at this time. Please try again later.');
   }
 };
 
 export default function Article() {
-  const { category } = useParams<{ category: string }>(); // Ensure TypeScript knows `category` is a string
+  const { category } = useParams<{ category: string }>();
   const [data, setData] = useState<BlogPost[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!category) {
@@ -81,66 +100,69 @@ export default function Article() {
       try {
         const result = await fetchCategoryDetailsData(category);
         console.log("Data fetched:", result);
-        setData(result);
+
+        if (result.length === 0) {
+          setError("No blog posts found for this category");
+        } else {
+          setData(result);
+        }
       } catch (err) {
         console.error("Error fetching data:", err);
-        setError("Error fetching data");
+        setError("Error fetching data. Please try again later.");
       } finally {
-        setLoading(false); // Set loading to false once data is fetched or an error occurs
+        setLoading(false);
       }
     };
     getData();
   }, [category]);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Header />
-      {/* Dynamic Submenu */}
       <Submenu />
-      <DynamicBanner/>
+      <DynamicBanner />
 
-      {/* Blog Posts Section */}
       <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {loading ? (
-            // Show skeleton cards while loading
-            Array.from({ length: 6 }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))
-          ) : (
-            data.length > 0 ? (
-              data.map((post) => (
-                <div
-                  key={post.id}
-                  className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
-                >
-                  {post.attributes.img?.data && (
-                    <img
-                      src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
-                      alt={post.attributes.Title}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  <div className="p-6">
-                    <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
-                    <p className="text-gray-400 text-sm mb-4">{post.attributes.Date}</p>
-                    <p className="text-gray-300 mb-6">{post.attributes.updatedAt}</p>
-                    {/* Use dynamic routing for the blog post */}
-                    <Link href={`/article/${post.id}/${post.attributes.slug}`} className="text-green-400 hover:underline">
-                      Read more →
-                    </Link>
-                  </div>
-                </div>
+        {error ? (
+          <div className="text-red-500 text-center py-8">{error}</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+            {loading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <SkeletonCard key={index} />
               ))
             ) : (
-              <div>No blog posts found</div>
-            )
-          )}
-        </div>
+              data.length > 0 ? (
+                data.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
+                  >
+                    {post.attributes.img?.data && (
+                      <img
+                        src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail?.url}
+                        alt={post.attributes.Title}
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
+                    <div className="p-6">
+                      <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
+                      {post.attributes.createdAt && (
+                        <p className="text-gray-400 text-sm mb-4">{new Date(post.attributes.createdAt).toLocaleDateString()}</p>
+                      )}
+                      <p className="text-gray-300 mb-6">{new Date(post.attributes.updatedAt).toLocaleDateString()}</p>
+                      <Link href={`/article/${post.id}/${post.attributes.slug}`} className="text-green-400 hover:underline">
+                        Read more →
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center text-gray-400 py-8">No blog posts found for this category.</div>
+              )
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
