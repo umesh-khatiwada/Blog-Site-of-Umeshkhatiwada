@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from 'next/link';
 import axios from 'axios';
@@ -37,26 +37,12 @@ interface BlogPost {
   attributes: BlogPostAttributes;
 }
 
-// Define TypeScript interface for category response
-interface CategoryResponse {
-  data: {
-    attributes: {
-      blogs: {
-        data: BlogPost[];
-      };
-    };
-  }[];
-}
-
 // Fetch blog data from API
-const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
-  const url = `categories?filters[Title][$eq]=${encodeURIComponent(category)}&populate[blogs]=*`;
-  console.log("URL:", url);
+const fetchBlogData = async (search: string): Promise<BlogPost[]> => {
   try {
-    const response = await axios.get<CategoryResponse>(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
-    const blogPosts = response.data.data.flatMap(item => item.attributes.blogs.data);
-    console.log("Fetched blog posts:", blogPosts);
-    return blogPosts;
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}`);
+    console.log("Response:", response.data.data);
+    return response.data.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
@@ -64,20 +50,15 @@ const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> =
 };
 
 export default function Article() {
-  const { category } = useParams<{ category: string }>(); // Ensure TypeScript knows `category` is a string
   const [data, setData] = useState<BlogPost[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { search } = useParams<{ search: string }>();
 
   useEffect(() => {
-    if (!category) {
-      setError("Category is not defined");
-      return;
-    }
-
     const getData = async () => {
       console.log("Fetching data...");
       try {
-        const result = await fetchCategoryDetailsData(category);
+        const result = await fetchBlogData(search);
         console.log("Data fetched:", result);
         setData(result);
       } catch (err) {
@@ -86,7 +67,7 @@ export default function Article() {
       }
     };
     getData();
-  }, [category]);
+  }, [search]);
 
   if (error) {
     return <div>{error}</div>;
@@ -97,8 +78,8 @@ export default function Article() {
       <Header />
       {/* Dynamic Submenu */}
       <Submenu />
-      <DynamicBanner/>
 
+      <DynamicBanner/>
       {/* Blog Posts Section */}
       <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
@@ -108,13 +89,13 @@ export default function Article() {
                 key={post.id}
                 className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
               >
-                {post.attributes.img?.data && (
+                {/* {post.attributes.img.data && (
                   <img
                     src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
                     alt={post.attributes.Title}
                     className="w-full h-48 object-cover"
                   />
-                )}
+                )} */}
                 <div className="p-6">
                   <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
                   <p className="text-gray-400 text-sm mb-4">{post.attributes.Date}</p>

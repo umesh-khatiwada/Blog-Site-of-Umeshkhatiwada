@@ -35,7 +35,7 @@ export default function Header() {
           <a href="https://umeshkhatiwada.com.np/resume.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Resume</a>
           <a href="https://umeshkhatiwada.com.np/services.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Services</a>
           <a href="https://umeshkhatiwada.com.np/portfolio.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Portfolio</a>
-          <a href="https://blog.umeshkhatiwada.com.np/article/" className="block md:inline-block text-black md:text-white hover:text-green-500">Blog</a>
+          <a href="/article/" className="block md:inline-block text-black md:text-white hover:text-green-500">Blog</a>
           <a href="https://umeshkhatiwada.com.np/contact.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Contact</a>
         </div>
       </nav>

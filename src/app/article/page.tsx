@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Submenu from '../components/Submenu';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import DynamicBanner from '../components/Blogroute';
 
 // Define TypeScript interfaces for the blog data
 interface ImageFormats {
@@ -75,16 +76,7 @@ export default function Article() {
       <Header />
       {/* Dynamic Submenu */}
       <Submenu />
-
-      <div
-        className="relative w-full h-80 bg-fixed bg-center bg-cover"
-        style={{ backgroundImage: 'url(/path/to/hexagonal-background.png)' }}
-      >
-        <div className="absolute inset-0 bg-black opacity-70"></div>
-        <div className="relative z-10 text-center py-20">
-          <h1 className="text-6xl font-bold text-white">DevOps/Coding Articles</h1>
-        </div>
-      </div>
+      <DynamicBanner/>
 
       {/* Blog Posts Section */}
       <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
