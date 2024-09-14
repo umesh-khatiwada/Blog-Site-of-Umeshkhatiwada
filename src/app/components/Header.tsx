@@ -31,12 +31,12 @@ export default function Header() {
         {/* Boxed style applied for mobile, flex style for desktop */}
         <div className={`p-4 rounded-lg shadow-lg md:shadow-none bg-gray-100 md:bg-transparent flex flex-col md:flex-row md:items-center md:space-x-8`}>
           <a href="https://umeshkhatiwada.com.np" className="block md:inline-block text-black md:text-white hover:text-green-500">Home</a>
-          <a href="https://umeshkhatiwada.com.np/about" className="block md:inline-block text-black md:text-white hover:text-green-500">About</a>
-          <a href="https://umeshkhatiwada.com.np/resume" className="block md:inline-block text-black md:text-white hover:text-green-500">Resume</a>
-          <a href="https://umeshkhatiwada.com.np/services" className="block md:inline-block text-black md:text-white hover:text-green-500">Services</a>
-          <a href="https://umeshkhatiwada.com.np/portfolio" className="block md:inline-block text-black md:text-white hover:text-green-500">Portfolio</a>
-          <a href="https://umeshkhatiwada.com.np/article" className="block md:inline-block text-black md:text-white hover:text-green-500">Blog</a>
-          <a href="https://umeshkhatiwada.com.np/contact" className="block md:inline-block text-black md:text-white hover:text-green-500">Contact</a>
+          <a href="https://umeshkhatiwada.com.np/about.html" className="block md:inline-block text-black md:text-white hover:text-green-500">About</a>
+          <a href="https://umeshkhatiwada.com.np/resume.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Resume</a>
+          <a href="https://umeshkhatiwada.com.np/services.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Services</a>
+          <a href="https://umeshkhatiwada.com.np/portfolio.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Portfolio</a>
+          <a href="https://blog.umeshkhatiwada.com.np/article/" className="block md:inline-block text-black md:text-white hover:text-green-500">Blog</a>
+          <a href="https://umeshkhatiwada.com.np/contact.html" className="block md:inline-block text-black md:text-white hover:text-green-500">Contact</a>
         </div>
       </nav>
     </header>

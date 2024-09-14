@@ -1,10 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from 'next/link';
-import Header from '../components/Header';
-import Submenu from '../components/Submenu';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Header from '@/app/components/Header';
+import Submenu from '@/app/components/Submenu';
+import { useParams } from 'next/navigation';
 
 // Define TypeScript interfaces for the blog data
 interface ImageFormats {
@@ -35,12 +36,26 @@ interface BlogPost {
   attributes: BlogPostAttributes;
 }
 
+// Define TypeScript interface for category response
+interface CategoryResponse {
+  data: {
+    attributes: {
+      blogs: {
+        data: BlogPost[];
+      };
+    };
+  }[];
+}
+
 // Fetch blog data from API
-const fetchBlogData = async (): Promise<BlogPost[]> => {
-  const url = 'blogs';
+const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
+  const url = `categories?filters[Title][$eq]=${encodeURIComponent(category)}&populate[blogs]=*`;
+  console.log("URL:", url);
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}?populate=img`);
-    return response.data.data;
+    const response = await axios.get<CategoryResponse>(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
+    const blogPosts = response.data.data.flatMap(item => item.attributes.blogs.data);
+    console.log("Fetched blog posts:", blogPosts);
+    return blogPosts;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
@@ -48,14 +63,20 @@ const fetchBlogData = async (): Promise<BlogPost[]> => {
 };
 
 export default function Article() {
+  const { category } = useParams<{ category: string }>(); // Ensure TypeScript knows `category` is a string
   const [data, setData] = useState<BlogPost[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!category) {
+      setError("Category is not defined");
+      return;
+    }
+
     const getData = async () => {
       console.log("Fetching data...");
       try {
-        const result = await fetchBlogData();
+        const result = await fetchCategoryDetailsData(category);
         console.log("Data fetched:", result);
         setData(result);
       } catch (err) {
@@ -64,7 +85,7 @@ export default function Article() {
       }
     };
     getData();
-  }, []);
+  }, [category]);
 
   if (error) {
     return <div>{error}</div>;
@@ -95,7 +116,7 @@ export default function Article() {
                 key={post.id}
                 className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
               >
-                {post.attributes.img.data && (
+                {post.attributes.img?.data && (
                   <img
                     src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
                     alt={post.attributes.Title}
