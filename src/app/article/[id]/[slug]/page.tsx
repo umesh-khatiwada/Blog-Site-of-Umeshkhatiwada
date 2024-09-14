@@ -62,6 +62,7 @@ const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
     throw new Error('Error fetching data');
   }
 };
+
 const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
   // In a real application, this would make an API call
   const imageurl = 'https://d3g5ywftkpzr0e.cloudfront.net/wp-content/uploads/2023/07/13220529/Artificial-Intelligence-in-Indonesia-The-current-state-and-its-opportunities.jpeg';
@@ -178,7 +179,7 @@ export default function BlogPost() {
                     </ListTag>
                   );
                 },
-                listItem: ({ children }) => (
+                'list-item': ({ children }) => (
                   <li className="mb-2 animate-fadeInRight">{children}</li>
                 ),
                 link: ({ children, url }) => (
