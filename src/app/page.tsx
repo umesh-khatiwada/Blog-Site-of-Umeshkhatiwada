@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { FaTwitter, FaInstagram, FaSkype, FaLinkedin } from 'react-icons/fa';
-import Header from './components/Header'; // Import the Header component
+import Header from './components/layout/Header'; // Import the Header component
 
 export default function Home() {
   return (

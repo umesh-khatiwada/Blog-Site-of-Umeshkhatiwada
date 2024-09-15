@@ -1,77 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Header from '../../../components/Header';
-import Submenu from '@/app/components/Submenu';
-import axios from 'axios';
+import Image from 'next/image'; // Import the Next.js Image component
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-
-interface ImageFormats {
-  thumbnail: { url: string };
-  medium: { url: string };
-  small: { url: string };
-  large: { url: string };
-}
-
-interface ImageAttributes {
-  name: string;
-  formats: ImageFormats;
-  url: string;
-}
-
-interface SuggestedArticle {
-  id: number;
-  title: string;
-  excerpt: string;
-  imageUrl: string;
-}
-
-interface BlogAttributes {
-  Title: string;
-  publishedAt: string;
-  description: any;
-  img?: {
-    data: {
-      attributes: ImageAttributes;
-    };
-  };
-}
-
-interface BlogData {
-  data: {
-    id: number;
-    attributes: BlogAttributes;
-  };
-}
-
-const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
-  const url = 'blogs';
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate=*`);
-    if (response.status === 404) {
-      throw new Error('Blog post not found');
-    }
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.status === 404) {
-      throw new Error('Blog post not found');
-    }
-    throw new Error('Error fetching data');
-  }
-};
-
-const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
-  // In a real application, this would make an API call
-  const imageurl = 'https://d3g5ywftkpzr0e.cloudfront.net/wp-content/uploads/2023/07/13220529/Artificial-Intelligence-in-Indonesia-The-current-state-and-its-opportunities.jpeg';
-  return [
-    { id: 1, title: "5 Tips for Better Coding", excerpt: "Improve your coding skills with these tips...", imageUrl: imageurl },
-    { id: 2, title: "The Future of AI", excerpt: "Explore the latest trends in artificial intelligence...", imageUrl: imageurl },
-    { id: 3, title: "Web Design Trends 2024", excerpt: "Stay ahead with these cutting-edge web design trends...", imageUrl: imageurl },
-  ];
-};
+import Header from '@/app/components/layout/Header';
+import Submenu from '@/app/components/layout/Submenu';
+import { BlogData, SuggestedArticle } from '@/app/types/blog';
+import { fetchBlogDetailData, fetchSuggestedArticles } from '@/app/lib/api';
 
 export default function BlogPost() {
   const params = useParams();
@@ -152,7 +88,13 @@ export default function BlogPost() {
 
           {imageUrl && (
             <figure className="mb-8 animate-fadeInScale">
-              <img src={imageUrl} alt={Title} className="w-full rounded-lg shadow-lg" />
+              <Image
+                src={imageUrl}
+                alt={Title}
+                width={800} // Specify appropriate width
+                height={600} // Specify appropriate height
+                className="w-full rounded-lg shadow-lg"
+              />
             </figure>
           )}
 
@@ -204,9 +146,11 @@ export default function BlogPost() {
                 ),
                 image: ({ image }) => (
                   <figure className="mb-4 animate-fadeInScale">
-                    <img
+                    <Image
                       src={image.url}
                       alt={image.alternativeText || ''}
+                      width={800} // Adjust based on image size
+                      height={600} // Adjust based on image size
                       className="rounded-lg shadow-lg"
                     />
                     {image.caption && (
@@ -226,7 +170,13 @@ export default function BlogPost() {
             {suggestedArticles.map((article) => (
               <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
                 <div className="flex items-center">
-                  <img src={article.imageUrl} alt={article.title} className="w-16 h-16 object-cover rounded mr-4" />
+                  <Image
+                    src={article.imageUrl}
+                    alt={article.title}
+                    width={64} // 16 * 4 = 64px
+                    height={64} // 16 * 4 = 64px
+                    className="w-16 h-16 object-cover rounded mr-4"
+                  />
                   <div>
                     <h3 className="font-semibold text-lg text-green-300">{article.title}</h3>
                     <p className="text-gray-400 text-sm">{article.excerpt}</p>

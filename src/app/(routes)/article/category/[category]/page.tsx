@@ -4,11 +4,12 @@
 import Link from 'next/link';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import Header from '@/app/components/Header';
-import Submenu from '@/app/components/Submenu';
+import Header from '@/app/components/layout/Header';
 import { useParams } from 'next/navigation';
-import DynamicBanner from '@/app/components/Blogroute';
-import SkeletonCard from '@/app/components/SkeletonCard'; // Import the SkeletonCard component
+import DynamicBanner from '@/app/components/blog/Blogroute';
+import Submenu from '@/app/components/layout/Submenu';
+import SkeletonCard from '@/app/components/blog/SkeletonCard';
+
 
 // Define TypeScript interfaces for the blog data
 export interface BlogPost {

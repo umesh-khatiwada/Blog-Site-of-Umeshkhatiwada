@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from 'next/link';
-import Header from '../components/Header';
-import Submenu from '../components/Submenu';
+import Image from 'next/image'; // Import Next.js Image component
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import DynamicBanner from '../components/Blogroute';
+import Header from '@/app/components/layout/Header';
+import DynamicBanner from '@/app/components/blog/Blogroute';
+import Submenu from '@/app/components/layout/Submenu';
 
 // Define TypeScript interfaces for the blog data
 interface ImageFormats {
@@ -89,7 +90,7 @@ export default function Article() {
       <Header />
       {/* Dynamic Submenu */}
       <Submenu />
-      <DynamicBanner/>
+      <DynamicBanner />
 
       {/* Blog Posts Section */}
       <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
@@ -105,9 +106,11 @@ export default function Article() {
                 className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
               >
                 {post.attributes.img.data && (
-                  <img
+                  <Image
                     src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
                     alt={post.attributes.Title}
+                    width={500} // You can adjust the width based on your layout needs
+                    height={300} // You can adjust the height based on your layout needs
                     className="w-full h-48 object-cover"
                   />
                 )}
