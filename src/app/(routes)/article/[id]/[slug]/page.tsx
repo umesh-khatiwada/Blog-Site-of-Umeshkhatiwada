@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import Image from 'next/image'; // Import the Next.js Image component
+import Image from 'next/image';
 import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import Header from '@/app/components/layout/Header';
 import Submenu from '@/app/components/layout/Submenu';
 import { BlogData, SuggestedArticle } from '@/app/types/blog';
 import { fetchBlogDetailData, fetchSuggestedArticles } from '@/app/lib/api';
+import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from 'react-icons/fa';  // Import icons
+import Head from 'next/head';
 
 export default function BlogPost() {
   const params = useParams();
@@ -41,6 +44,14 @@ export default function BlogPost() {
 
     fetchData();
   }, [id]);
+
+  // Share functionality
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    alert('Link copied to clipboard!');
+  };
 
   const renderContent = () => {
     if (loading) {
@@ -91,8 +102,9 @@ export default function BlogPost() {
               <Image
                 src={imageUrl}
                 alt={Title}
-                width={800} // Specify appropriate width
-                height={600} // Specify appropriate height
+                width={800}
+                height={600}
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full rounded-lg shadow-lg"
               />
             </figure>
@@ -149,8 +161,8 @@ export default function BlogPost() {
                     <Image
                       src={image.url}
                       alt={image.alternativeText || ''}
-                      width={800} // Adjust based on image size
-                      height={600} // Adjust based on image size
+                      width={800}
+                      height={600}
                       className="rounded-lg shadow-lg"
                     />
                     {image.caption && (
@@ -163,7 +175,46 @@ export default function BlogPost() {
               }}
             />
           </div>
+
+          {/* Social Sharing Buttons */}
+          <div className="mt-8">
+            <h3 className="text-2xl text-green-400 mb-4">Share this article:</h3>
+            <div className="flex space-x-4">
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+              >
+                <FaFacebook size={32} />
+              </a>
+              <a
+                href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${Title}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-600 transition-colors duration-200"
+              >
+                <FaTwitter size={32} />
+              </a>
+              <a
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${Title}&summary=${description}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700 hover:text-blue-900 transition-colors duration-200"
+              >
+                <FaLinkedin size={32} />
+              </a>
+              <button
+                onClick={handleCopyLink}
+                className="text-green-400 hover:text-green-600 transition-colors duration-200"
+              >
+                <FaCopy size={32} />
+              </button>
+            </div>
+          </div>
         </article>
+
+        {/* Sidebar with suggested articles */}
         <aside className="lg:w-1/3 mt-8 lg:mt-0">
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
             <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
@@ -173,9 +224,10 @@ export default function BlogPost() {
                   <Image
                     src={article.imageUrl}
                     alt={article.title}
-                    width={64} // 16 * 4 = 64px
-                    height={64} // 16 * 4 = 64px
+                    width={64}
+                    height={64}
                     className="w-16 h-16 object-cover rounded mr-4"
+                    loading="lazy"
                   />
                   <div>
                     <h3 className="font-semibold text-lg text-green-300">{article.title}</h3>
@@ -192,9 +244,17 @@ export default function BlogPost() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
+      <Head>
+        <title>{data?.data?.attributes?.Title || 'Blog Post'} - My Blog</title>
+        <meta name="description" content={data?.data?.attributes?.description || 'Blog post'} />
+        <meta property="og:title" content={data?.data?.attributes?.Title || 'Blog Post'} />
+        <meta property="og:description" content={data?.data?.attributes?.description} />
+        <meta property="og:image" content={data?.data?.attributes?.img?.data?.attributes?.url} />
+      </Head>
       <Header />
-      <Submenu />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="container mx-auto px-4 py-8">
+        <Submenu />
+        <br></br>
         {renderContent()}
       </main>
     </div>
