@@ -40,7 +40,6 @@ export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
   ];
 };
 
-
 export const viewCounter = async (id: string, count: number) => {
   // Increment the view counter
   const totalViewCounter = count + 1;
