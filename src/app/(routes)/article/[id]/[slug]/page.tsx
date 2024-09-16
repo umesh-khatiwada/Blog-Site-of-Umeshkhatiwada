@@ -242,7 +242,7 @@ export default function BlogPost() {
               <div>
                 <h3 className="font-semibold text-lg text-green-300">{article.attributes.Title}</h3>
                 <p className="text-gray-400 text-sm">{article.attributes.shortDescription}</p>
-                <p className="text-gray-400 text-sm">{article.attributes.publishedAt}</p>
+                <p className="text-gray-400 text-sm">{publishedAt}</p>
                 <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-400 hover:underline">
                   Read more →
                 </Link>
