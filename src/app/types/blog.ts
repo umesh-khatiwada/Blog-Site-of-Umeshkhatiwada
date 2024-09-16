@@ -8,6 +8,7 @@ export interface BlogPost {
       publishedAt: string;
       description: any[];
       slug: string;
+      viewCount: number;
       img?: {
         data?: {
           attributes?: {
@@ -54,6 +55,7 @@ export interface BlogPost {
     Title: string;
     publishedAt: string;
     description: any;
+    viewCount: number;
     img?: {
       data: {
         attributes: ImageAttributes;

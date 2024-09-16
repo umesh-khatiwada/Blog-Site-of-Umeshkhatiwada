@@ -8,7 +8,7 @@ import { BlocksRenderer } from '@strapi/blocks-react-renderer';
 import Header from '@/app/components/layout/Header';
 import Submenu from '@/app/components/layout/Submenu';
 import { BlogData, SuggestedArticle } from '@/app/types/blog';
-import { fetchBlogDetailData, fetchSuggestedArticles } from '@/app/lib/api';
+import { fetchBlogDetailData, fetchSuggestedArticles, viewCounter } from '@/app/lib/api';
 import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from 'react-icons/fa';  // Import icons
 import Head from 'next/head';
 
@@ -19,20 +19,20 @@ export default function BlogPost() {
   const [suggestedArticles, setSuggestedArticles] = useState<SuggestedArticle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     if (!id) {
       setError('No ID provided');
       setLoading(false);
       return;
     }
-
+  
     const fetchData = async () => {
       try {
         const [postData, suggestedData] = await Promise.all([
           fetchBlogDetailData(id),
           fetchSuggestedArticles()
         ]);
+  
         setData(postData);
         setSuggestedArticles(suggestedData);
       } catch (error) {
@@ -41,9 +41,15 @@ export default function BlogPost() {
         setLoading(false);
       }
     };
-
+  
     fetchData();
-  }, [id]);
+  
+    // Call viewCounter with updated viewCount
+    if (data?.data?.attributes?.viewCount !== undefined) {
+      viewCounter(id, data.data.attributes.viewCount);
+    }
+  }, [id, data?.data?.attributes?.viewCount]); 
+  
 
   // Share functionality
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -94,6 +100,9 @@ export default function BlogPost() {
             </h1>
             <p className="text-gray-400 text-sm animate-fadeIn">
               Published on {new Date(publishedAt).toLocaleDateString()}
+            </p>
+            <p className="text-gray-400 text-sm animate-fadeIn">
+              View Count: {data.data.attributes.viewCount}
             </p>
           </header>
 

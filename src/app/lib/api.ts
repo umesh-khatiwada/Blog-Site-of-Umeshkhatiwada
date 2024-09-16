@@ -39,3 +39,28 @@ export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
     { id: 3, title: "Web Design Trends 2024", excerpt: "Stay ahead with these cutting-edge web design trends...", imageUrl: imageurl },
   ];
 };
+
+
+export const viewCounter = async (id: string, count: number) => {
+  // Increment the view counter
+  const totalViewCounter = count + 1;
+
+  try {
+    // Make the PUT request to update the view counter
+    await axios.put(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}`, 
+      {
+        data: { viewCount: totalViewCounter },  // Wrap viewCount inside "data"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_STRAPI_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+  } catch (error) {
+    console.error('Error updating view counter:', error);
+  }
+};
+
