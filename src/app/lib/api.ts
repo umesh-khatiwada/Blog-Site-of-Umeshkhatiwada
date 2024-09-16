@@ -1,6 +1,26 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 import { BlogData, BlogPost, SuggestedArticle } from '../types/blog';
 
+
+
+
+export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
+  const url = 'blogs';
+  try {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, {
+      params: {
+        populate: 'img',
+        'pagination[page]': page,
+        'pagination[pageSize]': limit
+      }
+    });
+    return response.data; // Ensure this returns { data, meta }
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
 
 export const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
   const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
@@ -41,18 +61,6 @@ export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
     console.error('Error fetching data:', error);
     throw error;
   }
-
-  // Replace this with the actual API endpoint
-  // In a real application, this would make an API call
-  // const imageurl = 'https://d3g5ywftkpzr0e.cloudfront.net/wp-content/uploads/2023/07/13220529/Artificial-Intelligence-in-Indonesia-The-current-state-and-its-opportunities.jpeg';
-
-
-
-  // return [
-  //   { id: 1, title: "5 Tips for Better Coding", excerpt: "Improve your coding skills with these tips...", imageUrl: imageurl },
-  //   { id: 2, title: "The Future of AI", excerpt: "Explore the latest trends in artificial intelligence...", imageUrl: imageurl },
-  //   { id: 3, title: "Web Design Trends 2024", excerpt: "Stay ahead with these cutting-edge web design trends...", imageUrl: imageurl },
-  // ];
 };
 
 export const viewCounter = async (id: string, count: number) => {

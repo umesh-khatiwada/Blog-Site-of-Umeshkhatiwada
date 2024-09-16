@@ -1,42 +1,70 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface BlogPost {
-    id: number;
+// export interface BlogPost {
+//     id: number;
+//     attributes: {
+//       Title: string;
+//       createdAt: string;
+//       updatedAt: string;
+//       publishedAt: string;
+//       description: any[];
+//       slug: string;
+//       viewCount: number;
+//       img?: {
+//         data?: {
+//           attributes?: {
+//             formats?: {
+//               small?: { url: string };
+//               thumbnail?: { url: string };
+//             };
+//           };
+//         };
+//       };
+//       categories?: {
+//         data?: Array<{
+//           id: number;
+//           attributes: {
+//             Title: string;
+//           };
+//         }>;
+//       };
+//     };
+//   }
+interface ImageFormats {
+  thumbnail: { url: string };
+  medium?: { url: string };
+  small?: { url: string };
+  large?: { url: string };
+}
+
+interface BlogPostImage {
+  data: {
     attributes: {
-      Title: string;
-      createdAt: string;
-      updatedAt: string;
-      publishedAt: string;
-      description: any[];
-      slug: string;
-      viewCount: number;
-      img?: {
-        data?: {
-          attributes?: {
-            formats?: {
-              small?: { url: string };
-              thumbnail?: { url: string };
-            };
-          };
-        };
-      };
-      categories?: {
-        data?: Array<{
-          id: number;
-          attributes: {
-            Title: string;
-          };
-        }>;
-      };
+      formats: ImageFormats;
     };
-  }
+  } | null;
+}
+
+interface BlogPostAttributes {
+  Title: string;
+  Date: string;
+  updatedAt: string;
+  slug: string;
+  img: BlogPostImage;
+  shortDescription: string;
+}
+
+export interface BlogPost {
+  id: number;
+  attributes: BlogPostAttributes;
+}
 
 
-  export interface ImageFormats {
-    thumbnail: { url: string };
-    medium: { url: string };
-    small: { url: string };
-    large: { url: string };
-  }
+  // export interface ImageFormats {
+  //   thumbnail: { url: string };
+  //   medium: { url: string };
+  //   small: { url: string };
+  //   large: { url: string };
+  // }
   
   export interface ImageAttributes {
     name: string;
