@@ -70,6 +70,28 @@ export interface BlogPost {
     };
   }
 
+export  interface SuggestedArticle {
+    id: number;
+    attributes: {
+      Title: string;
+      slug: string;
+      viewCount: number;
+      shortDescription: string;
+      img: {
+        data: {
+          attributes: {
+            url: string;
+            name: string;
+          };
+        };
+      };
+    };
+  }
+  
+  export interface SuggestedArticlesProps {
+    suggestedArticles: SuggestedArticle[];
+  }
+  
 
   
   

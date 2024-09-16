@@ -30,6 +30,7 @@ interface BlogPostAttributes {
   updatedAt: string;
   slug: string;
   img: BlogPostImage;
+  shortDescription: string;
 }
 
 interface BlogPost {
@@ -116,6 +117,7 @@ export default function Article() {
                 )}
                 <div className="p-6">
                   <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
+                  <p className="text-gray-400 text-sm">{post.attributes.shortDescription}</p>
                   <p className="text-gray-400 text-sm mb-4">{post.attributes.Date}</p>
                   <p className="text-gray-300 mb-6">{post.attributes.updatedAt}</p>
                   {/* Use dynamic routing for the blog post */}

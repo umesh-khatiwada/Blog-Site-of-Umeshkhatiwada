@@ -31,13 +31,28 @@ export const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
 };
 
 export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
+   const SuggestedArticle_url =`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?sort[0]=viewCount:desc&pagination[limit]=5&&populate=img`
+
+  try {
+    const response = await axios.get(SuggestedArticle_url);
+    console.log("Data fetched:", response.data);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+
+  // Replace this with the actual API endpoint
   // In a real application, this would make an API call
-  const imageurl = 'https://d3g5ywftkpzr0e.cloudfront.net/wp-content/uploads/2023/07/13220529/Artificial-Intelligence-in-Indonesia-The-current-state-and-its-opportunities.jpeg';
-  return [
-    { id: 1, title: "5 Tips for Better Coding", excerpt: "Improve your coding skills with these tips...", imageUrl: imageurl },
-    { id: 2, title: "The Future of AI", excerpt: "Explore the latest trends in artificial intelligence...", imageUrl: imageurl },
-    { id: 3, title: "Web Design Trends 2024", excerpt: "Stay ahead with these cutting-edge web design trends...", imageUrl: imageurl },
-  ];
+  // const imageurl = 'https://d3g5ywftkpzr0e.cloudfront.net/wp-content/uploads/2023/07/13220529/Artificial-Intelligence-in-Indonesia-The-current-state-and-its-opportunities.jpeg';
+
+
+
+  // return [
+  //   { id: 1, title: "5 Tips for Better Coding", excerpt: "Improve your coding skills with these tips...", imageUrl: imageurl },
+  //   { id: 2, title: "The Future of AI", excerpt: "Explore the latest trends in artificial intelligence...", imageUrl: imageurl },
+  //   { id: 3, title: "Web Design Trends 2024", excerpt: "Stay ahead with these cutting-edge web design trends...", imageUrl: imageurl },
+  // ];
 };
 
 export const viewCounter = async (id: string, count: number) => {

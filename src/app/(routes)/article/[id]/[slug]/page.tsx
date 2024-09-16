@@ -11,6 +11,7 @@ import { BlogData, SuggestedArticle } from '@/app/types/blog';
 import { fetchBlogDetailData, fetchSuggestedArticles, viewCounter } from '@/app/lib/api';
 import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from 'react-icons/fa';  // Import icons
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function BlogPost() {
   const params = useParams();
@@ -225,28 +226,32 @@ export default function BlogPost() {
 
         {/* Sidebar with suggested articles */}
         <aside className="lg:w-1/3 mt-8 lg:mt-0">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
-            <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
-            {suggestedArticles.map((article) => (
-              <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
-                <div className="flex items-center">
-                  <Image
-                    src={article.imageUrl}
-                    alt={article.title}
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 object-cover rounded mr-4"
-                    loading="lazy"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-lg text-green-300">{article.title}</h3>
-                    <p className="text-gray-400 text-sm">{article.excerpt}</p>
-                  </div>
-                </div>
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
+        <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
+        {suggestedArticles.map((article) => (
+          <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
+            <div className="flex items-center">
+              <Image
+                src={article.attributes.img.data.attributes.url}
+                alt={article.attributes.img.data.attributes.name}
+                width={64}
+                height={64}
+                className="w-16 h-16 object-cover rounded mr-4"
+                loading="lazy"
+              />
+              <div>
+                <h3 className="font-semibold text-lg text-green-300">{article.attributes.Title}</h3>
+                <p className="text-gray-400 text-sm">{article.attributes.shortDescription}</p>
+                <p className="text-gray-400 text-sm">{article.attributes.publishedAt}</p>
+                <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-400 hover:underline">
+                  Read more →
+                </Link>
               </div>
-            ))}
+            </div>
           </div>
-        </aside>
+        ))}
+      </div>
+    </aside>
       </div>
     );
   };
