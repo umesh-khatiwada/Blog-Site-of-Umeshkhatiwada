@@ -1,8 +1,46 @@
 "use client";
+import { useState, FormEvent } from 'react';
 import Link from 'next/link';
 import { FaFacebook, FaTwitter, FaInstagram, FaCode } from 'react-icons/fa';
+import axios from 'axios';
 
 export default function Footer() {
+  const [email, setEmail] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
+
+  const handleSubscribe = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}newsletters`,
+        {
+          data: {
+            Email: email,
+          },
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.NEXT_PUBLIC_STRAPI_KEY}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setMessage('Subscription successful!');
+      } else {
+        setMessage('Subscription failed.');
+      }
+    } catch (error) {
+      setMessage('An error occurred. Please try again.');
+    }
+
+    setLoading(false);
+  };
+
   return (
     <footer className="bg-black text-gray-300 py-12 relative overflow-hidden">
       <div className="container mx-auto px-8 sm:px-16 lg:px-32 relative z-10">
@@ -40,19 +78,24 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-white">Newsletter</h3>
             <p className="text-gray-400">Stay updated with our latest news and offers.</p>
-            <form className="flex">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
+            <form className="flex" onSubmit={handleSubscribe}>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="p-2 rounded-l-md flex-grow bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                required
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="bg-purple-600 text-white px-4 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
+                disabled={loading}
               >
-                Subscribe
+                {loading ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
+            {message && <p className="text-gray-500 mt-2">{message}</p>}
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
