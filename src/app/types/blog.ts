@@ -1,34 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// export interface BlogPost {
-//     id: number;
-//     attributes: {
-//       Title: string;
-//       createdAt: string;
-//       updatedAt: string;
-//       publishedAt: string;
-//       description: any[];
-//       slug: string;
-//       viewCount: number;
-//       img?: {
-//         data?: {
-//           attributes?: {
-//             formats?: {
-//               small?: { url: string };
-//               thumbnail?: { url: string };
-//             };
-//           };
-//         };
-//       };
-//       categories?: {
-//         data?: Array<{
-//           id: number;
-//           attributes: {
-//             Title: string;
-//           };
-//         }>;
-//       };
-//     };
-//   }
+
 interface ImageFormats {
   thumbnail: { url: string };
   medium?: { url: string };
@@ -58,13 +29,6 @@ export interface BlogPost {
   attributes: BlogPostAttributes;
 }
 
-
-  // export interface ImageFormats {
-  //   thumbnail: { url: string };
-  //   medium: { url: string };
-  //   small: { url: string };
-  //   large: { url: string };
-  // }
   
   export interface ImageAttributes {
     name: string;
@@ -78,12 +42,25 @@ export interface BlogPost {
     excerpt: string;
     imageUrl: string;
   }
-  
+
+  interface comments {
+    id: string;
+    data: any;
+    attributes: {
+      Name: string;
+      Email: string;
+      comment: string;
+      createdAt: string;
+    };
+  }
   export interface BlogAttributes {
     Title: string;
     publishedAt: string;
     description: any;
     viewCount: number;
+    shortDescription: string;
+    comments: comments;
+    data: any;
     img?: {
       data: {
         attributes: ImageAttributes;
@@ -101,6 +78,7 @@ export interface BlogPost {
 export  interface SuggestedArticle {
     id: number;
     attributes: {
+      publishedAt: string | number | Date;
       Title: string;
       slug: string;
       viewCount: number;

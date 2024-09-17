@@ -1,17 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import Image from 'next/image';
-import { BlocksRenderer } from '@strapi/blocks-react-renderer';
-import Header from '@/app/components/layout/Header';
-import Submenu from '@/app/components/layout/Submenu';
-import { BlogData, SuggestedArticle } from '@/app/types/blog';
-import { fetchBlogDetailData, fetchSuggestedArticles, viewCounter } from '@/app/lib/api';
-import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from 'react-icons/fa';  // Import icons
-import Head from 'next/head';
-import Link from 'next/link';
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import Image from "next/image";
+import { BlocksRenderer } from "@strapi/blocks-react-renderer";
+import Header from "@/app/components/layout/Header";
+import Submenu from "@/app/components/layout/Submenu";
+import { BlogData, SuggestedArticle } from "@/app/types/blog";
+import {
+  fetchBlogDetailData,
+  fetchSuggestedArticles,
+  viewCounter,
+} from "@/app/lib/api";
+import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from "react-icons/fa"; // Import icons
+import Head from "next/head";
+import Link from "next/link";
+
+// Define types for comments
+interface Comment {
+  id: string;
+  attributes: {
+    Name: string;
+    Email: string;
+    comment: string;
+    createdAt: string;
+  };
+}
+
+interface NewComment {
+  Name: string;
+  Email: string;
+  comment: string;
+}
 
 export default function BlogPost() {
   const params = useParams();
@@ -20,44 +41,86 @@ export default function BlogPost() {
   const [suggestedArticles, setSuggestedArticles] = useState<SuggestedArticle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState<NewComment>({
+    Name: "",
+    Email: "",
+    comment: "",
+  });
+
   useEffect(() => {
     if (!id) {
-      setError('No ID provided');
+      setError("No ID provided");
       setLoading(false);
       return;
     }
-  
+
     const fetchData = async () => {
       try {
         const [postData, suggestedData] = await Promise.all([
           fetchBlogDetailData(id),
-          fetchSuggestedArticles()
+          fetchSuggestedArticles(),
         ]);
-  
+
         setData(postData);
         setSuggestedArticles(suggestedData);
+        setComments(postData.data.attributes.comments.data as Comment[]);
       } catch (error) {
-        setError(error instanceof Error ? error.message : 'Error loading blog post');
+        setError(error instanceof Error ? error.message : "Error loading blog post");
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
-  
+
     // Call viewCounter with updated viewCount
     if (data?.data?.attributes?.viewCount !== undefined) {
       viewCounter(id, data.data.attributes.viewCount);
     }
-  }, [id, data?.data?.attributes?.viewCount]); 
-  
+  }, [id, data?.data?.attributes?.viewCount]);
+
+  // Handle comment submission
+  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}comments/`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + process.env.NEXT_PUBLIC_STRAPI_KEY,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: {
+              blog: id,
+              Email: newComment.Email,
+              Name: newComment.Name,
+              comment: newComment.comment,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to post comment");
+      }
+
+      const commentData = await response.json();
+      setComments((prevComments) => [...prevComments, commentData.data as Comment]);
+      setNewComment({ Name: "", Email: "", comment: "" }); // Clear form
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Share functionality
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
-    alert('Link copied to clipboard!');
+    alert("Link copied to clipboard!");
   };
 
   const renderContent = () => {
@@ -136,14 +199,14 @@ export default function BlogPost() {
                   );
                 },
                 list: ({ children, format }) => {
-                  const ListTag = format === 'ordered' ? 'ol' : 'ul';
+                  const ListTag = format === "ordered" ? "ol" : "ul";
                   return (
                     <ListTag className="list-inside mb-4 pl-4 animate-fadeInRight">
                       {children}
                     </ListTag>
                   );
                 },
-                'list-item': ({ children }) => (
+                "list-item": ({ children }) => (
                   <li className="mb-2 animate-fadeInRight">{children}</li>
                 ),
                 link: ({ children, url }) => (
@@ -170,7 +233,7 @@ export default function BlogPost() {
                   <figure className="mb-4 animate-fadeInScale">
                     <Image
                       src={image.url}
-                      alt={image.alternativeText || ''}
+                      alt={image.alternativeText || ""}
                       width={800}
                       height={600}
                       className="rounded-lg shadow-lg"
@@ -185,6 +248,67 @@ export default function BlogPost() {
               }}
             />
           </div>
+
+          {/* Render Comments */}
+          {/* Render Comments */}
+          <section className="mt-8">
+            <h3 className="text-2xl text-green-400 mb-4">Comments</h3>
+            <div className="space-y-4">
+              {comments.map((comment) => (
+                <div key={comment.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
+                  <p className="font-bold text-green-300">{comment.attributes.Name}</p>
+                  <p className="text-gray-400 text-sm">{new Date(comment.attributes.createdAt).toLocaleDateString()}</p>
+                  <p className="mt-2">{comment.attributes.comment}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Comment Submission Form */}
+          <section className="mt-8">
+            <h3 className="text-2xl text-green-400 mb-4">Add a Comment</h3>
+            <form onSubmit={handleCommentSubmit} className="bg-gray-800 p-4 rounded-lg shadow-lg">
+              <div className="mb-4">
+                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={newComment.Name}
+                  onChange={(e) => setNewComment({ ...newComment, Name: e.target.value })}
+                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={newComment.Email}
+                  onChange={(e) => setNewComment({ ...newComment, Email: e.target.value })}
+                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label htmlFor="comment" className="block text-gray-300 mb-2">Comment</label>
+                <textarea
+                  id="comment"
+                  rows={4}
+                  value={newComment.comment}
+                  onChange={(e) => setNewComment({ ...newComment, comment: e.target.value })}
+                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  required
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-200"
+              >
+                Submit Comment
+              </button>
+            </form>
+          </section>
 
           {/* Social Sharing Buttons */}
           <div className="mt-8">
@@ -226,32 +350,32 @@ export default function BlogPost() {
 
         {/* Sidebar with suggested articles */}
         <aside className="lg:w-1/3 mt-8 lg:mt-0">
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
-        <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
-        {suggestedArticles.map((article) => (
-          <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
-            <div className="flex items-center">
-              <Image
-                src={article.attributes.img.data.attributes.url}
-                alt={article.attributes.img.data.attributes.name}
-                width={64}
-                height={64}
-                className="w-16 h-16 object-cover rounded mr-4"
-                loading="lazy"
-              />
-              <div>
-                <h3 className="font-semibold text-lg text-green-300">{article.attributes.Title}</h3>
-                <p className="text-gray-400 text-sm">{article.attributes.shortDescription}</p>
-                <p className="text-gray-400 text-sm">{publishedAt}</p>
-                <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-400 hover:underline">
-                  Read more →
-                </Link>
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
+            <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
+            {suggestedArticles.map((article) => (
+              <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
+                <div className="flex items-center">
+                  <Image
+                    src={article.attributes.img.data.attributes.url}
+                    alt={article.attributes.img.data.attributes.name}
+                    width={64}
+                    height={64}
+                    className="w-16 h-16 object-cover rounded mr-4"
+                    loading="lazy"
+                  />
+                  <div>
+                    <h3 className="font-semibold text-lg text-green-300">{article.attributes.Title}</h3>
+                    <p className="text-gray-400 text-sm">{article.attributes.shortDescription}</p>
+                    <p className="text-gray-400 text-sm">{new Date(article.attributes.publishedAt).toLocaleDateString()}</p>
+                    <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-400 hover:underline">
+                      Read more →
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </aside>
+        </aside>
       </div>
     );
   };
@@ -259,18 +383,19 @@ export default function BlogPost() {
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Head>
-        <title>{data?.data?.attributes?.Title || 'Blog Post'} - My Blog</title>
-        <meta name="description" content={data?.data?.attributes?.description || 'Blog post'} />
-        <meta property="og:title" content={data?.data?.attributes?.Title || 'Blog Post'} />
+        <title>{data?.data?.attributes?.Title || "Blog Post"} - My Blog</title>
+        <meta name="description" content={data?.data?.attributes?.description || "Blog post"} />
+        <meta property="og:title" content={data?.data?.attributes?.Title || "Blog Post"} />
         <meta property="og:description" content={data?.data?.attributes?.description} />
         <meta property="og:image" content={data?.data?.attributes?.img?.data?.attributes?.url} />
       </Head>
       <Header />
       <main className="container mx-auto px-4 py-8">
         <Submenu />
-        <br></br>
+        <br />
         {renderContent()}
       </main>
     </div>
   );
 }
+
