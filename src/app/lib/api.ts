@@ -13,7 +13,12 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
         populate: 'img',
         'pagination[page]': page,
         'pagination[pageSize]': limit
-      }
+      },
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // You can include any authorization tokens here if needed
+      },
     });
     return response.data; // Ensure this returns { data, meta }
   } catch (error) {
@@ -25,7 +30,13 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
 export const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
   const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`,{
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // You can include any authorization tokens here if needed
+      },
+    });
     return response.data.data || [];
   } catch (error) {
     console.error('Error fetching data:', error);
@@ -37,7 +48,13 @@ export const fetchCategoryDetailsData = async (category: string): Promise<BlogPo
 export const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
   const url = 'blogs';
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate=*`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate=*`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // You can include any authorization tokens here if needed
+      },
+    });
     if (response.status === 404) {
       throw new Error('Blog post not found');
     }
@@ -54,7 +71,13 @@ export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
    const SuggestedArticle_url =`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?sort[0]=viewCount:desc&pagination[limit]=5&&populate=img`
 
   try {
-    const response = await axios.get(SuggestedArticle_url);
+    const response = await axios.get(SuggestedArticle_url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        // You can include any authorization tokens here if needed
+      },
+    });
     console.log("Data fetched:", response.data);
     return response.data.data;
   } catch (error) {
