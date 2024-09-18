@@ -51,13 +51,18 @@ const fetchBlogData = async (search: string): Promise<BlogPost[]> => {
 
 // Loading Card Component
 const LoadingCard = () => (
-  <div className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden animate-pulse">
+  <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden animate-pulse">
     <div className="h-48 bg-gray-700"></div>
     <div className="p-6">
-      <h2 className="text-3xl font-semibold mb-2 bg-gray-700 h-8 w-3/4"></h2>
-      <p className="text-gray-400 text-sm mb-4 bg-gray-700 h-4 w-1/3"></p>
-      <p className="text-gray-300 mb-6 bg-gray-700 h-4 w-1/2"></p>
-      <div className="bg-gray-700 h-6 w-1/3"></div>
+      <div className="flex items-center space-x-2 mb-4">
+        <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+        <div className="h-4 bg-gray-700 w-1/2"></div>
+      </div>
+      <div className="space-y-3">
+        <div className="h-4 bg-gray-700 w-3/4"></div>
+        <div className="h-4 bg-gray-700 w-5/6"></div>
+        <div className="h-4 bg-gray-700 w-2/3"></div>
+      </div>
     </div>
   </div>
 );
@@ -69,10 +74,8 @@ export default function Article() {
 
   useEffect(() => {
     const getData = async () => {
-      console.log("Fetching data...");
       try {
         const result = await fetchBlogData(search);
-        console.log("Data fetched:", result);
         setData(result);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -83,7 +86,14 @@ export default function Article() {
   }, [search]);
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-4">Error 404: Data Not Found</h2>
+          <p className="text-xl">{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -91,13 +101,18 @@ export default function Article() {
       <Header />
       <Submenu />
       <DynamicBanner />
-      <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          <span className="text-green-400">&lt;</span>
+          DevOps and Coding Articles
+          <span className="text-green-400">/&gt;</span>
+        </h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.length > 0 ? (
             data.map((post) => (
               <div
                 key={post.id}
-                className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
+                className="bg-gray-800 border border-gray-700 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 {post.attributes.img?.data?.attributes?.formats?.small?.url || post.attributes.img?.data?.attributes?.formats?.thumbnail?.url ? (
                   <img
@@ -106,14 +121,19 @@ export default function Article() {
                     className="w-full h-48 object-cover"
                   />
                 ) : (
-                  <div className="h-48 bg-gray-700"></div> // Fallback if no image
+                  <div className="h-48 bg-gray-700 flex items-center justify-center">
+                    <span className="text-4xl">&#123; &#125;</span>
+                  </div>
                 )}
                 <div className="p-6">
-                  <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
-                  <p className="text-gray-400 text-sm mb-4">{post.attributes.Date}</p>
-                  <p className="text-gray-300 mb-6">{post.attributes.updatedAt}</p>
-                  <Link href={`/article/${post.id}/${post.attributes.slug}`} className="text-green-400 hover:underline">
-                    Read more →
+                  <div className="flex items-center space-x-2 mb-2">
+                    <div className="h-3 w-3 bg-green-500 rounded-full"></div>
+                    <h2 className="text-xl font-semibold text-green-400">{post.attributes.Title}</h2>
+                  </div>
+                  <p className="text-gray-400 text-sm mb-4">Posted: {new Date(post.attributes.Date).toLocaleDateString()}</p>
+                  <p className="text-gray-400 text-sm mb-6">Updated: {new Date(post.attributes.updatedAt).toLocaleDateString()}</p>
+                  <Link href={`/article/${post.id}/${post.attributes.slug}`} className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300">
+                    $ cat article.md
                   </Link>
                 </div>
               </div>

@@ -126,28 +126,26 @@ export default function BlogPost() {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="text-center text-white font-bold text-xl py-10">
-          <div className="animate-pulse">
-            <div className="bg-gray-700 h-8 mb-4 w-3/4 mx-auto rounded"></div>
-            <div className="bg-gray-700 h-4 mb-4 w-1/2 mx-auto rounded"></div>
-            <div className="bg-gray-700 h-4 mb-4 w-2/3 mx-auto rounded"></div>
-          </div>
+        <div className="text-center text-gray-300 font-mono py-10 animate-pulse">
+          <div className="bg-gray-800 h-8 mb-4 w-3/4 mx-auto rounded"></div>
+          <div className="bg-gray-800 h-4 mb-4 w-1/2 mx-auto rounded"></div>
+          <div className="bg-gray-800 h-4 mb-4 w-2/3 mx-auto rounded"></div>
         </div>
       );
     }
 
     if (error) {
       return (
-        <div className="text-center text-red-500 font-bold text-xl py-10 animate-fadeIn">
-          {error}
+        <div className="text-center text-red-500 font-mono text-xl py-10 animate-fadeIn">
+          Error: {error}
         </div>
       );
     }
 
     if (!data || !data.data || !data.data.attributes) {
       return (
-        <div className="text-center text-white font-bold text-xl py-10 animate-fadeIn">
-          Post not found
+        <div className="text-center text-gray-300 font-mono text-xl py-10 animate-fadeIn">
+          404: Post not found
         </div>
       );
     }
@@ -157,16 +155,16 @@ export default function BlogPost() {
 
     return (
       <div className="flex flex-col lg:flex-row lg:space-x-8">
-        <article className="lg:w-2/3 bg-gray-800 p-8 rounded-lg shadow-lg animate-fadeInUp">
+        <article className="lg:w-2/3 bg-gray-900 p-8 rounded-lg shadow-lg border border-green-500 animate-fadeInUp">
           <header className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
+            <h1 className="text-4xl font-bold mb-4 text-green-400 font-mono animate-fadeInDown">
               {Title}
             </h1>
-            <p className="text-gray-400 text-sm animate-fadeIn">
-              Published on {new Date(publishedAt).toLocaleDateString()}
+            <p className="text-gray-400 text-sm font-mono animate-fadeIn">
+              Deployed on {new Date(publishedAt).toLocaleDateString()}
             </p>
-            <p className="text-gray-400 text-sm animate-fadeIn">
-              View Count: {data.data.attributes.viewCount}
+            <p className="text-gray-400 text-sm font-mono animate-fadeIn">
+              Hits: {data.data.attributes.viewCount}
             </p>
           </header>
 
@@ -178,22 +176,22 @@ export default function BlogPost() {
                 width={800}
                 height={600}
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="w-full rounded-lg shadow-lg"
+                className="w-full rounded-lg shadow-lg border border-green-500"
               />
             </figure>
           )}
 
-          <div className="prose prose-lg prose-invert max-w-none">
+          <div className="prose prose-lg prose-invert max-w-none font-mono">
             <BlocksRenderer
               content={description}
               blocks={{
                 paragraph: ({ children }) => (
-                  <p className="mb-4 animate-fadeInRight">{children}</p>
+                  <p className="mb-4 animate-fadeInRight text-gray-300">{children}</p>
                 ),
                 heading: ({ children, level }) => {
                   const HeadingTag = `h${level}` as keyof JSX.IntrinsicElements;
                   return (
-                    <HeadingTag className="font-bold mt-6 mb-4 text-green-300 animate-fadeInLeft">
+                    <HeadingTag className="font-bold mt-6 mb-4 text-green-400 animate-fadeInLeft">
                       {children}
                     </HeadingTag>
                   );
@@ -201,7 +199,7 @@ export default function BlogPost() {
                 list: ({ children, format }) => {
                   const ListTag = format === "ordered" ? "ol" : "ul";
                   return (
-                    <ListTag className="list-inside mb-4 pl-4 animate-fadeInRight">
+                    <ListTag className="list-inside mb-4 pl-4 animate-fadeInRight text-gray-300">
                       {children}
                     </ListTag>
                   );
@@ -220,13 +218,13 @@ export default function BlogPost() {
                   </a>
                 ),
                 quote: ({ children }) => (
-                  <blockquote className="border-l-4 border-green-400 pl-4 py-2 italic mb-4 bg-gray-700 rounded-r animate-fadeInScale">
+                  <blockquote className="border-l-4 border-green-500 pl-4 py-2 italic mb-4 bg-gray-800 rounded-r animate-fadeInScale text-gray-300">
                     {children}
                   </blockquote>
                 ),
                 code: ({ children }) => (
-                  <pre className="bg-gray-900 p-4 rounded-md overflow-x-auto mb-4 animate-fadeInScale">
-                    <code className="text-sm text-green-300">{children}</code>
+                  <pre className="bg-black p-4 rounded-md overflow-x-auto mb-4 animate-fadeInScale">
+                    <code className="text-sm text-green-400">{children}</code>
                   </pre>
                 ),
                 image: ({ image }) => (
@@ -236,7 +234,7 @@ export default function BlogPost() {
                       alt={image.alternativeText || ""}
                       width={800}
                       height={600}
-                      className="rounded-lg shadow-lg"
+                      className="rounded-lg shadow-lg border border-green-500"
                     />
                     {image.caption && (
                       <figcaption className="text-center text-gray-400 mt-2">
@@ -249,16 +247,15 @@ export default function BlogPost() {
             />
           </div>
 
-          {/* Render Comments */}
-          {/* Render Comments */}
+          {/* Comments Section */}
           <section className="mt-8">
-            <h3 className="text-2xl text-green-400 mb-4">Comments</h3>
+            <h3 className="text-2xl text-green-400 mb-4 font-mono">Logs</h3>
             <div className="space-y-4">
               {comments.map((comment) => (
-                <div key={comment.id} className="bg-gray-800 p-4 rounded-lg shadow-md">
-                  <p className="font-bold text-green-300">{comment.attributes.Name}</p>
-                  <p className="text-gray-400 text-sm">{new Date(comment.attributes.createdAt).toLocaleDateString()}</p>
-                  <p className="mt-2">{comment.attributes.comment}</p>
+                <div key={comment.id} className="bg-gray-800 p-4 rounded-lg shadow-md border border-green-500">
+                  <p className="font-bold text-green-400 font-mono">{comment.attributes.Name}</p>
+                  <p className="text-gray-400 text-sm font-mono">{new Date(comment.attributes.createdAt).toLocaleDateString()}</p>
+                  <p className="mt-2 text-gray-300 font-mono">{comment.attributes.comment}</p>
                 </div>
               ))}
             </div>
@@ -266,59 +263,59 @@ export default function BlogPost() {
 
           {/* Comment Submission Form */}
           <section className="mt-8">
-            <h3 className="text-2xl text-green-400 mb-4">Add a Comment</h3>
-            <form onSubmit={handleCommentSubmit} className="bg-gray-800 p-4 rounded-lg shadow-lg">
+            <h3 className="text-2xl text-green-400 mb-4 font-mono">Push a Log</h3>
+            <form onSubmit={handleCommentSubmit} className="bg-gray-800 p-4 rounded-lg shadow-lg border border-green-500">
               <div className="mb-4">
-                <label htmlFor="name" className="block text-gray-300 mb-2">Name</label>
+                <label htmlFor="name" className="block text-gray-300 mb-2 font-mono">Name</label>
                 <input
                   type="text"
                   id="name"
                   value={newComment.Name}
                   onChange={(e) => setNewComment({ ...newComment, Name: e.target.value })}
-                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  className="w-full p-2 bg-black border border-green-500 rounded text-gray-300 font-mono"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-300 mb-2">Email</label>
+                <label htmlFor="email" className="block text-gray-300 mb-2 font-mono">Email</label>
                 <input
                   type="email"
                   id="email"
                   value={newComment.Email}
                   onChange={(e) => setNewComment({ ...newComment, Email: e.target.value })}
-                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  className="w-full p-2 bg-black border border-green-500 rounded text-gray-300 font-mono"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label htmlFor="comment" className="block text-gray-300 mb-2">Comment</label>
+                <label htmlFor="comment" className="block text-gray-300 mb-2 font-mono">Log Message</label>
                 <textarea
                   id="comment"
                   rows={4}
                   value={newComment.comment}
                   onChange={(e) => setNewComment({ ...newComment, comment: e.target.value })}
-                  className="w-full p-2 bg-gray-900 border border-gray-700 rounded"
+                  className="w-full p-2 bg-black border border-green-500 rounded text-gray-300 font-mono"
                   required
                 ></textarea>
               </div>
               <button
                 type="submit"
-                className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 transition-colors duration-200"
+                className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition-colors duration-200 font-mono"
               >
-                Submit Comment
+                Push Log
               </button>
             </form>
           </section>
 
           {/* Social Sharing Buttons */}
           <div className="mt-8">
-            <h3 className="text-2xl text-green-400 mb-4">Share this article:</h3>
+            <h3 className="text-2xl text-green-400 mb-4 font-mono">Share this deployment:</h3>
             <div className="flex space-x-4">
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                className="text-blue-500 hover:text-blue-600 transition-colors duration-200"
               >
                 <FaFacebook size={32} />
               </a>
@@ -326,7 +323,7 @@ export default function BlogPost() {
                 href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${Title}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-400 hover:text-blue-600 transition-colors duration-200"
+                className="text-blue-400 hover:text-blue-500 transition-colors duration-200"
               >
                 <FaTwitter size={32} />
               </a>
@@ -334,13 +331,13 @@ export default function BlogPost() {
                 href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${Title}&summary=${description}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-700 hover:text-blue-900 transition-colors duration-200"
+                className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
               >
                 <FaLinkedin size={32} />
               </a>
               <button
                 onClick={handleCopyLink}
-                className="text-green-400 hover:text-green-600 transition-colors duration-200"
+                className="text-green-500 hover:text-green-600 transition-colors duration-200"
               >
                 <FaCopy size={32} />
               </button>
@@ -350,8 +347,8 @@ export default function BlogPost() {
 
         {/* Sidebar with suggested articles */}
         <aside className="lg:w-1/3 mt-8 lg:mt-0">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg animate-fadeInRight">
-            <h2 className="text-2xl font-bold mb-4 text-green-400">Suggested Articles</h2>
+          <div className="bg-gray-900 p-6 rounded-lg shadow-lg border border-green-500 animate-fadeInRight">
+            <h2 className="text-2xl font-bold mb-4 text-green-400 font-mono">Related Deployments</h2>
             {suggestedArticles.map((article) => (
               <div key={article.id} className="mb-4 pb-4 border-b border-gray-700 last:border-b-0">
                 <div className="flex items-center">
@@ -360,15 +357,15 @@ export default function BlogPost() {
                     alt={article.attributes.img.data.attributes.name}
                     width={64}
                     height={64}
-                    className="w-16 h-16 object-cover rounded mr-4"
+                    className="w-16 h-16 object-cover rounded mr-4 border border-green-500"
                     loading="lazy"
                   />
                   <div>
-                    <h3 className="font-semibold text-lg text-green-300">{article.attributes.Title}</h3>
-                    <p className="text-gray-400 text-sm">{article.attributes.shortDescription}</p>
-                    <p className="text-gray-400 text-sm">{new Date(article.attributes.publishedAt).toLocaleDateString()}</p>
-                    <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-400 hover:underline">
-                      Read more →
+                    <h3 className="font-semibold text-lg text-green-400 font-mono">{article.attributes.Title}</h3>
+                    <p className="text-gray-400 text-sm font-mono">{article.attributes.shortDescription}</p>
+                    <p className="text-gray-400 text-sm font-mono">{new Date(article.attributes.publishedAt).toLocaleDateString()}</p>
+                    <Link href={`/article/${article.id}/${article.attributes.slug}`} className="text-green-500 hover:underline font-mono">
+                      View deployment →
                     </Link>
                   </div>
                 </div>
@@ -381,11 +378,11 @@ export default function BlogPost() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-black text-gray-300">
       <Head>
-        <title>{data?.data?.attributes?.Title || "Blog Post"} - My Blog</title>
-        <meta name="description" content={data?.data?.attributes?.description || "Blog post"} />
-        <meta property="og:title" content={data?.data?.attributes?.Title || "Blog Post"} />
+        <title>{data?.data?.attributes?.Title || "Deployment Log"} - DevOps Blog</title>
+        <meta name="description" content={data?.data?.attributes?.description || "Deployment log"} />
+        <meta property="og:title" content={data?.data?.attributes?.Title || "Deployment Log"} />
         <meta property="og:description" content={data?.data?.attributes?.description} />
         <meta property="og:image" content={data?.data?.attributes?.img?.data?.attributes?.url} />
       </Head>
@@ -398,4 +395,3 @@ export default function BlogPost() {
     </div>
   );
 }
-

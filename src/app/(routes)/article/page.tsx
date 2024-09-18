@@ -1,8 +1,6 @@
-// src/app/Article.tsx
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from 'next/link';
-import Image from 'next/image'; // Import Next.js Image component
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import Header from '@/app/components/layout/Header';
 import DynamicBanner from '@/app/components/blog/Blogroute';
@@ -10,19 +8,7 @@ import Submenu from '@/app/components/layout/Submenu';
 import { BlogPost } from '@/app/types/blog';
 import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';
-
-
-const DummyCard = () => (
-  <div className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden animate-pulse">
-    <div className="h-48 bg-gray-700"></div>
-    <div className="p-6">
-      <div className="h-6 bg-gray-600 mb-2"></div>
-      <div className="h-4 bg-gray-500 mb-4"></div>
-      <div className="h-4 bg-gray-500 mb-6"></div>
-      <div className="h-4 bg-gray-600"></div>
-    </div>
-  </div>
-);
+import { DummyCard } from '@/app/components/blog/DummyCard';
 
 export default function Article() {
   const [data, setData] = useState<BlogPost[]>([]);
@@ -36,8 +22,7 @@ export default function Article() {
     try {
       const result = await fetchBlogData(page);
       setData(result.data);
-      // Assuming the API returns meta.pagination.total and you have a fixed limit
-      const totalPages = Math.ceil(result.meta.pagination.total / 6); // Adjust limit if needed
+      const totalPages = Math.ceil(result.meta.pagination.total / 6);
       setTotalPages(totalPages);
       setLoading(false);
     } catch (err) {
@@ -58,7 +43,14 @@ export default function Article() {
   };
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold mb-4">Oops! Something went wrong.</h2>
+          <p className="text-xl">{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -67,53 +59,72 @@ export default function Article() {
       <Submenu />
       <DynamicBanner />
 
-      {/* Blog Posts Section */}
-      <div className="container mx-auto py-12 px-8 sm:px-16 lg:px-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {loading ? (
-            Array.from({ length: 6 }).map((_, index) => (
-              <DummyCard key={index} />
-            ))
-          ) : (
-            data.length === 0 ? (
-              <div>No posts found</div>
-            ) : (
-              data.map((post) => (
-                <div
+      <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          <span className="text-blue-400">&lt;</span>
+          DevOps and Coding Articles
+          <span className="text-blue-400">/&gt;</span>
+        </h1>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <DummyCard key={index} />
+              ))
+            : data.length === 0
+            ? (
+                <div className="col-span-full text-center text-xl">
+                  No posts found. Check back later!
+                </div>
+              )
+            : data.map((post) => (
+                <article
                   key={post.id}
-                  className="bg-gray-800 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow transform hover:scale-105"
+                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                 >
                   {post.attributes.img.data && (
-                    <Image
-                      src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
-                      alt={post.attributes.Title}
-                      width={500}
-                      height={300}
-                      className="w-full h-48 object-cover"
-                    />
+                    <div className="relative h-48">
+                      <Image
+                        src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
+                        alt={post.attributes.Title}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-opacity duration-300 hover:opacity-80"
+                      />
+                    </div>
                   )}
                   <div className="p-6">
-                    <h2 className="text-3xl font-semibold mb-2">{post.attributes.Title}</h2>
-                    <p className="text-gray-400 text-sm">{post.attributes.shortDescription}</p>
-                    <p className="text-gray-400 text-sm mb-4">{post.attributes.Date}</p>
-                    <p className="text-gray-300 mb-6">{post.attributes.updatedAt}</p>
-                    <Link href={`/article/${post.id}/${post.attributes.slug}`} className="text-green-400 hover:underline">
-                      Read more →
+                    <h2 className="text-2xl font-semibold mb-2 text-blue-300">
+                      {post.attributes.Title}
+                    </h2>
+                    <p className="text-gray-400 text-sm mb-4">
+                      {post.attributes.shortDescription}
+                    </p>
+                    <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                      <span>{new Date(post.attributes.Date).toLocaleDateString()}</span>
+                      <span>Last updated: {new Date(post.attributes.updatedAt).toLocaleDateString()}</span>
+                    </div>
+                    <Link
+                      href={`/article/${post.id}/${post.attributes.slug}`}
+                      className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300"
+                    >
+                      Read more &rarr;
                     </Link>
                   </div>
-                </div>
-              ))
-            )
-          )}
+                </article>
+              ))}
         </div>
 
-        {/* Pagination Controls */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-      </div>
+      </main>
+
+      <footer className="bg-gray-800 text-center py-6 mt-12">
+        <p>&copy; 2024 DevOps Blog. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
