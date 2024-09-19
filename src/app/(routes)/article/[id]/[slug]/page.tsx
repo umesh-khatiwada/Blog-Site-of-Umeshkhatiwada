@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { fetchBlogDetailData, fetchSuggestedArticles, viewCounter } from "@/app/lib/api";
-import { useSideBar } from "@/app/hooks/store";
+// import { useSideBar } from "@/app/hooks/store";
 import { BlogData, NewComment, Comment, SuggestedArticle } from "@/app/types/blog";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 import CommentsSection from "@/app/components/ui/CommentsSection";
@@ -19,7 +19,7 @@ const BlogPost: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const { isOpen, toggleSidebar } = useSideBar();
+  // const { isOpen, toggleSidebar } = useSideBar();
   const [newComment, setNewComment] = useState<NewComment>({
     Name: "",
     Email: "",
@@ -51,6 +51,7 @@ const BlogPost: React.FC = () => {
         setError(error instanceof Error ? error.message : "Error loading blog post");
       } finally {
         setLoading(false);
+        console.log(suggestedArticles);
       }
     };
 

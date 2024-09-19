@@ -2,9 +2,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import Header from '@/app/components/layout/Header';
+// import Header from '@/app/components/layout/Header';
 import DynamicBanner from '@/app/components/blog/Blogroute';
-import Submenu from '@/app/components/layout/Submenu';
+// import Submenu from '@/app/components/layout/Submenu';
 import { BlogPost } from '@/app/types/blog';
 import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';

@@ -1,6 +1,4 @@
-import { Sidebar } from 'lucide-react';
-import Image from 'next/image';
-import { FaTwitter, FaInstagram, FaSkype, FaLinkedin } from 'react-icons/fa';
+
 
 export default function Home() {
   return (
