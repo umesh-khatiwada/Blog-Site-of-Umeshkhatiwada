@@ -1,6 +1,6 @@
+import { Sidebar } from 'lucide-react';
 import Image from 'next/image';
 import { FaTwitter, FaInstagram, FaSkype, FaLinkedin } from 'react-icons/fa';
-import Header from './components/layout/Header'; // Import the Header component
 
 export default function Home() {
   return (
@@ -12,11 +12,10 @@ export default function Home() {
         backgroundPosition: 'center',
       }}
     >
-      {/* Dynamically included Header */}
-      <Header />
-
+     
+      
       {/* Main Content */}
-      <main className="flex flex-col items-center text-center mt-20">
+      {/* <main className="flex flex-col items-center text-center mt-20">
         <h2 className="text-6xl font-bold mb-4">Umesh Khatiwada</h2>
         <p className="text-3xl font-semibold mb-6">I am a DevOps Engineer</p>
 
@@ -44,12 +43,8 @@ export default function Home() {
             className="rounded-full"
           />
         </div>
-      </main>
+      </main> */}
 
-      {/* Footer */}
-      {/* <footer className="w-full py-4 bg-black bg-opacity-75 text-center">
-        <p className="text-gray-400">&copy; 2024 The Cloud Mechanic</p>
-      </footer> */}
     </div>
   );
 }

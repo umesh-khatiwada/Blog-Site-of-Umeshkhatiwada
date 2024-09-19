@@ -99,6 +99,25 @@ export  interface SuggestedArticle {
   }
   
 
+
+
+// Define types for comments
+export interface Comment {
+  id: string;
+  attributes: {
+    Name: string;
+    Email: string;
+    comment: string;
+    createdAt: string;
+  };
+}
+
+export interface NewComment {
+  Name: string;
+  Email: string;
+  comment: string;
+}
+
   
   
 

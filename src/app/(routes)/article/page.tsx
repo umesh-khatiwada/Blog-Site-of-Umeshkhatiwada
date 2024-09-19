@@ -9,6 +9,7 @@ import { BlogPost } from '@/app/types/blog';
 import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';
 import { DummyCard } from '@/app/components/blog/DummyCard';
+import Footer from '@/app/components/layout/Footer';
 
 export default function Article() {
   const [data, setData] = useState<BlogPost[]>([]);
@@ -55,8 +56,6 @@ export default function Article() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Header />
-      <Submenu />
       <DynamicBanner />
 
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -123,8 +122,10 @@ export default function Article() {
       </main>
 
       <footer className="bg-gray-800 text-center py-6 mt-12">
-        <p>&copy; 2024 DevOps Blog. All rights reserved.</p>
+        {/* <p>&copy; 2024 DevOps Blog. All rights reserved.</p> */}
       </footer>
+
+      <Footer />
     </div>
   );
 }

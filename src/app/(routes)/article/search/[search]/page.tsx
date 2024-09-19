@@ -98,8 +98,6 @@ export default function Article() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Header />
-      <Submenu />
       <DynamicBanner />
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold mb-8 text-center">
