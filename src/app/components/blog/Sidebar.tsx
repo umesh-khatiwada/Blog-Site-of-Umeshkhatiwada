@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import Link from 'next/link';
-import { Code, GitBranch, Terminal, Settings } from 'lucide-react';
+import { FaCode, FaGitAlt, FaTerminal, FaCogs } from 'react-icons/fa'; // Import from react-icons
 
 export default function SidebarWithContent({ children }: { children: ReactNode }) {
   const reactTutorials = [
@@ -22,12 +22,12 @@ export default function SidebarWithContent({ children }: { children: ReactNode }
       <aside className="w-full md:w-64 bg-gray-900 text-gray-300 overflow-y-auto md:h-screen md:sticky md:top-0 hide-scrollbar">
         <div className="p-4">
           <div className="flex items-center space-x-2 mb-6">
-            <Code className="text-blue-400" size={24} />
+            <FaCode className="text-blue-400" size={24} />
             <h2 className="text-xl font-bold text-blue-400">React Docs</h2>
           </div>
           <div className="mb-6">
             <div className="flex items-center space-x-2 mb-2">
-              <Terminal className="text-green-400" size={18} />
+              <FaTerminal className="text-green-400" size={18} />
               <h3 className="text-lg font-semibold text-green-400">Tutorials</h3>
             </div>
             <ul className="space-y-1 pl-6">
@@ -42,7 +42,7 @@ export default function SidebarWithContent({ children }: { children: ReactNode }
           </div>
           <div className="mb-6">
             <div className="flex items-center space-x-2 mb-2">
-              <GitBranch className="text-purple-400" size={18} />
+              <FaGitAlt className="text-purple-400" size={18} />
               <h3 className="text-lg font-semibold text-purple-400">Hooks</h3>
             </div>
             <ul className="space-y-1 pl-6">
@@ -57,7 +57,7 @@ export default function SidebarWithContent({ children }: { children: ReactNode }
           </div>
           <div>
             <div className="flex items-center space-x-2 mb-2">
-              <Settings className="text-yellow-400" size={18} />
+              <FaCogs className="text-yellow-400" size={18} />
               <h3 className="text-lg font-semibold text-yellow-400">New Section</h3>
             </div>
             <ul className="space-y-1 pl-6">

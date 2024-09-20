@@ -9,7 +9,7 @@ import { BlogData, NewComment, Comment } from "@/app/types/blog";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 import CommentsSection from "@/app/components/ui/CommentsSection";
 import SocialSharing from "@/app/components/ui/SocialMedia";
-import { Terminal, Server, Code, Eye, Calendar } from "lucide-react";
+import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa"; // Import from react-icons
 
 const BlogPost: React.FC = () => {
   const params = useParams();
@@ -87,7 +87,7 @@ const BlogPost: React.FC = () => {
     if (loading) {
       return (
         <div className="text-center text-green-400 py-10 animate-pulse">
-          <Terminal className="w-16 h-16 mx-auto mb-4" />
+          <FaTerminal className="w-16 h-16 mx-auto mb-4" />
           <div className="bg-gray-800 h-8 mb-4 w-3/4 mx-auto rounded"></div>
           <div className="bg-gray-800 h-4 mb-4 w-1/2 mx-auto rounded"></div>
           <div className="bg-gray-800 h-4 mb-4 w-2/3 mx-auto rounded"></div>
@@ -98,7 +98,7 @@ const BlogPost: React.FC = () => {
     if (error) {
       return (
         <div className="text-center text-red-500 text-xl py-10 animate-fadeIn">
-          <Server className="w-16 h-16 mx-auto mb-4" />
+          <FaServer className="w-16 h-16 mx-auto mb-4" />
           Error: {error}
         </div>
       );
@@ -107,7 +107,7 @@ const BlogPost: React.FC = () => {
     if (!data || !data.data || !data.data.attributes) {
       return (
         <div className="text-center text-gray-300 text-xl py-10 animate-fadeIn">
-          <Code className="w-16 h-16 mx-auto mb-4" />
+          <FaCode className="w-16 h-16 mx-auto mb-4" />
           404: Post not found
         </div>
       );
@@ -124,11 +124,11 @@ const BlogPost: React.FC = () => {
           </h1>
           <div className="flex items-center text-gray-400 text-sm space-x-6">
             <span className="flex items-center">
-              <Calendar className="w-4 h-4 mr-2" />
+              <FaCalendarAlt className="w-4 h-4 mr-2" />
               {new Date(publishedAt).toLocaleDateString()}
             </span>
             <span className="flex items-center">
-              <Eye className="w-4 h-4 mr-2" />
+              <FaEye className="w-4 h-4 mr-2" />
               {viewCount} views
             </span>
           </div>
