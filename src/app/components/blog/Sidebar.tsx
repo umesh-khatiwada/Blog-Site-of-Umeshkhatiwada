@@ -1,91 +1,155 @@
-import React, { ReactNode } from 'react';
-import Link from 'next/link';
-import { FaCode, FaGitAlt, FaTerminal, FaCogs } from 'react-icons/fa'; // Import from react-icons
+'use client';
 
-export default function SidebarWithContent({ children }: { children: ReactNode }) {
-  const reactTutorials = [
-    'React Home', 'React Setup', 'React Getting Started', 'React ES6',
-    'React Render HTML', 'React JSX', 'React Components', 'React Class',
-    'React Props', 'React Events', 'React Conditional', 'React Lists',
-    'React Forms', 'React Router', 'React Memo', 'React CSS Styling'
-  ];
-  const reactHooks = [
-    'What is a Hook?', 'React useState Hook', 'React useEffect Hook',
-    'React useContext', 'React useRef', 'React useReducer', 'React useCallback'
-  ];
-  const additionalLinks = [
-    'New Feature 1', 'New Feature 2', 'New Feature 3'
-  ];
+import React, { ReactNode, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { FaServer, FaCodeBranch, FaBook, FaClock } from 'react-icons/fa';
+import { fetchCategoriesWithSubcategories } from '@/app/lib/api';
+import { useCategory } from '@/app/hooks/store';
+
+// Type definitions
+interface Blog {
+  id: string;
+  attributes: {
+    slug: string;
+    Title: string;
+    publishedAt: string | number | Date;
+  };
+}
+
+interface Category {
+  id: string;
+  attributes: {
+    Title: string;
+    blogs: {
+      data: Blog[];
+    };
+  };
+}
+
+interface FullCategories {
+  Title: string;
+  sub_categories: {
+    data: Category[];
+  };
+}
+
+interface ApiResponse {
+  data: {
+    id: number;
+    attributes: FullCategories;
+  };
+  meta?: Record<string, any>; // Optional meta field
+}
+
+const LoadingSkeleton = () => (
+  <div className="animate-pulse">
+    <div className="flex items-center space-x-2 mb-6">
+      <div className="w-6 h-6 bg-gray-600 rounded-full"></div>
+      <div className="h-6 bg-gray-600 rounded w-1/2"></div>
+    </div>
+    {[...Array(3)].map((_, i) => (
+      <div key={i} className="mb-4">
+        <div className="h-10 bg-gray-700 rounded-md mb-2"></div>
+        <div className="pl-4 space-y-2">
+          {[...Array(2)].map((_, j) => (
+            <div key={j} className="h-16 bg-gray-750 rounded-md"></div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+export default function DevOpsSidebar({ children }: { children: ReactNode }) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [fullcategories, setFullcategories] = useState<FullCategories | null>(null);
+  const { categoryId } = useCategory();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (categoryId === 0) {
+        setIsLoading(true);
+        return;
+      }
+  
+      try {
+        setIsLoading(true);
+        const response: any = await fetchCategoriesWithSubcategories(categoryId.toString());
+  
+        // Since we're fetching a single category, you can directly access the attributes
+        const fetchedCategories = response.data.attributes.sub_categories?.data || [];
+        setCategories(fetchedCategories);
+        setFullcategories(response.data.attributes || null);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchCategories();
+  }, [categoryId]);
+  
+
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
+  const truncateTitle = (title: string, limit: number) => {
+    return title.length > limit ? title.slice(0, limit) + '...' : title;
+  };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-black">
-      <aside className="w-full md:w-64 bg-gray-900 text-gray-300 overflow-y-auto md:h-screen md:sticky md:top-0 hide-scrollbar">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
+      <aside className="w-full md:w-80 bg-gray-800 overflow-y-auto md:h-screen md:sticky md:top-0 border-r border-gray-700">
         <div className="p-4">
-          <div className="flex items-center space-x-2 mb-6">
-            <FaCode className="text-blue-400" size={24} />
-            <h2 className="text-xl font-bold text-blue-400">React Docs</h2>
-          </div>
-          <div className="mb-6">
-            <div className="flex items-center space-x-2 mb-2">
-              <FaTerminal className="text-green-400" size={18} />
-              <h3 className="text-lg font-semibold text-green-400">Tutorials</h3>
-            </div>
-            <ul className="space-y-1 pl-6">
-              {reactTutorials.map((tutorial, index) => (
-                <li key={index}>
-                  <Link href="#" className="text-gray-400 hover:text-white block py-1 text-sm">
-                    {tutorial}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="mb-6">
-            <div className="flex items-center space-x-2 mb-2">
-              <FaGitAlt className="text-purple-400" size={18} />
-              <h3 className="text-lg font-semibold text-purple-400">Hooks</h3>
-            </div>
-            <ul className="space-y-1 pl-6">
-              {reactHooks.map((hook, index) => (
-                <li key={index}>
-                  <Link href="#" className="text-gray-400 hover:text-white block py-1 text-sm">
-                    {hook}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="flex items-center space-x-2 mb-2">
-              <FaCogs className="text-yellow-400" size={18} />
-              <h3 className="text-lg font-semibold text-yellow-400">New Section</h3>
-            </div>
-            <ul className="space-y-1 pl-6">
-              {additionalLinks.map((link, index) => (
-                <li key={index}>
-                  <Link href="#" className="text-gray-400 hover:text-white block py-1 text-sm">
-                    {link}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {isLoading ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <div className="flex items-center space-x-2 mb-6">
+                <FaServer className="text-cyan-400" size={24} />
+                <h2 className="text-xl font-bold text-cyan-400">
+                  {capitalizeFirstLetter(fullcategories?.Title || '')}
+                </h2>
+              </div>
+              <ul className="space-y-4">
+                {categories.map((category) => (
+                  <li key={category.id} className="mb-4">
+                    <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
+                      <FaCodeBranch className="mr-2 text-cyan-400" size={16} />
+                      <span className="text-lg font-semibold text-white">{category.attributes.Title}</span>
+                    </div>
+                    <ul className="pl-4 space-y-2">
+                      {category.attributes.blogs.data.map((blog) => (
+                        <li key={blog.id} className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150">
+                          <Link href={`/article/${blog.id}/${blog.attributes.slug}`} className="block p-3">
+                            <div className="flex items-center mb-1">
+                              <FaBook className="mr-2 text-cyan-400" size={14} />
+                              <span className="text-sm font-medium text-white">
+                                {truncateTitle(blog.attributes.Title, 25)}
+                              </span>
+                            </div>
+                            <div className="flex items-center text-xs text-gray-400">
+                              <FaClock className="mr-1" size={12} />
+                              <span>{new Date(blog.attributes.publishedAt).toLocaleDateString()}</span>
+                            </div>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
         </div>
       </aside>
-      <main className="flex-1 overflow-y-auto p-3 md:p-3 hide-scrollbar">
-        <div className="max-w-full">
-          {children}
-        </div>
+
+      <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
+        <div>{children}</div>
       </main>
-      {/* <style jsx global>{`
-        .hide-scrollbar {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style> */}
     </div>
   );
 }

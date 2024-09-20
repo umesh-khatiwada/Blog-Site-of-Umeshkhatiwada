@@ -54,6 +54,7 @@ export interface BlogPost {
     };
   }
   export interface BlogAttributes {
+    categories: any;
     Title: string;
     publishedAt: string;
     description: any;
@@ -119,6 +120,59 @@ export interface NewComment {
 }
 
   
-  
+interface SubCategory {
+  id: number;
+  attributes: {
+    createdAt: string;
+    updatedAt: string;
+    publishedAt: string;
+    Title: string;
+  };
+}
 
-  
+interface CategoryAttributes {
+  Title: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  sub_categories: {
+    data: SubCategory[];
+  };
+}
+
+export interface CategoryFull {
+  data: {
+    id: number;
+    attributes: CategoryAttributes;
+  };
+  meta: Record<string, any>;
+}
+
+
+
+
+// interface Blog {
+//   id: string;
+//   attributes: {
+//     slug: string;
+//     Title: string;
+//     publishedAt: string | number | Date;
+//   };
+// }
+
+// interface Category {
+//   id: string;
+//   attributes: {
+//     Title: string;
+//     blogs: {
+//       data: Blog[];
+//     };
+//   };
+// }
+
+// interface FullCategories {
+//   Title: string;
+//   sub_categories: {
+//     data: Category[];
+//   };
+// }

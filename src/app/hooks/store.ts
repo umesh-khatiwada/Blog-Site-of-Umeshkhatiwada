@@ -1,12 +1,13 @@
-// import { create } from 'zustand';
+import { create } from 'zustand';
 
-// export const useStore = create((set) => ({
-//   count: 0,
-//   increaseCount: () => set((state: { count: number; }) => ({ count: state.count + 1 })),
-//   decreaseCount: () => set((state: { count: number; }) => ({ count: state.count - 1 })),
-// }));
+// Define the shape of your store's state
+interface CategoryState {
+    categoryId: number; // Current category ID
+    setCategoryId: (id: number) => void; // Function to set the category ID
+}
 
-// export const useSideBar = create((set: any) => ({
-//   isOpen: false,
-//   toggleSidebar: () => set((state: { isOpen: boolean; }) => ({ isOpen: !state.isOpen })),
-// }))
+// Create the Zustand store with the defined state type
+export const useCategory = create<CategoryState>((set) => ({
+    categoryId: 0, 
+    setCategoryId: (id) => set({ categoryId: id }), // Function to set the category ID
+}));

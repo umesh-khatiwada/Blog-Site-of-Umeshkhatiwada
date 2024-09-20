@@ -9,7 +9,10 @@ import { BlogData, NewComment, Comment } from "@/app/types/blog";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 import CommentsSection from "@/app/components/ui/CommentsSection";
 import SocialSharing from "@/app/components/ui/SocialMedia";
-import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa"; // Import from react-icons
+import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa"; 
+import { useCategory } from "@/app/hooks/store";
+
+
 
 const BlogPost: React.FC = () => {
   const params = useParams();
@@ -18,6 +21,7 @@ const BlogPost: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const { setCategoryId } = useCategory();
   // const { isOpen, toggleSidebar } = useSideBar();
   const [newComment, setNewComment] = useState<NewComment>({
     Name: "",
@@ -26,6 +30,8 @@ const BlogPost: React.FC = () => {
   });
 
   useEffect(() => {
+
+    
     if (!id) {
       setError("No ID provided");
       setLoading(false);
@@ -35,9 +41,10 @@ const BlogPost: React.FC = () => {
     const fetchData = async () => {
       try {
         const postData = await fetchBlogDetailData(id);
+        
         setData(postData);
         setComments(postData.data.attributes.comments.data as Comment[]);
-
+        setCategoryId(postData.data.attributes.categories.data[0].id)
         if (postData.data.attributes.viewCount !== undefined) {
           viewCounter(id, postData.data.attributes.viewCount);
         }

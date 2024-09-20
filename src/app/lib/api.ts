@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
-import { BlogData, BlogPost, SuggestedArticle } from '../types/blog';
+import { BlogData, BlogPost, SuggestedArticle,CategoryFull } from '../types/blog';
 
 
 
@@ -106,6 +106,19 @@ export const viewCounter = async (id: string, count: number) => {
     );
   } catch (error) {
     console.error('Error updating view counter:', error);
+  }
+};
+
+
+export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ data: CategoryFull[] }> => {
+  const url = "categories";
+  try {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate[sub_categories][populate][0]=blogs`);
+    console.log("response",response)
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
   }
 };
 
