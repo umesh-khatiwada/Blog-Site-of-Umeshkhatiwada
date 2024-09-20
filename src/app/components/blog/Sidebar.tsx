@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { FaServer, FaCodeBranch, FaBook, FaClock } from 'react-icons/fa';
 import { fetchCategoriesWithSubcategories } from '@/app/lib/api';
 import { useCategory } from '@/app/hooks/store';
+import { FullCategories } from '@/app/types/blog';
 
 // Type definitions
 interface Blog {
@@ -26,20 +27,8 @@ interface Category {
   };
 }
 
-interface FullCategories {
-  Title: string;
-  sub_categories: {
-    data: Category[];
-  };
-}
 
-interface ApiResponse {
-  data: {
-    id: number;
-    attributes: FullCategories;
-  };
-  meta?: Record<string, any>; // Optional meta field
-}
+
 
 const LoadingSkeleton = () => (
   <div className="animate-pulse">
@@ -62,35 +51,39 @@ const LoadingSkeleton = () => (
 
 export default function DevOpsSidebar({ children }: { children: ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [fullcategories, setFullcategories] = useState<FullCategories | null>(null);
+  const [fullCategory, setFullCategory] = useState<FullCategories | null>(null);
   const { categoryId } = useCategory();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCategories = async () => {
       if (categoryId === 0) {
-        setIsLoading(true);
+        setIsLoading(false);
         return;
       }
-  
+
       try {
         setIsLoading(true);
-        const response: any = await fetchCategoriesWithSubcategories(categoryId.toString());
-  
-        // Since we're fetching a single category, you can directly access the attributes
-        const fetchedCategories = response.data.attributes.sub_categories?.data || [];
-        setCategories(fetchedCategories);
-        setFullcategories(response.data.attributes || null);
+        const response = await fetchCategoriesWithSubcategories(categoryId.toString());
+        
+        if (response && response.data) {
+          setFullCategory(response.data);
+          setCategories(response.data.attributes.sub_categories.data);
+        } else {
+          setFullCategory(null);
+          setCategories([]);
+        }
       } catch (error) {
         console.error('Error fetching categories:', error);
+        setFullCategory(null);
+        setCategories([]);
       } finally {
         setIsLoading(false);
       }
     };
-  
+
     fetchCategories();
   }, [categoryId]);
-  
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -111,7 +104,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
               <div className="flex items-center space-x-2 mb-6">
                 <FaServer className="text-cyan-400" size={24} />
                 <h2 className="text-xl font-bold text-cyan-400">
-                  {capitalizeFirstLetter(fullcategories?.Title || '')}
+                  {capitalizeFirstLetter(fullCategory?.attributes.Title || '')}
                 </h2>
               </div>
               <ul className="space-y-4">

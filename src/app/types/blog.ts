@@ -141,6 +141,7 @@ interface CategoryAttributes {
 }
 
 export interface CategoryFull {
+  attributes(attributes: any): unknown;
   data: {
     id: number;
     attributes: CategoryAttributes;
@@ -151,28 +152,29 @@ export interface CategoryFull {
 
 
 
-// interface Blog {
-//   id: string;
-//   attributes: {
-//     slug: string;
-//     Title: string;
-//     publishedAt: string | number | Date;
-//   };
-// }
+interface Blog {
+  id: string;
+  attributes: {
+    slug: string;
+    Title: string;
+    publishedAt: string | number | Date;
+  };
+}
 
-// interface Category {
-//   id: string;
-//   attributes: {
-//     Title: string;
-//     blogs: {
-//       data: Blog[];
-//     };
-//   };
-// }
+export interface Category {
+  id: string;
+  attributes: {
+    Title: string;
+    blogs: {
+      data: Blog[];
+    };
+  };
+}
 
-// interface FullCategories {
-//   Title: string;
-//   sub_categories: {
-//     data: Category[];
-//   };
-// }
+export interface FullCategories {
+  attributes: any;
+  Title: string;
+  sub_categories: {
+    data: Category[];
+  };
+}
