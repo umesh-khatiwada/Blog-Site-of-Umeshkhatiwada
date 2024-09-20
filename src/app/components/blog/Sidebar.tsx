@@ -27,9 +27,6 @@ interface Category {
   };
 }
 
-
-
-
 const LoadingSkeleton = () => (
   <div className="animate-pulse">
     <div className="flex items-center space-x-2 mb-6">
@@ -95,7 +92,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-      <aside className="w-full md:w-80 bg-gray-800 overflow-y-auto md:h-screen md:sticky md:top-0 border-r border-gray-700">
+      <aside className="w-full md:w-80 bg-gray-800 overflow-y-auto md:h-screen md:sticky md:top-0 border-r border-gray-700 custom-scrollbar">
         <div className="p-4">
           {isLoading ? (
             <LoadingSkeleton />
