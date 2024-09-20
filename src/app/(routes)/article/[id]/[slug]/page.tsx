@@ -56,7 +56,7 @@ const BlogPost: React.FC = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, setCategoryId]);
 
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

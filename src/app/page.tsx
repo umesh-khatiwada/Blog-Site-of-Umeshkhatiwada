@@ -1,6 +1,16 @@
+"use client";
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to /article when the component mounts
+    router.push('/article');
+  }, [router]);
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-between text-white"
@@ -10,8 +20,6 @@ export default function Home() {
         backgroundPosition: 'center',
       }}
     >
-     
-      
       {/* Main Content */}
       {/* <main className="flex flex-col items-center text-center mt-20">
         <h2 className="text-6xl font-bold mb-4">Umesh Khatiwada</h2>
@@ -42,7 +50,6 @@ export default function Home() {
           />
         </div>
       </main> */}
-
     </div>
   );
 }
