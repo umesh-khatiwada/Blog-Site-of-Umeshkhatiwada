@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FaServer, FaCodeBranch, FaBook, FaClock } from 'react-icons/fa';
+import { FaServer, FaCodeBranch, FaBook, FaClock, FaBars, FaTimes } from 'react-icons/fa';
 import { fetchCategoriesWithSubcategories } from '@/app/lib/api';
 import { useCategory } from '@/app/hooks/store';
 import { FullCategories } from '@/app/types/blog';
@@ -51,6 +51,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
   const [fullCategory, setFullCategory] = useState<FullCategories | null>(null);
   const { categoryId } = useCategory();
   const [isLoading, setIsLoading] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Toggle for sidebar
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -92,7 +93,22 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-      <aside className="w-full md:w-80 bg-gray-800 overflow-y-auto md:h-screen md:sticky md:top-0 border-r border-gray-700 custom-scrollbar">
+      {/* Mobile Menu Toggle */}
+      <div className="md:hidden p-4">
+        <button
+          className="text-cyan-400 focus:outline-none"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+        </button>
+      </div>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed md:relative top-0 left-0 z-40 w-64 bg-gray-800 overflow-y-auto h-full border-r border-gray-700 custom-scrollbar transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}
+      >
         <div className="p-4">
           {isLoading ? (
             <LoadingSkeleton />
@@ -137,7 +153,12 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-6 bg-gray-900">
+      {/* Main content */}
+      <main
+        className={`flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300 ${
+          isSidebarOpen ? 'md:ml-0' : 'ml-0'
+        }`}
+      >
         <div>{children}</div>
       </main>
     </div>
