@@ -93,8 +93,8 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-      {/* Mobile Menu Toggle */}
-      <div className="md:hidden p-4">
+      {/* Mobile Menu Toggle - Moved to the right */}
+      <div className="md:hidden fixed top-4 right-4 z-50">
         <button
           className="text-cyan-400 focus:outline-none"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -103,9 +103,9 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
         </button>
       </div>
 
-      {/* Sidebar */}
+      {/* Sidebar - Remains on the left */}
       <aside
-        className={`fixed md:relative top-0 left-0 z-40 w-64 bg-gray-800 overflow-y-auto h-full border-r border-gray-700 custom-scrollbar transform transition-transform duration-300 ease-in-out ${
+        className={`fixed md:relative top-0 left-0 z-40 w-64 bg-gray-800 overflow-y-auto h-full border-r border-gray-700 custom-scrollbar transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } md:translate-x-0`}
       >
@@ -154,11 +154,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <main
-        className={`flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300 ${
-          isSidebarOpen ? 'md:ml-0' : 'ml-0'
-        }`}
-      >
+      <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
         <div>{children}</div>
       </main>
     </div>
