@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { fetchBlogDetailData, fetchSuggestedArticles, viewCounter } from "@/app/lib/api";
+import { fetchBlogDetailData, viewCounter } from "@/app/lib/api";
 // import { useSideBar } from "@/app/hooks/store";
-import { BlogData, NewComment, Comment, SuggestedArticle } from "@/app/types/blog";
+import { BlogData, NewComment, Comment } from "@/app/types/blog";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 import CommentsSection from "@/app/components/ui/CommentsSection";
 import SocialSharing from "@/app/components/ui/SocialMedia";
@@ -15,7 +15,6 @@ const BlogPost: React.FC = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const [data, setData] = useState<BlogData | null>(null);
-  const [suggestedArticles, setSuggestedArticles] = useState<SuggestedArticle[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -35,15 +34,10 @@ const BlogPost: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const [postData, suggestedData] = await Promise.all([
-          fetchBlogDetailData(id),
-          fetchSuggestedArticles(),
-        ]);
-
+        const postData = await fetchBlogDetailData(id);
         setData(postData);
-        setSuggestedArticles(suggestedData);
         setComments(postData.data.attributes.comments.data as Comment[]);
-        
+
         if (postData.data.attributes.viewCount !== undefined) {
           viewCounter(id, postData.data.attributes.viewCount);
         }
@@ -51,7 +45,6 @@ const BlogPost: React.FC = () => {
         setError(error instanceof Error ? error.message : "Error loading blog post");
       } finally {
         setLoading(false);
-        console.log(suggestedArticles);
       }
     };
 
