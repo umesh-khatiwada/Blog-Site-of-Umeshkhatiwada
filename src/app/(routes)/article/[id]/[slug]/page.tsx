@@ -12,8 +12,6 @@ import SocialSharing from "@/app/components/ui/SocialMedia";
 import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa"; 
 import { useCategory } from "@/app/hooks/store";
 
-
-
 const BlogPost: React.FC = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -30,8 +28,6 @@ const BlogPost: React.FC = () => {
   });
 
   useEffect(() => {
-
-    
     if (!id) {
       setError("No ID provided");
       setLoading(false);

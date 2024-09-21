@@ -11,3 +11,22 @@ export const useCategory = create<CategoryState>((set) => ({
     categoryId: 0, 
     setCategoryId: (id) => set({ categoryId: id }), // Function to set the category ID
 }));
+
+
+
+interface MetaData {
+    blogId: number;
+    title: string;
+    description: string;
+    setCategoryId: (id: number) => void;
+    setMetaData: (payload: { title: string; description: string }) => void;
+  }
+  
+  export const useMetaData = create<MetaData>((set) => ({
+    blogId: 0, 
+    title: "",
+    description: "",
+    setCategoryId: (id) => set({ blogId: id }),
+    setMetaData: (payload) => set({ title: payload.title, description: payload.description }),
+  }));
+  

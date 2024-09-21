@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 import { BlogData, BlogPost, SuggestedArticle,FullCategories, Category } from '../types/blog';
+import { Metadata } from 'next';
 
 
 
@@ -122,3 +123,15 @@ export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ da
   }
 };
 
+
+
+// export const generateMetadata = async (title: string, description: string): 
+
+
+// Promise<Metadata> => {
+//   // Fetch any data you need for metadata here
+//   return {
+//     title: "title",
+//     description: "description",
+//   };
+// };

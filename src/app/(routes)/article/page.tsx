@@ -10,6 +10,9 @@ import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';
 import { DummyCard } from '@/app/components/blog/DummyCard';
 import Footer from '@/app/components/layout/Footer';
+import { useMetaData } from "@/app/hooks/store";
+
+
 
 export default function Article() {
   const [data, setData] = useState<BlogPost[]>([]);
@@ -17,7 +20,10 @@ export default function Article() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
+  const { setMetaData} = useMetaData();
 
+
+  
   const fetchPageData = async (page: number) => {
     setLoading(true);
     try {
@@ -25,6 +31,8 @@ export default function Article() {
       setData(result.data);
       const totalPages = Math.ceil(result.meta.pagination.total / 6);
       setTotalPages(totalPages);
+      setMetaData({  title: "Blog", description: "Blog" });
+  
       setLoading(false);
     } catch (err) {
       console.error("Error fetching data:", err);
@@ -77,10 +85,11 @@ export default function Article() {
                 </div>
               )
             : data.map((post) => (
-                <article
-                  key={post.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-                >
+              <>
+              <article
+                key={post.id}
+                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              >
                   {post.attributes.img.data && (
                     <div className="relative h-48">
                       <Image
@@ -88,8 +97,7 @@ export default function Article() {
                         alt={post.attributes.Title}
                         layout="fill"
                         objectFit="cover"
-                        className="transition-opacity duration-300 hover:opacity-80"
-                      />
+                        className="transition-opacity duration-300 hover:opacity-80" />
                     </div>
                   )}
                   <div className="p-6">
@@ -110,7 +118,7 @@ export default function Article() {
                       Read more &rarr;
                     </Link>
                   </div>
-                </article>
+                </article></>
               ))}
         </div>
 
