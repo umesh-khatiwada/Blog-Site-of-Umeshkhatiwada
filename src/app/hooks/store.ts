@@ -14,7 +14,7 @@ export const useCategory = create<CategoryState>((set) => ({
 
 
 
-interface MetaData {
+interface useMetaData {
     blogId: number;
     title: string;
     description: string;
@@ -22,11 +22,36 @@ interface MetaData {
     setMetaData: (payload: { title: string; description: string }) => void;
   }
   
-  export const useMetaData = create<MetaData>((set) => ({
-    blogId: 0, 
-    title: "",
-    description: "",
-    setCategoryId: (id) => set({ blogId: id }),
-    setMetaData: (payload) => set({ title: payload.title, description: payload.description }),
-  }));
+  // export const useMetaData = create<useMetaData>((set) => ({
+  //   blogId: 0, 
+  //   title: "Umesh Khatiwada",
+  //   description: "Explore Umesh Khatiwada's expertise in cloud infrastructure, automation, and software development. DevOps Professional & Cloud Architect offering services and insights.",
+  //   setCategoryId: (id) => set({ blogId: id }),
+  //   setMetaData: (payload) => set({ title: payload.title, description: payload.description }),
+  // }));
   
+  
+  export const useMetaData = create<useMetaData>((set) => ({
+    blogId: 0,
+    title: "Initial Title",
+    description: "Initial Description",
+    setCategoryId: (id) => set({ blogId: id }),
+    setMetaData: (payload) => {
+      console.log("setMetaData called with:", payload); // Debugging state update
+      set({ title: payload.title, description: payload.description });
+    },
+  }));
+
+// interface Metadata {
+//   title: string;
+//   description: string;
+// }
+// interface MetadataState extends Metadata {
+//   setMetadata: (metadata: Partial<Metadata>) => void;
+// }
+
+// export const useMetadataStore = create<MetadataState>((set) => ({
+//   title: 'Umesh Khatiwada - DevOps Professional & Cloud Architect',
+//   description: "Explore Umesh Khatiwada's expertise in cloud infrastructure, automation, and software development. DevOps Professional & Cloud Architect offering services and insights.",
+//   setMetadata: (metadata) => set((state) => ({ ...state, ...metadata })),
+// }));

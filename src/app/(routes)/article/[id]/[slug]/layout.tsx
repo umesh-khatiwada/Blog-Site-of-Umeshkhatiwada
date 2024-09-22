@@ -5,10 +5,13 @@ import { ReactNode } from 'react';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
+    <>
     <SidebarWithContent>
       {children}
+  
       <Footer />
       <br />
     </SidebarWithContent>
+    </>
   );
 }

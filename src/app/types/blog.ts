@@ -54,6 +54,7 @@ export interface BlogPost {
     };
   }
   export interface BlogAttributes {
+    createdAt: string | number | Date;
     categories: any;
     Title: string;
     publishedAt: string;
