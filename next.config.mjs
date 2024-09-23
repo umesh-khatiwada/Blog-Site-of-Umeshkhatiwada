@@ -14,9 +14,6 @@ const nextConfig = {
     images: {
       unoptimized: true,  // Disable image optimization for static export
     },
-    experimental: {
-      appDir: true,
-    },
   };
   
   export default nextConfig;
