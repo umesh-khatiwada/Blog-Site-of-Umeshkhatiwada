@@ -4,16 +4,77 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { fetchBlogDetailData, viewCounter } from "@/app/lib/api";
-// import { useSideBar } from "@/app/hooks/store";
 import { BlogData, NewComment, Comment } from "@/app/types/blog";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
-import CommentsSection from "@/app/components/ui/CommentsSection";
 import SocialSharing from "@/app/components/ui/SocialMedia";
-import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa"; 
+import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa";
 import { useCategory } from "@/app/hooks/store";
 
+// Memoized CommentsSection to prevent rerenders
+// eslint-disable-next-line react/display-name
+const MemoizedCommentsSection = React.memo(({
+  comments,
+  newComment,
+  setNewComment,
+  handleCommentSubmit,
+}: {
+  comments: Comment[];
+  newComment: NewComment;
+  setNewComment: React.Dispatch<React.SetStateAction<NewComment>>;
+  handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+}) => {
+  return (
+    <section className="mt-8">
+      <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
 
+      <ul className="mb-4 space-y-3">
+        {comments.map((comment) => (
+          <li key={comment.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
+            <p className="text-green-300 font-semibold text-sm">{comment.attributes.Name}</p>
+            <p className="text-gray-300 text-sm">{comment.attributes.comment}</p>
+          </li>
+        ))}
+      </ul>
 
+      <form onSubmit={handleCommentSubmit} className="space-y-3">
+        <div className="flex space-x-3">
+          <input
+            type="text"
+            value={newComment.Name}
+            onChange={(e) => setNewComment((prev) => ({ ...prev, Name: e.target.value }))}
+            placeholder="Name"
+            required
+            className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+          <input
+            type="email"
+            value={newComment.Email}
+            onChange={(e) => setNewComment((prev) => ({ ...prev, Email: e.target.value }))}
+            placeholder="Email"
+            required
+            className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+          />
+        </div>
+
+        <textarea
+          value={newComment.comment}
+          onChange={(e) => setNewComment((prev) => ({ ...prev, comment: e.target.value }))}
+          placeholder="Your Comment"
+          required
+          className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+          rows={4}  // Medium size textarea
+        />
+
+        <button
+          type="submit"
+          className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors"
+        >
+          Submit Comment
+        </button>
+      </form>
+    </section>
+  );
+});
 const ArticleClient: React.FC = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
@@ -22,7 +83,6 @@ const ArticleClient: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const { setCategoryId } = useCategory();
-  // const { isOpen, toggleSidebar } = useSideBar();
   const [newComment, setNewComment] = useState<NewComment>({
     Name: "",
     Email: "",
@@ -30,7 +90,6 @@ const ArticleClient: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log("hvjhvhvkhvkjvjkvbjkvvbvjkvsID:", id);
     if (!id) {
       setError("No ID provided");
       setLoading(false);
@@ -40,10 +99,10 @@ const ArticleClient: React.FC = () => {
     const fetchData = async () => {
       try {
         const postData = await fetchBlogDetailData(id);
-        
         setData(postData);
         setComments(postData.data.attributes.comments.data as Comment[]);
-        setCategoryId(postData.data.attributes.categories.data[0].id)
+        setCategoryId(postData.data.attributes.categories.data[0].id);
+
         if (postData.data.attributes.viewCount !== undefined) {
           viewCounter(id, postData.data.attributes.viewCount);
         }
@@ -89,7 +148,8 @@ const ArticleClient: React.FC = () => {
     }
   };
 
-  const renderContent = () => {
+  // Memoized content to avoid unnecessary re-renders
+  const renderContent = React.useMemo(() => {
     if (loading) {
       return (
         <div className="text-center text-green-400 py-10 animate-pulse">
@@ -123,7 +183,7 @@ const ArticleClient: React.FC = () => {
     const imageUrl = img?.data?.attributes?.formats?.medium?.url || img?.data?.attributes?.url;
 
     return (
-      <article className="text-green-400 bg-gray-900 rounded-lg  p-5 animate-fadeIn">
+      <article className="text-green-400 bg-gray-900 rounded-lg p-5 animate-fadeIn">
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
             {Title}
@@ -141,42 +201,38 @@ const ArticleClient: React.FC = () => {
         </header>
         {imageUrl && (
           <figure className="mb-8 animate-fadeInScale">
-            <div className="relative w-full max-w-2xl mx-auto" style={{ maxHeight: '400px' }}>
-              <Image
-                src={imageUrl}
-                alt={Title}
-                width={800}
-                height={400}
-                objectFit="cover"
-                className="rounded-lg shadow-lg border border-green-500"
-              />
-            </div>
+            <Image
+              src={imageUrl}
+              alt={Title}
+              width={800}
+              height={400}
+              objectFit="cover"
+              className="rounded-lg shadow-lg border border-green-500"
+            />
           </figure>
         )}
 
         <div className="prose prose-invert max-w-none">
           <ContentRenderer description={data.data.attributes.description} />
         </div>
-
-        <CommentsSection
-          comments={comments}
-          newComment={newComment}
-          setNewComment={setNewComment}
-          handleCommentSubmit={handleCommentSubmit}
-        />
-
-        <SocialSharing
-          shareUrl={typeof window !== "undefined" ? window.location.href : ""}
-          title={Title}
-          description={data.data.attributes.description}
-        />
       </article>
     );
-  };
+  }, [loading, error, data]);
 
   return (
     <div className="container">
-      {renderContent()}
+      {renderContent}
+      <MemoizedCommentsSection
+        comments={comments}
+        newComment={newComment}
+        setNewComment={setNewComment}
+        handleCommentSubmit={handleCommentSubmit}
+      />
+      <SocialSharing
+        shareUrl={typeof window !== "undefined" ? window.location.href : ""}
+        title={data?.data?.attributes?.Title || ""}
+        description={data?.data?.attributes?.description || ""}
+      />
     </div>
   );
 };
