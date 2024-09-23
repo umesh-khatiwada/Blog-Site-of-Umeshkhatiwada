@@ -122,16 +122,3 @@ export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ da
     throw error;
   }
 };
-
-
-
-// export const generateMetadata = async (title: string, description: string): 
-
-
-// Promise<Metadata> => {
-//   // Fetch any data you need for metadata here
-//   return {
-//     title: "title",
-//     description: "description",
-//   };
-// };

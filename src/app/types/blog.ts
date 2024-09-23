@@ -179,3 +179,47 @@ export interface FullCategories {
     data: Category[];
   };
 }
+
+
+
+interface ImageData {
+  id: number;
+  attributes: {
+    url: string;
+  };
+}
+
+// Interface for image
+interface Image {
+  data: ImageData;
+}
+
+
+// Interface for blog attributes
+export interface BlogAttributess {
+  slug: string;
+  publishedAt: string;
+  img: Image;
+}
+
+// Interface for individual blog data
+export interface BlogDataa {
+  id: number;
+  attributes: BlogAttributess;
+}
+
+// Interface for pagination metadata
+interface PaginationMeta {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+}
+
+// Interface for the API response
+export interface BlogApiResponses {
+  data: BlogDataa[];
+  meta: {
+    pagination: PaginationMeta;
+  };
+}
