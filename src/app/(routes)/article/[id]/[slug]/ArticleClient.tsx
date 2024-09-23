@@ -212,7 +212,7 @@ const ArticleClient: React.FC = () => {
           </figure>
         )}
 
-        <div className="prose prose-invert max-w-none">
+        <div className="prose prose-invert max-w-none overflow-hidden break-words">
           <ContentRenderer description={data.data.attributes.description} />
         </div>
       </article>
