@@ -8,7 +8,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <>
     <SidebarWithContent>
       {children}
-  
       <Footer />
       <br />
     </SidebarWithContent>

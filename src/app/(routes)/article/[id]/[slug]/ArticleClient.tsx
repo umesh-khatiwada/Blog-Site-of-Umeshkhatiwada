@@ -11,7 +11,6 @@ import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/
 import { useCategory } from "@/app/hooks/store";
 
 // Memoized CommentsSection to prevent rerenders
-// eslint-disable-next-line react/display-name
 const MemoizedCommentsSection = React.memo(({
   comments,
   newComment,
@@ -26,7 +25,6 @@ const MemoizedCommentsSection = React.memo(({
   return (
     <section className="mt-8">
       <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
-
       <ul className="mb-4 space-y-3">
         {comments.map((comment) => (
           <li key={comment.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
@@ -35,7 +33,6 @@ const MemoizedCommentsSection = React.memo(({
           </li>
         ))}
       </ul>
-
       <form onSubmit={handleCommentSubmit} className="space-y-3">
         <div className="flex space-x-3">
           <input
@@ -169,7 +166,6 @@ const ArticleClient: React.FC = () => {
         </div>
       );
     }
-
     if (!data || !data.data || !data.data.attributes) {
       return (
         <div className="text-center text-gray-300 text-xl py-10 animate-fadeIn">

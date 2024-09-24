@@ -39,11 +39,6 @@ export default function Article() {
     fetchPageData(currentPage);
   }, [currentPage,setMetaData]);
 
-//   useEffect(() => {
-//     if (data.length > 0) {
-//       setMetaData({ title: "data[0].attributes.Title", description: "data[0].attributes.shortDescription" });
-//     }
-//   }, [data, setMetaData]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
