@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import DynamicBanner from '@/app/components/blog/Blogroute';
 import { Article } from "@/app/types/blog";
+import Footer from '@/app/components/layout/Footer';
 
 
 // Fetch blog data from API
@@ -68,6 +69,7 @@ export default function Articlee() {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gray-900 text-white">
       <DynamicBanner />
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -106,7 +108,8 @@ export default function Articlee() {
                   </Link>
                 </div>
               </div>
-            ),)
+            ),
+          )
           ) : (
             Array.from({ length: 6 }).map((_, index) => (
               <LoadingCard key={index} />
@@ -114,6 +117,9 @@ export default function Articlee() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
+  
+    </>
   );
 }

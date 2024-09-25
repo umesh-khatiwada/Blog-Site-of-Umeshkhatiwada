@@ -91,8 +91,8 @@ export default function Articles() {
                         <Image
                           src={post.img[index]?.url || '/default-image-url.jpg'}
                           alt={post.Title}
-                          layout="fill" // Makes the image fill the parent container
-                          objectFit="cover" // Maintains aspect ratio and covers the container
+                          layout="fill"
+                          objectFit="cover" 
                           className="w-full h-full"
                         />
                       ) : (

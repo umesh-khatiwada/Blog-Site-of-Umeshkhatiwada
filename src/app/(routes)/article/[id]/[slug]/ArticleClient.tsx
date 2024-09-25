@@ -8,6 +8,7 @@ import { Article, NewComment, Comment } from "@/app/types/blog";
 import SocialSharing from "@/app/components/ui/SocialMedia";
 import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa";
 import { useCategory } from "@/app/hooks/store";
+import ContentRenderer from "@/app/components/ui/ContentRenderer";
 
 // Memoized CommentsSection to prevent rerenders
 const MemoizedCommentsSection = React.memo(({
@@ -59,7 +60,7 @@ const MemoizedCommentsSection = React.memo(({
           placeholder="Your Comment"
           required
           className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-          rows={4}  
+          rows={4}
         />
 
         <button
@@ -149,7 +150,6 @@ const ArticleClient: React.FC = () => {
     }
   };
 
-  // Memoized content to avoid unnecessary re-renders
   const renderContent = React.useMemo(() => {
     if (loading) {
       return (
@@ -180,7 +180,7 @@ const ArticleClient: React.FC = () => {
       );
     }
 
-    const { Title, publishedAt, img } = data;
+    const { Title, publishedAt, img, description } = data;
     const imageUrl = img[0].url;
 
     return (
@@ -214,7 +214,7 @@ const ArticleClient: React.FC = () => {
         )}
 
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
-          {/* <ContentRenderer description={data.data.attributes.description} /> */}
+          <ContentRenderer description={description} />
         </div>
       </article>
     );
