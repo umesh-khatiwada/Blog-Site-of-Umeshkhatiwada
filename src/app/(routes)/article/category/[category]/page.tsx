@@ -1,49 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from 'next/link';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-// import Header from '@/app/components/layout/Header';
 import { useParams } from 'next/navigation';
 import DynamicBanner from '@/app/components/blog/Blogroute';
-// import Submenu from '@/app/components/layout/Submenu';
 import SkeletonCard from '@/app/components/blog/SkeletonCard';
-
+import { Article } from "@/app/types/blog";
+import Image from 'next/image'; // Import the Image component
 
 // Define TypeScript interfaces for the blog data
-export interface BlogPost {
-  id: number;
-  attributes: {
-    Title: string;
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    description: any[]; // Adjust type based on your actual description structure
-    slug: string;
-    img?: {
-      data?: {
-        attributes?: {
-          formats?: {
-            small?: { url: string };
-            thumbnail?: { url: string };
-          };
-        };
-      };
-    };
-    categories?: {
-      data?: Array<{
-        id: number;
-        attributes: {
-          Title: string;
-        };
-      }>;
-    };
-  };
-}
-
-// Function to fetch category details data
-const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
+const fetchCategoryDetailsData = async (category: string): Promise<Article[]> => {
   const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
   console.log("URL:", url);
 
@@ -61,9 +27,9 @@ const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> =
   }
 };
 
-export default function Article() {
+export default function Articles() {
   const { category } = useParams<{ category: string }>();
-  const [data, setData] = useState<BlogPost[]>([]);
+  const [data, setData] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -115,21 +81,19 @@ export default function Article() {
                   <SkeletonCard key={index} />
                 ))
               : data.length > 0
-              ? data.map((post) => (
+              ? data.map((post, index) => (
                   <article
                     key={post.id}
                     className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <div className="relative h-48 bg-gray-700">
-                      {post.attributes.img?.data?.attributes?.formats ? (
-                        <img
-                          src={
-                            post.attributes.img.data.attributes.formats.small?.url ||
-                            post.attributes.img.data.attributes.formats.thumbnail?.url ||
-                            '/default-image-url.jpg'
-                          }
-                          alt={post.attributes.Title}
-                          className="w-full h-full object-cover"
+                      {post.img[index]?.url ? (
+                        <Image
+                          src={post.img[index]?.url || '/default-image-url.jpg'}
+                          alt={post.Title}
+                          layout="fill" // Makes the image fill the parent container
+                          objectFit="cover" // Maintains aspect ratio and covers the container
+                          className="w-full h-full"
                         />
                       ) : (
                         <div className="flex items-center justify-center h-full text-4xl text-gray-500">
@@ -140,14 +104,14 @@ export default function Article() {
                     <div className="p-6">
                       <h2 className="text-xl font-semibold mb-2 text-green-400">
                         <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                        {post.attributes.Title}
+                        {post.Title}
                       </h2>
                       <div className="text-sm text-gray-400 mb-4 font-mono">
-                        <p>Created: {new Date(post.attributes.createdAt).toLocaleDateString()}</p>
-                        <p>Updated: {new Date(post.attributes.updatedAt).toLocaleDateString()}</p>
+                        <p>Created: {new Date(post.createdAt).toLocaleDateString()}</p>
+                        <p>Updated: {new Date(post.updatedAt).toLocaleDateString()}</p>
                       </div>
                       <Link
-                        href={`/article/${post.id}/${post.attributes.slug}`}
+                        href={`/article/${post.documentId}/${post.slug}`}
                         className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300"
                       >
                         $ cat article.md

@@ -3,9 +3,6 @@ import axios from 'axios';
 import { Article, Category } from '../types/blog';
 import { Metadata } from 'next';
 
-
-
-
 export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
   const url = 'blogs';
   try {
@@ -68,24 +65,6 @@ export const fetchBlogDetailData = async (id: string): Promise<Article> => {
   }
 };
 
-// export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
-//    const SuggestedArticle_url =`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?sort[0]=viewCount:desc&pagination[limit]=5&&populate=img`
-
-//   try {
-//     const response = await axios.get(SuggestedArticle_url, {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         // You can include any authorization tokens here if needed
-//       },
-//     });
-//     console.log("Data fetched:", response.data);
-//     return response.data.data;
-//   } catch (error) {
-//     console.error('Error fetching data:', error);
-//     throw error;
-//   }
-// };
 
 export const viewCounter = async (id: string, count: number) => {
   // Increment the view counter
@@ -96,7 +75,7 @@ export const viewCounter = async (id: string, count: number) => {
     await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}`, 
       {
-        data: { viewCount: totalViewCounter },  // Wrap viewCount inside "data"
+        data: { viewCount: totalViewCounter },
       },
       {
         headers: {

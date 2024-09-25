@@ -5,37 +5,11 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import DynamicBanner from '@/app/components/blog/Blogroute';
+import { Article } from "@/app/types/blog";
 
-interface ImageFormats {
-  thumbnail: { url: string };
-  medium?: { url: string };
-  small?: { url: string };
-  large?: { url: string };
-}
-
-interface BlogPostImage {
-  data: {
-    attributes: {
-      formats: ImageFormats;
-    };
-  } | null;
-}
-
-interface BlogPostAttributes {
-  Title: string;
-  Date: string;
-  updatedAt: string;
-  slug: string;
-  img?: BlogPostImage; // img might be undefined
-}
-
-interface BlogPost {
-  id: number;
-  attributes: BlogPostAttributes;
-}
 
 // Fetch blog data from API
-const fetchBlogData = async (search: string): Promise<BlogPost[]> => {
+const fetchBlogData = async (search: string): Promise<Article[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}&populate=*`);
     console.log("Response:", response.data);
@@ -64,8 +38,8 @@ const LoadingCard = () => (
   </div>
 );
 
-export default function Article() {
-  const [data, setData] = useState<BlogPost[]>([]);
+export default function Articlee() {
+  const [data, setData] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { search } = useParams<{ search: string }>();
 
@@ -104,15 +78,15 @@ export default function Article() {
         </h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {data.length > 0 ? (
-            data.map((post) => (
+            data.map((post, index) => (
               <div
                 key={post.id}
                 className="bg-gray-800 border border-gray-700 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
-                {post.attributes.img?.data?.attributes?.formats?.small?.url || post.attributes.img?.data?.attributes?.formats?.thumbnail?.url ? (
+                {post.img[index].url ? (
                   <img
-                    src={post.attributes.img.data.attributes.formats.small?.url || post.attributes.img.data.attributes.formats.thumbnail.url}
-                    alt={post.attributes.Title}
+                    src={post.img[index].url}
+                    alt={post.Title}
                     className="w-full h-48 object-cover"
                   />
                 ) : (
@@ -123,16 +97,16 @@ export default function Article() {
                 <div className="p-6">
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-                    <h2 className="text-xl font-semibold text-green-400">{post.attributes.Title}</h2>
+                    <h2 className="text-xl font-semibold text-green-400">{post.Title}</h2>
                   </div>
-                  <p className="text-gray-400 text-sm mb-4">Posted: {new Date(post.attributes.Date).toLocaleDateString()}</p>
-                  <p className="text-gray-400 text-sm mb-6">Updated: {new Date(post.attributes.updatedAt).toLocaleDateString()}</p>
-                  <Link href={`/article/${post.id}/${post.attributes.slug}`} className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300">
+                  <p className="text-gray-400 text-sm mb-4">Posted: {new Date(post.publishedAt).toLocaleDateString()}</p>
+                  <p className="text-gray-400 text-sm mb-6">Updated: {new Date(post.updatedAt).toLocaleDateString()}</p>
+                  <Link href={`/article/${post.documentId}/${post.slug}`} className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300">
                     $ cat article.md
                   </Link>
                 </div>
               </div>
-            ))
+            ),)
           ) : (
             Array.from({ length: 6 }).map((_, index) => (
               <LoadingCard key={index} />
