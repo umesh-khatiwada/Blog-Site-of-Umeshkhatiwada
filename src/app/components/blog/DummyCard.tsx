@@ -10,3 +10,24 @@ export const DummyCard = () => (
     </div>
   );
   
+
+
+export  const LoadingSkeleton = () => (
+    <div className="animate-pulse">
+      <div className="flex items-center space-x-2 mb-6">
+        <div className="w-6 h-6 bg-gray-600 rounded-full"></div>
+        <div className="h-6 bg-gray-600 rounded w-1/2"></div>
+      </div>
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="mb-4">
+          <div className="h-10 bg-gray-700 rounded-md mb-2"></div>
+          <div className="pl-4 space-y-2">
+            {[...Array(2)].map((_, j) => (
+              <div key={j} className="h-16 bg-gray-750 rounded-md"></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+  

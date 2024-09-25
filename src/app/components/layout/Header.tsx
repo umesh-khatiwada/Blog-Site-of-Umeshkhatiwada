@@ -10,7 +10,7 @@ export default function Header() {
     <header className="w-full flex flex-col md:flex-row justify-between p-6 bg-gray-900 shadow-md relative">
       <div className="flex items-center justify-between">
         <Image
-          src="/assets/logo.png" // Your logo image here
+          src="/assets/logo.png"
           alt="The Cloud Mechanic Logo"
           width={140}
           height={140}

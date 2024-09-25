@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
-import { BlogData, BlogPost, SuggestedArticle,FullCategories, Category } from '../types/blog';
+import { Article, Category } from '../types/blog';
 import { Metadata } from 'next';
 
 
@@ -28,7 +28,7 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
   }
 };
 
-export const fetchCategoryDetailsData = async (category: string): Promise<BlogPost[]> => {
+export const fetchCategoryDetailsData = async (category: string): Promise<Article[]> => {
   const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`,{
@@ -46,7 +46,7 @@ export const fetchCategoryDetailsData = async (category: string): Promise<BlogPo
 };
 
 
-export const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
+export const fetchBlogDetailData = async (id: string): Promise<Article> => {
   const url = 'blogs';
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate=*`, {
@@ -68,24 +68,24 @@ export const fetchBlogDetailData = async (id: string): Promise<BlogData> => {
   }
 };
 
-export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
-   const SuggestedArticle_url =`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?sort[0]=viewCount:desc&pagination[limit]=5&&populate=img`
+// export const fetchSuggestedArticles = async (): Promise<SuggestedArticle[]> => {
+//    const SuggestedArticle_url =`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?sort[0]=viewCount:desc&pagination[limit]=5&&populate=img`
 
-  try {
-    const response = await axios.get(SuggestedArticle_url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        // You can include any authorization tokens here if needed
-      },
-    });
-    console.log("Data fetched:", response.data);
-    return response.data.data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
-};
+//   try {
+//     const response = await axios.get(SuggestedArticle_url, {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         // You can include any authorization tokens here if needed
+//       },
+//     });
+//     console.log("Data fetched:", response.data);
+//     return response.data.data;
+//   } catch (error) {
+//     console.error('Error fetching data:', error);
+//     throw error;
+//   }
+// };
 
 export const viewCounter = async (id: string, count: number) => {
   // Increment the view counter
@@ -111,7 +111,7 @@ export const viewCounter = async (id: string, count: number) => {
 };
 
 
-export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ data: FullCategories }> => {
+export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ data: Category }> => {
   const url = "categories";
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate[sub_categories][populate][0]=blogs`);

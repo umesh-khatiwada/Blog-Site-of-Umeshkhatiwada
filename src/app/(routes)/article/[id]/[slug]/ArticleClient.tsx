@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
 import { fetchBlogDetailData, viewCounter } from "@/app/lib/api";
-import { BlogData, NewComment, Comment } from "@/app/types/blog";
-import ContentRenderer from "@/app/components/ui/ContentRenderer";
+import { Article, NewComment, Comment } from "@/app/types/blog";
 import SocialSharing from "@/app/components/ui/SocialMedia";
 import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa";
 import { useCategory } from "@/app/hooks/store";
@@ -26,13 +25,14 @@ const MemoizedCommentsSection = React.memo(({
     <section className="mt-8">
       <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
       <ul className="mb-4 space-y-3">
-        {comments.map((comment) => (
-          <li key={comment.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
-            <p className="text-green-300 font-semibold text-sm">{comment.attributes.Name}</p>
-            <p className="text-gray-300 text-sm">{comment.attributes.comment}</p>
+        {comments.map((comm) => (
+          <li key={comm.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
+            <p className="text-green-300 font-semibold text-sm">{comm.Name}</p>
+            <p className="text-gray-300 text-sm">{comm.comment}</p>
           </li>
         ))}
       </ul>
+
       <form onSubmit={handleCommentSubmit} className="space-y-3">
         <div className="flex space-x-3">
           <input
@@ -59,7 +59,7 @@ const MemoizedCommentsSection = React.memo(({
           placeholder="Your Comment"
           required
           className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-          rows={4}  // Medium size textarea
+          rows={4}  
         />
 
         <button
@@ -72,10 +72,13 @@ const MemoizedCommentsSection = React.memo(({
     </section>
   );
 });
+
+MemoizedCommentsSection.displayName = 'MemoizedCommentsSection';
+
 const ArticleClient: React.FC = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [data, setData] = useState<BlogData | null>(null);
+  const [data, setData] = useState<Article | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -96,12 +99,13 @@ const ArticleClient: React.FC = () => {
     const fetchData = async () => {
       try {
         const postData = await fetchBlogDetailData(id);
-        setData(postData);
-        setComments(postData.data.attributes.comments.data as Comment[]);
-        setCategoryId(postData.data.attributes.categories.data[0].id);
+        console.log("Post Data:", postData.data);
+        setData(postData.data);
+        setComments(postData.data.comments as Comment[]);
+        setCategoryId(postData.data.categories[0].documentId);
 
-        if (postData.data.attributes.viewCount !== undefined) {
-          viewCounter(id, postData.data.attributes.viewCount);
+        if (postData.viewCount !== undefined) {
+          viewCounter(id, postData.viewCount);
         }
       } catch (error) {
         setError(error instanceof Error ? error.message : "Error loading blog post");
@@ -166,7 +170,8 @@ const ArticleClient: React.FC = () => {
         </div>
       );
     }
-    if (!data || !data.data || !data.data.attributes) {
+
+    if (!data) {
       return (
         <div className="text-center text-gray-300 text-xl py-10 animate-fadeIn">
           <FaCode className="w-16 h-16 mx-auto mb-4" />
@@ -175,8 +180,8 @@ const ArticleClient: React.FC = () => {
       );
     }
 
-    const { Title, publishedAt, img, viewCount } = data.data.attributes;
-    const imageUrl = img?.data?.attributes?.formats?.medium?.url || img?.data?.attributes?.url;
+    const { Title, publishedAt, img } = data;
+    const imageUrl = img[0].url;
 
     return (
       <article className="text-green-400 bg-gray-900 rounded-lg p-5 animate-fadeIn">
@@ -191,7 +196,7 @@ const ArticleClient: React.FC = () => {
             </span>
             <span className="flex items-center">
               <FaEye className="w-4 h-4 mr-2" />
-              {viewCount} views
+              {/* {viewCount} views */}
             </span>
           </div>
         </header>
@@ -209,7 +214,7 @@ const ArticleClient: React.FC = () => {
         )}
 
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
-          <ContentRenderer description={data.data.attributes.description} />
+          {/* <ContentRenderer description={data.data.attributes.description} /> */}
         </div>
       </article>
     );
@@ -226,11 +231,13 @@ const ArticleClient: React.FC = () => {
       />
       <SocialSharing
         shareUrl={typeof window !== "undefined" ? window.location.href : ""}
-        title={data?.data?.attributes?.Title || ""}
-        description={data?.data?.attributes?.description || ""}
+        title={data?.Title || ""}
+        description={data?.description || ""}
       />
     </div>
   );
 };
+
+ArticleClient.displayName = 'ArticleClient';
 
 export default ArticleClient;

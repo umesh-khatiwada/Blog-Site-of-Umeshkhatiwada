@@ -5,53 +5,15 @@ import Link from 'next/link';
 import { FaServer, FaCodeBranch, FaBook, FaClock, FaBars, FaTimes } from 'react-icons/fa';
 import { fetchCategoriesWithSubcategories } from '@/app/lib/api';
 import { useCategory } from '@/app/hooks/store';
-import { FullCategories } from '@/app/types/blog';
-
-// Type definitions
-interface Blog {
-  id: string;
-  attributes: {
-    slug: string;
-    Title: string;
-    publishedAt: string | number | Date;
-  };
-}
-
-interface Category {
-  id: string;
-  attributes: {
-    Title: string;
-    blogs: {
-      data: Blog[];
-    };
-  };
-}
-
-const LoadingSkeleton = () => (
-  <div className="animate-pulse">
-    <div className="flex items-center space-x-2 mb-6">
-      <div className="w-6 h-6 bg-gray-600 rounded-full"></div>
-      <div className="h-6 bg-gray-600 rounded w-1/2"></div>
-    </div>
-    {[...Array(3)].map((_, i) => (
-      <div key={i} className="mb-4">
-        <div className="h-10 bg-gray-700 rounded-md mb-2"></div>
-        <div className="pl-4 space-y-2">
-          {[...Array(2)].map((_, j) => (
-            <div key={j} className="h-16 bg-gray-750 rounded-md"></div>
-          ))}
-        </div>
-      </div>
-    ))}
-  </div>
-);
+import { Category, SubCategory } from '@/app/types/blog';
+import { LoadingSkeleton } from './DummyCard';
 
 export default function DevOpsSidebar({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [fullCategory, setFullCategory] = useState<FullCategories | null>(null);
+  const [categories, setCategories] = useState<SubCategory[]>([]);
+  const [fullCategory, setFullCategory] = useState<Category | null>(null);
   const { categoryId } = useCategory();
   const [isLoading, setIsLoading] = useState(true);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Toggle for sidebar
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -63,10 +25,10 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
       try {
         setIsLoading(true);
         const response = await fetchCategoriesWithSubcategories(categoryId.toString());
-        
+        console.log('Response:', response);
         if (response && response.data) {
           setFullCategory(response.data);
-          setCategories(response.data.attributes.sub_categories.data);
+          setCategories(response.data.sub_categories);
         } else {
           setFullCategory(null);
           setCategories([]);
@@ -93,7 +55,6 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-      {/* Mobile Menu Toggle - Moved to the right */}
       <div className="md:hidden fixed top-4 right-4 z-50">
         <button
           className="text-cyan-400 focus:outline-none"
@@ -103,7 +64,6 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
         </button>
       </div>
 
-      {/* Sidebar - Remains on the left */}
       <aside
         className={`fixed md:relative top-0 left-0 z-40 w-64 bg-gray-800 overflow-y-auto h-full border-r border-gray-700 custom-scrollbar transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -117,7 +77,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
               <div className="flex items-center space-x-2 mb-6">
                 <FaServer className="text-cyan-400" size={24} />
                 <h2 className="text-xl font-bold text-cyan-400">
-                  {capitalizeFirstLetter(fullCategory?.attributes.Title || '')}
+                  {capitalizeFirstLetter(fullCategory?.Title || '')}
                 </h2>
               </div>
               <ul className="space-y-4">
@@ -125,21 +85,21 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
                   <li key={category.id} className="mb-4">
                     <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
                       <FaCodeBranch className="mr-2 text-cyan-400" size={16} />
-                      <span className="text-lg font-semibold text-white">{category.attributes.Title}</span>
+                      <span className="text-lg font-semibold text-white">{category.Title}</span>
                     </div>
                     <ul className="pl-4 space-y-2">
-                      {category.attributes.blogs.data.map((blog) => (
+                      {category.blogs.map((blog) => (
                         <li key={blog.id} className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150">
-                          <Link href={`/article/${blog.id}/${blog.attributes.slug}`} className="block p-3">
+                          <Link href={`/article/${blog.documentId}/${blog.slug}`} className="block p-3">
                             <div className="flex items-center mb-1">
                               <FaBook className="mr-2 text-cyan-400" size={14} />
                               <span className="text-sm font-medium text-white">
-                                {truncateTitle(blog.attributes.Title, 25)}
+                                {truncateTitle(blog.Title, 25)}
                               </span>
                             </div>
                             <div className="flex items-center text-xs text-gray-400">
                               <FaClock className="mr-1" size={12} />
-                              <span>{new Date(blog.attributes.publishedAt).toLocaleDateString()}</span>
+                              <span>{new Date(blog.publishedAt).toLocaleDateString()}</span>
                             </div>
                           </Link>
                         </li>
@@ -153,7 +113,6 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
         <div>{children}</div>
       </main>

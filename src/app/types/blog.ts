@@ -1,35 +1,113 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface ImageFormats {
-  thumbnail: { url: string };
-  medium?: { url: string };
-  small?: { url: string };
-  large?: { url: string };
+  name: string;
+  hash: string;
+  ext: string;
+  mime: string;
+  path: string | null;
+  width: number;
+  height: number;
+  size: number;
+  sizeInBytes: number;
+  url: string;
 }
 
-interface BlogPostImage {
-  data: {
-    attributes: {
-      formats: ImageFormats;
-    };
-  } | null;
-}
-
-interface BlogPostAttributes {
-  Title: string;
-  Date: string;
-  updatedAt: string;
-  slug: string;
-  img: BlogPostImage;
-  shortDescription: string;
-}
-
-export interface BlogPost {
+interface Image {
   id: number;
-  attributes: BlogPostAttributes;
+  documentId: string;
+  name: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number;
+  height: number;
+  formats: {
+    thumbnail: ImageFormats;
+    small: ImageFormats;
+    medium: ImageFormats;
+    large: ImageFormats;
+  };
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: string | null;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string | null;
 }
 
-  
+export interface Comment {
+  id: number;
+  documentId: string;
+  Email: string;
+  Name: string;
+  comment: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string | null;
+}
+
+export interface SubCategory {
+  id: number;
+  documentId: string;
+  Title: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  blogs: Article[]
+  locale: string | null;
+}
+
+export interface Category {
+  id: number;
+  documentId: string;
+  Title: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string | null;
+  sub_categories: SubCategory[];
+  blogs: Article[];
+}
+
+export interface Article {
+  data: any;
+  id: number;
+  documentId: string;
+  Title: string;
+  description: string;
+  slug: string;
+  viewCount: number;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  locale: string | null;
+  shortDescription: string;
+  img: Image[];
+  comments: Comment[];
+  sub_category: SubCategory;
+  categories: Category[];
+  localizations: any[];
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
   export interface ImageAttributes {
     name: string;
     formats: ImageFormats;
@@ -59,6 +137,7 @@ export interface BlogPost {
     Title: string;
     publishedAt: string;
     description: any;
+    description_md: any;
     viewCount: number;
     shortDescription: string;
     comments: comments;
@@ -105,7 +184,7 @@ export  interface SuggestedArticle {
 
 // Define types for comments
 export interface Comment {
-  id: string;
+  id: number;
   attributes: {
     Name: string;
     Email: string;
@@ -120,16 +199,7 @@ export interface NewComment {
   comment: string;
 }
 
-  
-interface SubCategory {
-  id: number;
-  attributes: {
-    createdAt: string;
-    updatedAt: string;
-    publishedAt: string;
-    Title: string;
-  };
-}
+
 
 interface CategoryAttributes {
   Title: string;
@@ -148,28 +218,6 @@ export interface CategoryFull {
     attributes: CategoryAttributes;
   };
   meta: Record<string, any>;
-}
-
-
-
-
-interface Blog {
-  id: string;
-  attributes: {
-    slug: string;
-    Title: string;
-    publishedAt: string | number | Date;
-  };
-}
-
-export interface Category {
-  id: string;
-  attributes: {
-    Title: string;
-    blogs: {
-      data: Blog[];
-    };
-  };
 }
 
 export interface FullCategories {
@@ -223,3 +271,26 @@ export interface BlogApiResponses {
     pagination: PaginationMeta;
   };
 }
+
+
+
+//////////////////////////
+
+// interface Blog {
+//   id: string;
+//   attributes: {
+//     slug: string;
+//     Title: string;
+//     publishedAt: string | number | Date;
+//   };
+// }
+
+// interface Category {
+//   id: string;
+//   attributes: {
+//     Title: string;
+//     blogs: {
+//       data: Blog[];
+//     };
+//   };
+// }

@@ -2,24 +2,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { FaSearch, FaHome, FaCode, FaServer } from "react-icons/fa";
+import { FaSearch, FaHome, FaServer } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-
-// Interfaces for data structures
-interface Category {
-  id: string;
-  attributes: {
-    Title: string;
-  };
-}
-
-interface BlogPost {
-  id: number;
-  attributes: {
-    Title: string;
-    slug: string;
-  };
-}
+import { Category } from "@/app/types/blog";
 
 // Utility function to convert a string to uppercase
 const toUpperCase = (str: string): string => str.toUpperCase();
@@ -37,19 +22,19 @@ const fetchCategories = async (): Promise<{ data: Category[] }> => {
 };
 
 // Fetch blog posts from API
-const fetchBlogPosts = async (searchTerm: string): Promise<BlogPost[]> => {
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs`, {
-      params: {
-        "filters[Title][$containsi]": searchTerm,
-      },
-    });
-    return response.data.data;
-  } catch (error) {
-    console.error("Error fetching blog posts:", error);
-    return [];
-  }
-};
+// const fetchBlogPosts = async (searchTerm: string): Promise<BlogPost[]> => {
+//   try {
+//     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs`, {
+//       params: {
+//         "filters[Title][$containsi]": searchTerm,
+//       },
+//     });
+//     return response.data.data;
+//   } catch (error) {
+//     console.error("Error fetching blog posts:", error);
+//     return [];
+//   }
+// };
 
 export default function Submenu() {
   // State management
@@ -57,9 +42,9 @@ export default function Submenu() {
   const [blogSearchTerm, setBlogSearchTerm] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
-  const [blogSuggestions, setBlogSuggestions] = useState<BlogPost[]>([]);
+  // const [blogSuggestions, setBlogSuggestions] = useState<BlogPost[]>([]);
   const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
-  const [loadingBlogSuggestions, setLoadingBlogSuggestions] = useState<boolean>(false);
+  // const [loadingBlogSuggestions, setLoadingBlogSuggestions] = useState<boolean>(false);
 
   // Refs and router
   const searchRef = useRef<HTMLDivElement>(null);
@@ -93,7 +78,7 @@ export default function Submenu() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-        setBlogSuggestions([]);
+        // setBlogSuggestions([]);
       }
     };
 
@@ -109,14 +94,14 @@ export default function Submenu() {
   const handleBlogSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setBlogSearchTerm(value);
-    if (value.length > 2) {
-      setLoadingBlogSuggestions(true);
-      const posts = await fetchBlogPosts(value);
-      setBlogSuggestions(posts);
-      setLoadingBlogSuggestions(false);
-    } else {
-      setBlogSuggestions([]);
-    }
+    // if (value.length > 2) {
+    //   setLoadingBlogSuggestions(true);
+    //   const posts = await fetchBlogPosts(value);
+    //   setBlogSuggestions(posts);
+    //   setLoadingBlogSuggestions(false);
+    // } else {
+    //   setBlogSuggestions([]);
+    // }
   };
 
   // Trigger search functionality
@@ -138,10 +123,10 @@ export default function Submenu() {
   };
 
   // Clear suggestions when an item is clicked
-  const handleSuggestionClick = () => {
-    setBlogSuggestions([]);
-    setBlogSearchTerm("");
-  };
+  // const handleSuggestionClick = () => {
+  //   setBlogSuggestions([]);
+  //   setBlogSearchTerm("");
+  // };
 
   // Trigger search on pressing "Enter"
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -179,11 +164,11 @@ export default function Submenu() {
               categories.map((item) => (
                 <Link
                   key={item.id}
-                  href={`/article/category/${item.attributes.Title}`}
+                  href={`/article/category/${item.Title}`}
                   className="text-green-400 hover:text-green-300 mb-2 md:mb-0 font-mono transition-colors duration-300 flex items-center"
                 >
                   <FaServer className="mr-1" />
-                  {toUpperCase(item.attributes.Title)}
+                  {toUpperCase(item.Title)}
                 </Link>
               ))
             ) : (
@@ -211,25 +196,31 @@ export default function Submenu() {
               </button>
 
               {/* Suggestions Dropdown */}
-              {loadingBlogSuggestions ? (
+              {/* {loadingBlogSuggestions ? (
                 <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-green-500 rounded-lg shadow-lg">
                   <div className="px-4 py-2 text-green-400 animate-pulse font-mono">$ Loading...</div>
                 </div>
               ) : blogSuggestions.length > 0 ? (
                 <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-green-500 rounded-lg shadow-lg">
                   {blogSuggestions.map((post) => (
-                    <Link
-                      key={post.id}
-                      href={`/article/${post.id}/${post.attributes.slug}`}
-                      className="block px-4 py-2 text-green-400 hover:bg-gray-700 font-mono transition-colors duration-300 flex items-center"
-                      onClick={handleSuggestionClick}
-                    >
-                      <FaCode className="mr-2" />
-                      {post.attributes.Title}
-                    </Link>
+                    // <Link
+                    //   key={post.id}
+                    //   href={`/article/${post.documentId}/${post.slug}`}
+                    //   className="block px-4 py-2 text-green-400 hover:bg-gray-700 font-mono transition-colors duration-300 flex items-center"
+                    //   onClick={handleSuggestionClick}
+                    // >
+                    //   <FaCode className="mr-2" />
+                    //   {post.attributes.Title}
+                    // </Link>
                   ))}
                 </div>
-              ) : null}
+              ) : null} */}
+
+
+
+
+
+
             </div>
 
             {/* Search Button */}
