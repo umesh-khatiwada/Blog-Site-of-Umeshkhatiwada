@@ -1,28 +1,10 @@
 import { MetadataRoute } from 'next'
 import { BASE_URL } from './types/contants'
+import { Article } from './types/blog'
 
 // Define the structure of your API response
-type BlogPost = {
-  id: number
-  attributes: {
-    slug: string
-    publishedAt: string
-    img: {
-      data: {
-        attributes: {
-          url: string
-        }
-      }
-    }
-  }
-}
-
-type BlogApiResponse = {
-  data: BlogPost[]
-}
-
 // Function to fetch posts from the API
-async function fetchPosts(): Promise<BlogApiResponse> {
+async function fetchPosts(): Promise<Article> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`
   )
@@ -40,18 +22,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = BASE_URL || 'http://localhost:3000'
 
   // Generate entries for blog posts
-  const postEntries: MetadataRoute.Sitemap = posts.map((post) => {
-    const imageUrl = post.attributes.img?.data?.attributes?.url
+  const postEntries: MetadataRoute.Sitemap = posts.map((post : any) => {
+    const imageUrl = post.img?.data?.attributes?.url
     return {
-      url: `${baseUrl}/article/${post.id}/${post.attributes.slug}`,
-      lastModified: new Date(post.attributes.publishedAt),
+      url: `${baseUrl}/article/${post.documentId}/${post.slug}`,
+      lastModified: new Date(post.publishedAt),
       changeFrequency: 'daily',
       priority: 0.7,
       ...(imageUrl && {
         images: [
           {
             url: imageUrl,
-            title: post.attributes.slug,
+            title: post.slug,
             caption: post.attributes.slug,
           },
         ],
