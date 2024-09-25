@@ -110,6 +110,7 @@ export const viewCounter = async (id: string, count: number) => {
   }
 };
 
+
 export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ data: Category }> => {
   const url = "categories";
   try {
