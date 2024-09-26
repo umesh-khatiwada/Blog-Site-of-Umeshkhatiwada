@@ -1,31 +1,12 @@
 "use client";
 import Link from 'next/link';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import DynamicBanner from '@/app/components/blog/Blogroute';
-import SkeletonCard from '@/app/components/blog/SkeletonCard';
 import { Article } from "@/app/types/blog";
 import Image from 'next/image'; // Import the Image component
-
-// Define TypeScript interfaces for the blog data
-const fetchCategoryDetailsData = async (category: string): Promise<Article[]> => {
-  const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
-  console.log("URL:", url);
-
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
-    console.log("Fetched data:", response.data);
-
-    const blogPosts = response.data.data || [];
-    console.log("Blog posts extracted:", blogPosts);
-
-    return blogPosts;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw new Error('Unable to fetch blog posts at this time. Please try again later.');
-  }
-};
+import { fetchCategoryDetailsData } from '@/app/lib/api';
+import SkeletonCard from '@/app/components/blog/DummyCard';
 
 export default function Articles() {
   const { category } = useParams<{ category: string }>();

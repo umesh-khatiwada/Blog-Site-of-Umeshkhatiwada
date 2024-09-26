@@ -41,6 +41,13 @@ interface Image {
   locale: string | null;
 }
 
+
+export interface NewComment {
+  Name: string;
+  Email: string;
+  comment: string;
+}
+
 export interface Comment {
   id: number;
   documentId: string;
@@ -108,169 +115,164 @@ export interface Article {
 
 
 
-  export interface ImageAttributes {
-    name: string;
-    formats: ImageFormats;
-    url: string;
-  }
+//   export interface ImageAttributes {
+//     name: string;
+//     formats: ImageFormats;
+//     url: string;
+//   }
   
-  export interface SuggestedArticle {
-    id: number;
-    title: string;
-    excerpt: string;
-    imageUrl: string;
-  }
+//   export interface SuggestedArticle {
+//     id: number;
+//     title: string;
+//     excerpt: string;
+//     imageUrl: string;
+//   }
 
-  interface comments {
-    id: string;
-    data: any;
-    attributes: {
-      Name: string;
-      Email: string;
-      comment: string;
-      createdAt: string;
-    };
-  }
-  export interface BlogAttributes {
-    createdAt: string | number | Date;
-    categories: any;
-    Title: string;
-    publishedAt: string;
-    description: any;
-    description_md: any;
-    viewCount: number;
-    shortDescription: string;
-    comments: comments;
-    data: any;
-    img?: {
-      data: {
-        attributes: ImageAttributes;
-      };
-    };
-  }
+//   interface comments {
+//     id: string;
+//     data: any;
+//     attributes: {
+//       Name: string;
+//       Email: string;
+//       comment: string;
+//       createdAt: string;
+//     };
+//   }
+//   export interface BlogAttributes {
+//     createdAt: string | number | Date;
+//     categories: any;
+//     Title: string;
+//     publishedAt: string;
+//     description: any;
+//     description_md: any;
+//     viewCount: number;
+//     shortDescription: string;
+//     comments: comments;
+//     data: any;
+//     img?: {
+//       data: {
+//         attributes: ImageAttributes;
+//       };
+//     };
+//   }
   
-  export interface BlogData {
-    data: {
-      id: number;
-      attributes: BlogAttributes;
-    };
-  }
+//   export interface BlogData {
+//     data: {
+//       id: number;
+//       attributes: BlogAttributes;
+//     };
+//   }
 
-export  interface SuggestedArticle {
-    id: number;
-    attributes: {
-      publishedAt: string | number | Date;
-      Title: string;
-      slug: string;
-      viewCount: number;
-      shortDescription: string;
-      img: {
-        data: {
-          attributes: {
-            url: string;
-            name: string;
-          };
-        };
-      };
-    };
-  }
+// export  interface SuggestedArticle {
+//     id: number;
+//     attributes: {
+//       publishedAt: string | number | Date;
+//       Title: string;
+//       slug: string;
+//       viewCount: number;
+//       shortDescription: string;
+//       img: {
+//         data: {
+//           attributes: {
+//             url: string;
+//             name: string;
+//           };
+//         };
+//       };
+//     };
+//   }
   
-  export interface SuggestedArticlesProps {
-    suggestedArticles: SuggestedArticle[];
-  }
+//   export interface SuggestedArticlesProps {
+//     suggestedArticles: SuggestedArticle[];
+//   }
   
 
 
 
-// Define types for comments
-export interface Comment {
-  id: number;
-  attributes: {
-    Name: string;
-    Email: string;
-    comment: string;
-    createdAt: string;
-  };
-}
-
-export interface NewComment {
-  Name: string;
-  Email: string;
-  comment: string;
-}
+// // Define types for comments
+// export interface Comment {
+//   id: number;
+//   attributes: {
+//     Name: string;
+//     Email: string;
+//     comment: string;
+//     createdAt: string;
+//   };
+// }
 
 
 
-interface CategoryAttributes {
-  Title: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
-  sub_categories: {
-    data: SubCategory[];
-  };
-}
 
-export interface CategoryFull {
-  attributes(attributes: any): unknown;
-  data: {
-    id: number;
-    attributes: CategoryAttributes;
-  };
-  meta: Record<string, any>;
-}
+// interface CategoryAttributes {
+//   Title: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   publishedAt: string;
+//   sub_categories: {
+//     data: SubCategory[];
+//   };
+// }
 
-export interface FullCategories {
-  attributes: any;
-  Title: string;
-  sub_categories: {
-    data: Category[];
-  };
-}
+// export interface CategoryFull {
+//   attributes(attributes: any): unknown;
+//   data: {
+//     id: number;
+//     attributes: CategoryAttributes;
+//   };
+//   meta: Record<string, any>;
+// }
 
-
-
-interface ImageData {
-  id: number;
-  attributes: {
-    url: string;
-  };
-}
-
-// Interface for image
-interface Image {
-  data: ImageData;
-}
+// export interface FullCategories {
+//   attributes: any;
+//   Title: string;
+//   sub_categories: {
+//     data: Category[];
+//   };
+// }
 
 
-// Interface for blog attributes
-export interface BlogAttributess {
-  slug: string;
-  publishedAt: string;
-  img: Image;
-}
 
-// Interface for individual blog data
-export interface BlogDataa {
-  id: number;
-  attributes: BlogAttributess;
-}
+// interface ImageData {
+//   id: number;
+//   attributes: {
+//     url: string;
+//   };
+// }
 
-// Interface for pagination metadata
-interface PaginationMeta {
-  page: number;
-  pageSize: number;
-  pageCount: number;
-  total: number;
-}
+// // Interface for image
+// interface Image {
+//   data: ImageData;
+// }
 
-// Interface for the API response
-export interface BlogApiResponses {
-  data: BlogDataa[];
-  meta: {
-    pagination: PaginationMeta;
-  };
-}
+
+// // Interface for blog attributes
+// export interface BlogAttributess {
+//   slug: string;
+//   publishedAt: string;
+//   img: Image;
+// }
+
+// // Interface for individual blog data
+// export interface BlogDataa {
+//   id: number;
+//   attributes: BlogAttributess;
+// }
+
+// // Interface for pagination metadata
+// interface PaginationMeta {
+//   page: number;
+//   pageSize: number;
+//   pageCount: number;
+//   total: number;
+// }
+
+// // Interface for the API response
+// export interface BlogApiResponses {
+//   data: BlogDataa[];
+//   meta: {
+//     pagination: PaginationMeta;
+//   };
+// }
 
 
 

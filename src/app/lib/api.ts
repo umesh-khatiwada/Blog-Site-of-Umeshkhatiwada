@@ -102,3 +102,5 @@ export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ da
     throw error;
   }
 };
+
+

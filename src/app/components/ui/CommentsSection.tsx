@@ -21,9 +21,9 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({
       <div className="space-y-4 mb-8">
         {comments.map((comment) => (
           <div key={comment.id} className="bg-gray-800 p-4 rounded-lg shadow-md border border-green-500">
-            <p className="font-bold text-green-400 font-mono">{comment.attributes.Name}</p>
-            <p className="text-gray-400 text-sm font-mono">{new Date(comment.attributes.createdAt).toLocaleDateString()}</p>
-            <p className="mt-2 text-gray-300 font-mono">{comment.attributes.comment}</p>
+            <p className="font-bold text-green-400 font-mono">{comment.Name}</p>
+            <p className="text-gray-400 text-sm font-mono">{new Date(comment.createdAt).toLocaleDateString()}</p>
+            <p className="mt-2 text-gray-300 font-mono">{comment.comment}</p>
           </div>
         ))}
       </div>

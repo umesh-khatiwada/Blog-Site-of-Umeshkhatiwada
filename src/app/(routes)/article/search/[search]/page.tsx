@@ -8,36 +8,16 @@ import DynamicBanner from '@/app/components/blog/Blogroute';
 import { Article } from "@/app/types/blog";
 import Footer from '@/app/components/layout/Footer';
 
-
 // Fetch blog data from API
 const fetchBlogData = async (search: string): Promise<Article[]> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}&populate=*`);
-    console.log("Response:", response.data);
-    return response.data.data || []; // Ensure it returns an empty array if data is undefined
+    return response.data.data || [];
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
   }
 };
-
-// Loading Card Component
-const LoadingCard = () => (
-  <div className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden animate-pulse">
-    <div className="h-48 bg-gray-700"></div>
-    <div className="p-6">
-      <div className="flex items-center space-x-2 mb-4">
-        <div className="h-3 w-3 bg-green-500 rounded-full"></div>
-        <div className="h-4 bg-gray-700 w-1/2"></div>
-      </div>
-      <div className="space-y-3">
-        <div className="h-4 bg-gray-700 w-3/4"></div>
-        <div className="h-4 bg-gray-700 w-5/6"></div>
-        <div className="h-4 bg-gray-700 w-2/3"></div>
-      </div>
-    </div>
-  </div>
-);
 
 export default function Articlee() {
   const [data, setData] = useState<Article[]>([]);
@@ -69,7 +49,6 @@ export default function Articlee() {
   }
 
   return (
-    <>
     <div className="min-h-screen bg-gray-900 text-white">
       <DynamicBanner />
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -85,7 +64,7 @@ export default function Articlee() {
                 key={post.id}
                 className="bg-gray-800 border border-gray-700 text-white rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
-                {post.img[index].url ? (
+                {post.img && post.img[index]?.url ? (
                   <img
                     src={post.img[index].url}
                     alt={post.Title}
@@ -108,18 +87,16 @@ export default function Articlee() {
                   </Link>
                 </div>
               </div>
-            ),
-          )
-          ) : (
-            Array.from({ length: 6 }).map((_, index) => (
-              <LoadingCard key={index} />
             ))
+          ) : (
+            <div className="col-span-3 text-center">
+              <h2 className="text-3xl font-bold mb-4">No Articles Found</h2>
+              <p className="text-xl">Try searching for a different term.</p>
+            </div>
           )}
         </div>
       </div>
       <Footer />
     </div>
-  
-    </>
   );
 }
