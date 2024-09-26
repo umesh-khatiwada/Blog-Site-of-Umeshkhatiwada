@@ -5,14 +5,14 @@ import { fetchBlogDetailData } from '@/app/lib/api'
 export async function generateMetadata({ params }: { params: { id: string, slug: string } }): Promise<Metadata> {
   const id = params.id
   const postData = await fetchBlogDetailData(id)
-  if (!postData || !postData.data || !postData.data.attributes) {
+  if (!postData || !postData.data) {
     return {
       title: 'Blog Post Not Found',
       description: 'The requested blog post could not be found.',
     }
   }
 
-  const { Title, shortDescription, img } = postData.data.attributes
+  const { Title, shortDescription, img } = postData.data
 
   return {
     title: Title,
@@ -20,13 +20,13 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
     openGraph: {
       title: Title,
       description: shortDescription,
-      images: img?.data?.attributes?.url ? [img.data.attributes.url] : [],
+      images: img?.[0]?.url ? [img?.[0].url] : [],
     },
     twitter: {
       card: 'summary_large_image',
       title: Title,
       description: shortDescription,
-      images: img?.data?.attributes?.url ? [img.data.attributes.url] : [],
+      images: img?.[0]?.url ? [img?.[0].url] : [],
     },
   }
 }
