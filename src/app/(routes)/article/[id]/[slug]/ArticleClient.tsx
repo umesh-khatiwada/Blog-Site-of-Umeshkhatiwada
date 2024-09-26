@@ -100,7 +100,7 @@ const ArticleClient: React.FC = () => {
     const fetchData = async () => {
       try {
         const postData = await fetchBlogDetailData(id);
-        console.log("Post Data:", postData.data);
+
         setData(postData.data);
         setComments(postData.data.comments as Comment[]);
         setCategoryId(postData.data.categories[0].documentId);
@@ -180,45 +180,45 @@ const ArticleClient: React.FC = () => {
       );
     }
 
-    const { Title, publishedAt, img, description } = data;
+    const { Title, publishedAt, img, viewCount,description } = data;
     const imageUrl = img[0].url;
 
     return (
       <article className="text-green-400 bg-gray-900 rounded-lg p-5 animate-fadeIn">
-  <header className="mb-8">
-    <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
-      {Title}
-    </h1>
-    <div className="flex items-center text-gray-400 text-sm space-x-6">
-      <span className="flex items-center">
-        <FaCalendarAlt className="w-4 h-4 mr-2" />
-        {new Date(publishedAt).toLocaleDateString()}
-      </span>
-      <span className="flex items-center">
-        <FaEye className="w-4 h-4 mr-2" />
-        {/* {viewCount} views */}
-      </span>
-    </div>
-  </header>
-<div className="flex justify-center items-center prose prose-invert">
-  {imageUrl && (
-    <figure className="mb-8 animate-fadeInScale">
-      <Image
-        src={imageUrl}
-        alt={Title}
-        width={400}
-        height={200}
-        objectFit="cover"
-        className="rounded-lg shadow-lg border border-green-500"
-      />
-    </figure>
-  )}
-</div>
-  <div className="flex justify-center items-center prose prose-invert max-w-none overflow-hidden break-words">
-    <ContentRenderer description={description} />
-  </div>
-</article>
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
+            {Title}
+          </h1>
+          <div className="flex items-center text-gray-400 text-sm space-x-6">
+            <span className="flex items-center">
+              <FaCalendarAlt className="w-4 h-4 mr-2" />
+              {new Date(publishedAt).toLocaleDateString()}
+            </span>
+            <span className="flex items-center">
+              <FaEye className="w-4 h-4 mr-2" />
+              {viewCount} views
+            </span>
+          </div>
+        </header>
+        <div className="flex justify-center">
+        {imageUrl && (
+          <figure className="mb-8 animate-fadeInScale">
+            <Image
+              src={imageUrl}
+              alt={Title}
+              width={400}
+              height={200}
+              objectFit="cover"
+              className="rounded-lg shadow-lg border border-green-500"
+            />
+          </figure>
+        )}
+        </div>
 
+        <div className="prose prose-invert max-w-none overflow-hidden break-words">
+          <ContentRenderer description={description} />
+        </div>
+      </article>
     );
   }, [loading, error, data]);
 

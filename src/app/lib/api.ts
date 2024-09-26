@@ -15,10 +15,9 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // You can include any authorization tokens here if needed
       },
     });
-    return response.data; // Ensure this returns { data, meta }
+    return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
     throw error;
@@ -32,7 +31,6 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // You can include any authorization tokens here if needed
       },
     });
     return response.data.data || [];
@@ -42,7 +40,7 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
   }
 };
 
-
+// You can include any authorization tokens here if needed
 export const fetchBlogDetailData = async (id: string): Promise<Article> => {
   const url = 'blogs';
   try {
@@ -50,7 +48,7 @@ export const fetchBlogDetailData = async (id: string): Promise<Article> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        // You can include any authorization tokens here if needed
+
       },
     });
     if (response.status === 404) {
@@ -66,12 +64,15 @@ export const fetchBlogDetailData = async (id: string): Promise<Article> => {
 };
 
 
+
+
+
+
+
 export const viewCounter = async (id: string, count: number) => {
-  // Increment the view counter
   const totalViewCounter = count + 1;
 
   try {
-    // Make the PUT request to update the view counter
     await axios.put(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}`, 
       {
