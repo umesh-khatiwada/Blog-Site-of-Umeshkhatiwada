@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { fetchBlogDetailData, viewCounter } from "@/app/lib/api";
+import { viewCounter } from "@/app/lib/api";
 import { Article, NewComment, Comment } from "@/app/types/blog";
 import SocialSharing from "@/app/components/ui/SocialMedia";
-import { FaTerminal, FaServer, FaCode, FaEye, FaCalendarAlt } from "react-icons/fa";
+import { FaTerminal, FaServer, FaEye, FaCalendarAlt } from "react-icons/fa";
 import { useCategory } from "@/app/hooks/store";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 
@@ -76,13 +76,17 @@ const MemoizedCommentsSection = React.memo(({
 
 MemoizedCommentsSection.displayName = 'MemoizedCommentsSection';
 
-const ArticleClient: React.FC = () => {
+interface ArticleClientProps {
+  initialData: Article;
+}
+
+const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [data, setData] = useState<Article | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [data] = useState<Article>(initialData);
+  const [loading] = useState<boolean>(false);
+  const [error] = useState<string | null>(null);
+  const [comments, setComments] = useState<Comment[]>(initialData.data.comments || []);
   const { setCategoryId } = useCategory();
   const [newComment, setNewComment] = useState<NewComment>({
     Name: "",
@@ -91,32 +95,14 @@ const ArticleClient: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!id) {
-      setError("No ID provided");
-      setLoading(false);
-      return;
+    if (!id) return;
+
+    setCategoryId(data.data.categories[0].documentId);
+
+    if (data.viewCount !== undefined) {
+      viewCounter(id, data.viewCount);
     }
-
-    const fetchData = async () => {
-      try {
-        const postData = await fetchBlogDetailData(id);
-
-        setData(postData.data);
-        setComments(postData.data.comments as Comment[]);
-        setCategoryId(postData.data.categories[0].documentId);
-
-        if (postData.viewCount !== undefined) {
-          viewCounter(id, postData.viewCount);
-        }
-      } catch (error) {
-        setError(error instanceof Error ? error.message : "Error loading blog post");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id, setCategoryId]);
+  }, [id, data, setCategoryId]);
 
   const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -171,16 +157,7 @@ const ArticleClient: React.FC = () => {
       );
     }
 
-    if (!data) {
-      return (
-        <div className="text-center text-gray-300 text-xl py-10 animate-fadeIn">
-          <FaCode className="w-16 h-16 mx-auto mb-4" />
-          404: Post not found
-        </div>
-      );
-    }
-
-    const { Title, publishedAt, img, viewCount,description } = data;
+    const { Title, publishedAt, img, description } = data.data;
     const imageUrl = img[0].url;
 
     return (
@@ -196,24 +173,22 @@ const ArticleClient: React.FC = () => {
             </span>
             <span className="flex items-center">
               <FaEye className="w-4 h-4 mr-2" />
-              {viewCount} views
+              {/* {viewCount} views */}
             </span>
           </div>
         </header>
-        <div className="flex justify-center">
         {imageUrl && (
           <figure className="mb-8 animate-fadeInScale">
             <Image
               src={imageUrl}
               alt={Title}
-              width={400}
-              height={200}
+              width={800}
+              height={400}
               objectFit="cover"
               className="rounded-lg shadow-lg border border-green-500"
             />
           </figure>
         )}
-        </div>
 
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
           <ContentRenderer description={description} />
@@ -233,8 +208,8 @@ const ArticleClient: React.FC = () => {
       />
       <SocialSharing
         shareUrl={typeof window !== "undefined" ? window.location.href : ""}
-        title={data?.Title || ""}
-        description={data?.description || ""}
+        title={data.data.Title || ""}
+        description={data.data.description || ""}
       />
     </div>
   );

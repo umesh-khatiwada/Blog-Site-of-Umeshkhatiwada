@@ -1,90 +1,33 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import React, { useState, useRef } from "react";
 import Link from "next/link";
 import { FaSearch, FaHome, FaServer } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Category } from "@/app/types/blog";
 
-// Utility function to convert a string to uppercase
 const toUpperCase = (str: string): string => str.toUpperCase();
 
-// Fetch categories from API
-const fetchCategories = async (): Promise<{ data: Category[] }> => {
-  const url = "categories";
-  try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw error;
-  }
-};
-export default function Submenu() {
-  // State management
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [blogSearchTerm, setBlogSearchTerm] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
-  const [loadingCategories, setLoadingCategories] = useState<boolean>(true);
+interface SubmenuProps {
+  categories: Category[] | undefined;
+}
 
-  // Refs and router
+export default function Submenu({ categories }: SubmenuProps) {
+  const [blogSearchTerm, setBlogSearchTerm] = useState<string>("");
+  const [isSearchVisible, setIsSearchVisible] = useState<boolean>(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Fetch categories on component mount
-  useEffect(() => {
-    const getCategories = async () => {
-      const storedCategories = localStorage.getItem("categories");
-
-      if (storedCategories) {
-        setCategories(JSON.parse(storedCategories));
-        setLoadingCategories(false);
-      } else {
-        try {
-          const result = await fetchCategories();
-          localStorage.setItem("categories", JSON.stringify(result.data));
-          setCategories(result.data);
-          setLoadingCategories(false);
-        } catch (err) {
-          setError("Error fetching categories");
-          setLoadingCategories(false);
-        }
-      }
-    };
-
-    getCategories();
-  }, []);
-
-  // Handle clicks outside the search box
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("touchstart", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("touchstart", handleClickOutside);
-    };
-  }, []);
-
-  // Handle blog search term changes
-  const handleBlogSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBlogSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setBlogSearchTerm(value);
   };
 
-  // Trigger search functionality
   const handleSearchClick = () => {
     if (blogSearchTerm.length > 2) {
       router.push(`/article/search/${encodeURIComponent(blogSearchTerm)}`);
     }
   };
 
-  // Toggle search visibility
   const toggleSearch = () => {
     setIsSearchVisible(!isSearchVisible);
     if (!isSearchVisible) {
@@ -95,17 +38,11 @@ export default function Submenu() {
     }
   };
 
-  // Trigger search on pressing "Enter"
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearchClick();
     }
   };
-
-  // Display error if any
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   return (
     <div className="bg-gray-900 py-4 border-b border-green-500">
@@ -121,13 +58,7 @@ export default function Submenu() {
           
           {/* Middle Section: Categories */}
           <div className="flex justify-center flex-wrap space-x-4 mb-4 md:mb-0">
-            {loadingCategories ? (
-              <div className="flex space-x-4">
-                <div className="w-24 h-6 bg-gray-800 animate-pulse rounded"></div>
-                <div className="w-24 h-6 bg-gray-800 animate-pulse rounded"></div>
-                <div className="w-24 h-6 bg-gray-800 animate-pulse rounded"></div>
-              </div>
-            ) : categories.length > 0 ? (
+            {categories && categories.length > 0 ? (
               categories.map((item) => (
                 <Link
                   key={item.id}
@@ -163,7 +94,6 @@ export default function Submenu() {
               </button>
             </div>
 
-            {/* Search Button */}
             <button onClick={handleSearchClick} className="hidden md:block text-green-400 hover:text-green-300 transition-colors duration-300">
               <FaSearch />
             </button>

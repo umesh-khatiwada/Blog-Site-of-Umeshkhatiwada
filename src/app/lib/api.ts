@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 import { Article, Category } from '../types/blog';
-import { Metadata } from 'next';
+import { GetServerSideProps, Metadata } from 'next';
 
 export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
   const url = 'blogs';
@@ -105,3 +105,15 @@ export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ da
 };
 
 
+// Fetch categories from API
+export async function fetchCategories(): Promise<Category[]> {
+  const url = "https://api-blog.umeshkhatiwada.com.np/api/categories?populate=%2A";
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+}
