@@ -8,21 +8,32 @@ import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';
 import { DummyCard } from '@/app/components/blog/DummyCard';
 import Footer from '@/app/components/layout/Footer';
-import Head from 'next/head';
 
-export default function Articles() {
-  const [data, setData] = useState<Article[]>([]);
+interface ArticlesProps {
+  initialData: {
+    data: Article[];
+    meta: {
+      pagination: {
+        total: number;
+      };
+    };
+  };
+}
+
+export default function Articles({ initialData }: ArticlesProps) {
+  const [data, setData] = useState<Article[]>(initialData.data);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [totalPages, setTotalPages] = useState<number>(
+    Math.ceil(initialData.meta.pagination.total / 6)
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const fetchPageData = async (page: number) => {
     setLoading(true);
     try {
       const result = await fetchBlogData(page);
       setData(result.data);
-      console.log("Result:", result.data[0].img[0].url);
       const totalPages = Math.ceil(result.meta.pagination.total / 6);
       setTotalPages(totalPages);
       setLoading(false);
@@ -34,9 +45,10 @@ export default function Articles() {
   };
 
   useEffect(() => {
-    fetchPageData(currentPage);
+    if (currentPage > 1) {
+      fetchPageData(currentPage);
+    }
   }, [currentPage]);
-
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -57,10 +69,6 @@ export default function Articles() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <Head>
-        <title>{ "Loading..."}</title>
-        <meta name="description" content={ "Loading..."} />
-      </Head>
       <DynamicBanner />
 
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -86,14 +94,15 @@ export default function Articles() {
                 key={post.id}
                 className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
               >
-                {post.img && (
+                {post.img && post.img[0]?.formats?.thumbnail?.url && (
                   <div className="relative h-48">
                     <Image
-                      src={ post.img[0].formats.thumbnail.url }
+                      src={post.img[0].formats.thumbnail.url}
                       alt={post.Title}
                       layout="fill"
                       objectFit="cover"
-                      className="transition-opacity duration-300 hover:opacity-80" />
+                      className="transition-opacity duration-300 hover:opacity-80"
+                    />
                   </div>
                 )}
                 <div className="p-6">

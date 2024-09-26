@@ -6,26 +6,30 @@ import { FaServer, FaCodeBranch, FaBook, FaClock, FaBars, FaTimes } from 'react-
 import { fetchCategoriesWithSubcategories } from '@/app/lib/api';
 import { useCategory } from '@/app/hooks/store';
 import { Category, SubCategory } from '@/app/types/blog';
-import { LoadingSkeleton } from './DummyCard';
 
-export default function DevOpsSidebar({ children }: { children: ReactNode }) {
-  const [categories, setCategories] = useState<SubCategory[]>([]);
-  const [fullCategory, setFullCategory] = useState<Category | null>(null);
+interface SidebarProps {
+  children: ReactNode;
+  initialCategoryData: { data: Category };
+}
+
+export default function DevOpsSidebar({ children, initialCategoryData }: SidebarProps) {
+  const [categories, setCategories] = useState<SubCategory[]>(initialCategoryData.data.sub_categories || []);
+  const [fullCategory, setFullCategory] = useState<Category | null>(initialCategoryData.data);
   const { categoryId } = useCategory();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  console.log('initialCategoryData', initialCategoryData);
 
   useEffect(() => {
     const fetchCategories = async () => {
-      if (categoryId === 0) {
-        setIsLoading(false);
+      if (categoryId === "0" || categoryId.toString() === initialCategoryData.data.id.toString()) {
         return;
       }
 
       try {
         setIsLoading(true);
         const response = await fetchCategoriesWithSubcategories(categoryId.toString());
-        console.log('Response:', response);
         if (response && response.data) {
           setFullCategory(response.data);
           setCategories(response.data.sub_categories);
@@ -43,7 +47,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
     };
 
     fetchCategories();
-  }, [categoryId]);
+  }, [categoryId, initialCategoryData.data.id]);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -71,7 +75,7 @@ export default function DevOpsSidebar({ children }: { children: ReactNode }) {
       >
         <div className="p-4">
           {isLoading ? (
-            <LoadingSkeleton />
+            <div>Loading...</div>
           ) : (
             <>
               <div className="flex items-center space-x-2 mb-6">

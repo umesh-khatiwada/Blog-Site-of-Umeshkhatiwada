@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 
 // Define the shape of your store's state
-interface CategoryState {
-    categoryId: number;
-    setCategoryId: (id: number) => void; 
-}
+// interface CategoryState {
+//     categoryId: number;
+//     setCategoryId: (id: number) => void; 
+// }
 
 // Create the Zustand store with the defined state type
-export const useCategory = create<CategoryState>((set) => ({
-    categoryId: 0, 
-    setCategoryId: (id) => set({ categoryId: id }),
-}));
+// export const useCategory = create<CategoryState>((set) => ({
+//     categoryId: 0, 
+//     setCategoryId: (id) => set({ categoryId: id }),
+// }));
 interface useMetaData {
     blogId: number;
     title: string;
@@ -29,3 +29,16 @@ interface useMetaData {
       set({ title: payload.title, description: payload.description });
     },
   }));
+
+
+
+
+interface CategoryStore {
+  categoryId: string;
+  setCategoryId: (id: string) => void;
+}
+
+export const useCategory = create<CategoryStore>((set) => ({
+  categoryId: '0',
+  setCategoryId: (id) => set({ categoryId: id }),
+}));

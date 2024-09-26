@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import ArticleClient from './ArticleClient';
+import { fetchBlogData } from '@/app/lib/api';
+import Articles from './ArticleClient';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -8,6 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-export default function ArticlePage() {
-  return <ArticleClient />;
+export default async function ArticlePage() {
+  const initialData = await fetchBlogData(1);
+  return <Articles initialData={initialData} />;
 }
