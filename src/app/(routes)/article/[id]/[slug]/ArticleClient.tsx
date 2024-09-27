@@ -24,7 +24,7 @@ const MemoizedCommentsSection = React.memo(
     handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   }) => {
     return (
-      <section className="mt-8">
+      <section className="mt-8 px-4 sm:px-6 lg:px-8">
         <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
         <ul className="mb-4 space-y-3">
           {comments.map((comm) => (
@@ -38,7 +38,7 @@ const MemoizedCommentsSection = React.memo(
         </ul>
 
         <form onSubmit={handleCommentSubmit} className="space-y-3">
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
             <input
               type="text"
               value={newComment.Name}
