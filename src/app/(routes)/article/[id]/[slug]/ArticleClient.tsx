@@ -11,70 +11,80 @@ import { useCategory } from "@/app/hooks/store";
 import ContentRenderer from "@/app/components/ui/ContentRenderer";
 
 // Memoized CommentsSection to prevent rerenders
-const MemoizedCommentsSection = React.memo(({
-  comments,
-  newComment,
-  setNewComment,
-  handleCommentSubmit,
-}: {
-  comments: Comment[];
-  newComment: NewComment;
-  setNewComment: React.Dispatch<React.SetStateAction<NewComment>>;
-  handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-}) => {
-  return (
-    <section className="mt-8">
-      <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
-      <ul className="mb-4 space-y-3">
-        {comments.map((comm) => (
-          <li key={comm.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
-            <p className="text-green-300 font-semibold text-sm">{comm.Name}</p>
-            <p className="text-gray-300 text-sm">{comm.comment}</p>
-          </li>
-        ))}
-      </ul>
+const MemoizedCommentsSection = React.memo(
+  ({
+    comments,
+    newComment,
+    setNewComment,
+    handleCommentSubmit,
+  }: {
+    comments: Comment[];
+    newComment: NewComment;
+    setNewComment: React.Dispatch<React.SetStateAction<NewComment>>;
+    handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  }) => {
+    return (
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
+        <ul className="mb-4 space-y-3">
+          {comments.map((comm) => (
+            <li key={comm.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
+              <p className="text-green-300 font-semibold text-sm">
+                {comm.Name}
+              </p>
+              <p className="text-gray-300 text-sm">{comm.comment}</p>
+            </li>
+          ))}
+        </ul>
 
-      <form onSubmit={handleCommentSubmit} className="space-y-3">
-        <div className="flex space-x-3">
-          <input
-            type="text"
-            value={newComment.Name}
-            onChange={(e) => setNewComment((prev) => ({ ...prev, Name: e.target.value }))}
-            placeholder="Name"
+        <form onSubmit={handleCommentSubmit} className="space-y-3">
+          <div className="flex space-x-3">
+            <input
+              type="text"
+              value={newComment.Name}
+              onChange={(e) =>
+                setNewComment((prev) => ({ ...prev, Name: e.target.value }))
+              }
+              placeholder="Name"
+              required
+              className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+            />
+            <input
+              type="email"
+              value={newComment.Email}
+              onChange={(e) =>
+                setNewComment((prev) => ({ ...prev, Email: e.target.value }))
+              }
+              placeholder="Email"
+              required
+              className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+            />
+          </div>
+
+          <textarea
+            value={newComment.comment}
+            onChange={(e) =>
+              setNewComment((prev) => ({ ...prev, comment: e.target.value }))
+            }
+            placeholder="Your Comment"
             required
-            className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+            rows={4}
           />
-          <input
-            type="email"
-            value={newComment.Email}
-            onChange={(e) => setNewComment((prev) => ({ ...prev, Email: e.target.value }))}
-            placeholder="Email"
-            required
-            className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
-        </div>
 
-        <textarea
-          value={newComment.comment}
-          onChange={(e) => setNewComment((prev) => ({ ...prev, comment: e.target.value }))}
-          placeholder="Your Comment"
-          required
-          className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
-          rows={4}
-        />
+          <button
+            type="submit"
+            className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors"
+          >
+            Submit Comment
+          </button>
+        </form>
+      </section>
+    );
+  }
+);
 
-        <button
-          type="submit"
-          className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors"
-        >
-          Submit Comment
-        </button>
-      </form>
-    </section>
-  );
-});
-
-MemoizedCommentsSection.displayName = 'MemoizedCommentsSection';
+MemoizedCommentsSection.displayName = "MemoizedCommentsSection";
 
 interface ArticleClientProps {
   initialData: Article;
@@ -86,7 +96,9 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const [data] = useState<Article>(initialData);
   const [loading] = useState<boolean>(false);
   const [error] = useState<string | null>(null);
-  const [comments, setComments] = useState<Comment[]>(initialData.data.comments || []);
+  const [comments, setComments] = useState<Comment[]>(
+    initialData.data.comments || []
+  );
   const { setCategoryId } = useCategory();
   const [newComment, setNewComment] = useState<NewComment>({
     Name: "",
@@ -129,7 +141,10 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
         throw new Error("Failed to post comment");
       }
       const commentData = await response.json();
-      setComments((prevComments) => [...prevComments, commentData.data as Comment]);
+      setComments((prevComments) => [
+        ...prevComments,
+        commentData.data as Comment,
+      ]);
       setNewComment({ Name: "", Email: "", comment: "" });
     } catch (error) {
       console.error(error);
@@ -177,19 +192,20 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
             </span>
           </div>
         </header>
-        {imageUrl && (
-          <figure className="mb-8 animate-fadeInScale">
-            <Image
-              src={imageUrl}
-              alt={Title}
-              width={800}
-              height={400}
-              objectFit="cover"
-              className="rounded-lg shadow-lg border border-green-500"
-            />
-          </figure>
-        )}
-
+        <div className="flex justify-center">
+          {imageUrl && (
+            <figure className="mb-8 animate-fadeInScale">
+              <Image
+                src={imageUrl}
+                alt={Title}
+                width={400}
+                height={200}
+                objectFit="cover"
+                className="rounded-lg shadow-lg border border-green-500"
+              />
+            </figure>
+          )}
+        </div>
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
           <ContentRenderer description={description} />
         </div>
@@ -215,6 +231,6 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   );
 };
 
-ArticleClient.displayName = 'ArticleClient';
+ArticleClient.displayName = "ArticleClient";
 
 export default ArticleClient;
