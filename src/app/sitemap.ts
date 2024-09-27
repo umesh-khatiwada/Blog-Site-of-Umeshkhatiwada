@@ -1,28 +1,46 @@
 
 
-import { MetadataRoute } from 'next'
-import { BASE_URL } from './types/contants'
-import { Article } from './types/blog'
+import { MetadataRoute } from 'next';
+import { BASE_URL } from './types/contants';
+import { Article } from './types/blog';
 
-async function fetchPosts(): Promise<{ data: Article[] }> {
+interface ArticlesResponse {
+  data: Article[];
+}
+
+async function fetchPosts(): Promise<ArticlesResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`
-  )
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`,
+    {
+      headers: {
+        'Cache-Control': 'no-cache', // Ensure no caching
+      },
+    }
+  );
+  
   if (!response.ok) {
-    throw new Error('Failed to fetch posts')
+    throw new Error('Failed to fetch posts');
   }
-  return response.json()
+  
+  return response.json();
+}
+
+function isValidArticle(article: Article): boolean {
+  return article && article.attributes && typeof article.attributes.slug === 'string';
 }
 
 // Main sitemap generation function
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const apiResponse = await fetchPosts();
+  console.log('Fetched posts:', apiResponse); // Debug: log the fetched posts
+
   const posts = apiResponse.data;
+
   const baseUrl = BASE_URL || 'http://localhost:3000';
 
   // Generate entries for blog posts
   const postEntries: MetadataRoute.Sitemap = posts
-    .filter(post => post.attributes.slug) // Ensure that only posts with a slug are processed
+    .filter(isValidArticle) // Ensure that only valid articles are processed
     .map(post => {
       const lastModified = post.attributes.publishedAt ? new Date(post.attributes.publishedAt) : new Date();
       return {
@@ -30,8 +48,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: lastModified.toISOString(),
         changeFrequency: 'daily',
         priority: 0.7,
-      }
+      };
     });
+
+  console.log('Generated post entries:', postEntries); // Debug: log the generated post entries
 
   // Static entries for main pages
   const staticEntries: MetadataRoute.Sitemap = [
@@ -50,5 +70,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Combine static and dynamic entries
-  return [...staticEntries, ...postEntries];
+  const sitemapEntries = [...staticEntries, ...postEntries];
+  console.log('Full Sitemap Entries:', sitemapEntries); // Debug: log the combined sitemap entries
+
+  return sitemapEntries;
 }
