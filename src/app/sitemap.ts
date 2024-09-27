@@ -1,5 +1,3 @@
-
-
 import { MetadataRoute } from 'next';
 import { BASE_URL } from './types/contants';
 import { Article } from './types/blog';
@@ -17,61 +15,76 @@ async function fetchPosts(): Promise<ArticlesResponse> {
       },
     }
   );
-  
+
   if (!response.ok) {
     throw new Error('Failed to fetch posts');
   }
-  
+
   return response.json();
 }
 
 function isValidArticle(article: Article): boolean {
-  return article && article.attributes && typeof article.attributes.slug === 'string';
+  if (!article || typeof article.slug !== 'string') {
+    console.log('Invalid article structure:', JSON.stringify(article, null, 2));
+    return false;
+  }
+  return true;
 }
 
 // Main sitemap generation function
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const apiResponse = await fetchPosts();
-  console.log('Fetched posts:', apiResponse); // Debug: log the fetched posts
+  try {
+    const apiResponse = await fetchPosts();
+    console.log('Fetched posts:', JSON.stringify(apiResponse, null, 2)); // Debug: log the fetched posts
 
-  const posts = apiResponse.data;
+    const posts = apiResponse.data;
 
-  const baseUrl = BASE_URL || 'http://localhost:3000';
+    const baseUrl = BASE_URL || 'http://localhost:3000';
 
-  // Generate entries for blog posts
-  const postEntries: MetadataRoute.Sitemap = posts
-    .filter(isValidArticle) // Ensure that only valid articles are processed
-    .map(post => {
-      const lastModified = post.attributes.publishedAt ? new Date(post.attributes.publishedAt) : new Date();
-      return {
-        url: `${baseUrl}/article/${post.attributes.slug}`,
-        lastModified: lastModified.toISOString(),
-        changeFrequency: 'daily',
-        priority: 0.7,
-      };
+    // Log each post before filtering
+    posts.forEach((post, index) => {
+      console.log(`Raw post #${index + 1}:`, JSON.stringify(post, null, 2));
     });
 
-  console.log('Generated post entries:', postEntries); // Debug: log the generated post entries
+    // Generate entries for blog posts
+    const postEntries: MetadataRoute.Sitemap = posts
+      .filter(isValidArticle) // Ensure that only valid articles are processed
+      .map(post => {
+        const lastModified = post.publishedAt ? new Date(post.publishedAt) : new Date();
+        console.log('Processing article slug:', post.slug);
+        return {
+          url: `${baseUrl}/article/${post.slug}`,
+          lastModified: lastModified.toISOString(),
+          changeFrequency: 'daily',
+          priority: 0.7,
+        };
+      });
 
-  // Static entries for main pages
-  const staticEntries: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date().toISOString(),
-      changeFrequency: 'daily',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/article/[slug]`,
-      lastModified: new Date().toISOString(),
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-  ];
+    console.log('Generated post entries:', JSON.stringify(postEntries, null, 2)); // Debug: log the generated post entries
 
-  // Combine static and dynamic entries
-  const sitemapEntries = [...staticEntries, ...postEntries];
-  console.log('Full Sitemap Entries:', sitemapEntries); // Debug: log the combined sitemap entries
+    // Static entries for main pages
+    const staticEntries: MetadataRoute.Sitemap = [
+      {
+        url: baseUrl,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'daily',
+        priority: 1,
+      },
+      {
+        url: `${baseUrl}/article/`,
+        lastModified: new Date().toISOString(),
+        changeFrequency: 'daily',
+        priority: 0.8,
+      },
+    ];
 
-  return sitemapEntries;
+    // Combine static and dynamic entries
+    const sitemapEntries = [...staticEntries, ...postEntries];
+    console.log('Full Sitemap Entries:', JSON.stringify(sitemapEntries, null, 2)); // Debug: log the combined sitemap entries
+
+    return sitemapEntries;
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    throw error;
+  }
 }
