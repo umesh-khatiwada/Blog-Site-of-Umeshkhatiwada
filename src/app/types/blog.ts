@@ -84,6 +84,7 @@ export interface Category {
 }
 
 export interface Article {
+  attributes: any;
   data: any;
   id: number;
   documentId: string;

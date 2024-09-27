@@ -16,16 +16,17 @@ async function fetchPosts(): Promise<Article> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const apiResponse = await fetchPosts()
   const posts = apiResponse.data
+  console.log("bhkbkbkh",posts)
 
   const baseUrl = BASE_URL || 'http://localhost:3000'
 
   // Generate entries for blog posts
   const postEntries: MetadataRoute.Sitemap = posts.map((post: Article) => {
-    const lastModified = post.publishedAt ? new Date(post.publishedAt) : new Date(); // Fallback to current date if publishedAt is invalid
+    const lastModified = post.publishedAt ? new Date(post.publishedAt) : new Date();
   
     return {
-      url: `${baseUrl}/article/${post.documentId}/${post.slug}`,
-      lastModified: lastModified.toISOString(), // Ensure it's a valid date
+      url: `${baseUrl}/article/${post.attributes.slug}`,
+      lastModified: lastModified.toISOString(),
       changeFrequency: 'daily',
       priority: 0.7,
     }
