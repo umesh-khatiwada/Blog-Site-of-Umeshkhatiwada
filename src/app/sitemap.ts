@@ -16,7 +16,6 @@ async function fetchPosts(): Promise<Article> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const apiResponse = await fetchPosts()
   const posts = apiResponse.data
-  console.log("bhkbkbkh",posts)
 
   const baseUrl = BASE_URL || 'http://localhost:3000'
 
@@ -42,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/article`,
+      url: `${baseUrl}/article/[slug]`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.8,
