@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState, useTransition } from 'react'
-import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import { viewCounter } from '@/app/lib/api'
 import { Article, Comment } from '@/app/types/blog'
@@ -28,7 +27,7 @@ const MemoizedCommentsSection = React.memo(
         <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
         <ul className="mb-4 space-y-3">
           {comments.map((comm) => (
-            <li key={comm.id} className="bg-gray-800 p-3 rounded-md shadow-sm">
+            <li key={comm.documentId} className="bg-gray-800 p-3 rounded-md shadow-sm">
               <p className="text-green-300 font-semibold text-sm">
                 {comm.Name}
               </p>
@@ -97,8 +96,7 @@ interface ArticleClientProps {
 }
 
 const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
-  const params = useParams()
-  const id = Array.isArray(params.id) ? params.id[0] : params.id
+ const [id,] = useState(initialData.documentId)
   const [data] = useState<Article>(initialData)
   const [loading] = useState<boolean>(false)
   const [error] = useState<string | null>(null)
@@ -108,20 +106,23 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const { setCategoryId } = useCategory()
 
   useEffect(() => {
-    if (!id) return
+    console.log("datadasdasdasa",data)
+    setComments(data.data[0].comments || [])
+    if (!initialData.data.slug) return
 
+    console.log("datadasdasdasa",data)
     setCategoryId(data.data.categories[0].documentId)
 
+    
     if (data.viewCount !== undefined) {
       viewCounter(id, data.viewCount)
     }
-  }, [id, data, setCategoryId])
+  }, [id, data, setCategoryId, initialData.data.slug])
 
   const handleCommentSubmit = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}?populate=*`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${initialData.data[0].documentId}?populate=*`)
       .then((res) => res.json())
       .then((newData) => {
-        console.log("data",newData.data)
         setComments(newData.data.comments || [])
       })
       .catch(console.error)
@@ -194,7 +195,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
       {renderContent}
       <MemoizedCommentsSection
         comments={comments}
-        blogId={id}
+        blogId={data.data[0].documentId}
         onCommentSubmit={handleCommentSubmit}
       />
       <SocialSharing
