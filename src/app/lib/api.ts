@@ -44,7 +44,7 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
 export const fetchBlogDetailData = async (id: string): Promise<Article> => {
   const url = 'blogs';
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate=*`, {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}?slug=Domain-Routing-with-Cloudflared&populate=*`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

@@ -104,7 +104,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }
                       className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150"
                     >
                       <Link
-                        href={`/article/${blog.documentId}/${blog.slug}`}
+                        href={`/article/${blog.slug}`}
                         className="block p-3"
                       >
                         <div className="flex items-center mb-1">

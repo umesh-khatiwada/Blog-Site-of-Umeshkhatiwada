@@ -82,7 +82,7 @@ export default function Articlee() {
                   </div>
                   <p className="text-gray-400 text-sm mb-4">Posted: {new Date(post.publishedAt).toLocaleDateString()}</p>
                   <p className="text-gray-400 text-sm mb-6">Updated: {new Date(post.updatedAt).toLocaleDateString()}</p>
-                  <Link href={`/article/${post.documentId}/${post.slug}`} className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300">
+                  <Link href={`/article/${post.slug}`} className="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300">
                     $ cat article.md
                   </Link>
                 </div>

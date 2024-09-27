@@ -117,7 +117,7 @@ export default function Articles({ initialData }: ArticlesProps) {
                     <span>Last updated: {new Date(post.updatedAt).toLocaleDateString()}</span>
                   </div>
                   <Link
-                    href={`/article/${post.documentId}/${post.slug}`}
+                    href={`/article/${post.slug}`}
                     className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300"
                   >
                     Read more &rarr;

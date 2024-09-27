@@ -118,12 +118,11 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   }, [id, data, setCategoryId])
 
   const handleCommentSubmit = () => {
-    // Refresh the comments
-    // In a real app, you might want to fetch only the new comment or use a more efficient method
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}?populate=*`)
       .then((res) => res.json())
       .then((newData) => {
-        setComments(newData.data.attributes.comments.data || [])
+        console.log("data",newData.data)
+        setComments(newData.data.comments || [])
       })
       .catch(console.error)
   }
@@ -149,7 +148,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
       )
     }
 
-    const { Title, publishedAt, img, description } = data.data
+    const { Title, publishedAt, img, description } = data.data[0]
     const imageUrl = img[0].url
 
     return (
