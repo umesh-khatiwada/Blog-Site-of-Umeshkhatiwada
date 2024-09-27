@@ -1,28 +1,28 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import Image from "next/image";
-import { viewCounter } from "@/app/lib/api";
-import { Article, NewComment, Comment } from "@/app/types/blog";
-import SocialSharing from "@/app/components/ui/SocialMedia";
-import { FaTerminal, FaServer, FaEye, FaCalendarAlt } from "react-icons/fa";
-import { useCategory } from "@/app/hooks/store";
-import ContentRenderer from "@/app/components/ui/ContentRenderer";
+import React, { useEffect, useState, useTransition } from 'react'
+import { useParams } from 'next/navigation'
+import Image from 'next/image'
+import { viewCounter } from '@/app/lib/api'
+import { Article, Comment } from '@/app/types/blog'
+import SocialSharing from '@/app/components/ui/SocialMedia'
+import { FaTerminal, FaServer, FaEye, FaCalendarAlt } from 'react-icons/fa'
+import { useCategory } from '@/app/hooks/store'
+import ContentRenderer from '@/app/components/ui/ContentRenderer'
+import { postComment } from './postComment'
 
-// Memoized CommentsSection to prevent rerenders
 const MemoizedCommentsSection = React.memo(
   ({
     comments,
-    newComment,
-    setNewComment,
-    handleCommentSubmit,
+    blogId,
+    onCommentSubmit,
   }: {
-    comments: Comment[];
-    newComment: NewComment;
-    setNewComment: React.Dispatch<React.SetStateAction<NewComment>>;
-    handleCommentSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+    comments: Comment[]
+    blogId: string
+    onCommentSubmit: () => void
   }) => {
+    const [isPending, startTransition] = useTransition()
+
     return (
       <section className="mt-8 px-4 sm:px-6 lg:px-8">
         <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
@@ -37,24 +37,32 @@ const MemoizedCommentsSection = React.memo(
           ))}
         </ul>
 
-        <form onSubmit={handleCommentSubmit} className="space-y-3">
+        <form
+          action={async (formData) => {
+            startTransition(async () => {
+              const result = await postComment(formData)
+              if (result.success) {
+                onCommentSubmit()
+              } else {
+                console.error(result.error)
+                // Here you could set an error state and display it to the user
+              }
+            })
+          }}
+          className="space-y-3"
+        >
+          <input type="hidden" name="blogId" value={blogId} />
           <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
             <input
               type="text"
-              value={newComment.Name}
-              onChange={(e) =>
-                setNewComment((prev) => ({ ...prev, Name: e.target.value }))
-              }
+              name="name"
               placeholder="Name"
               required
               className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
             />
             <input
               type="email"
-              value={newComment.Email}
-              onChange={(e) =>
-                setNewComment((prev) => ({ ...prev, Email: e.target.value }))
-              }
+              name="email"
               placeholder="Email"
               required
               className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -62,10 +70,7 @@ const MemoizedCommentsSection = React.memo(
           </div>
 
           <textarea
-            value={newComment.comment}
-            onChange={(e) =>
-              setNewComment((prev) => ({ ...prev, comment: e.target.value }))
-            }
+            name="comment"
             placeholder="Your Comment"
             required
             className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
@@ -74,82 +79,54 @@ const MemoizedCommentsSection = React.memo(
 
           <button
             type="submit"
-            className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors"
+            disabled={isPending}
+            className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors disabled:bg-gray-400"
           >
-            Submit Comment
+            {isPending ? 'Submitting...' : 'Submit Comment'}
           </button>
         </form>
       </section>
-    );
+    )
   }
-);
+)
 
-MemoizedCommentsSection.displayName = "MemoizedCommentsSection";
+MemoizedCommentsSection.displayName = 'MemoizedCommentsSection'
 
 interface ArticleClientProps {
-  initialData: Article;
+  initialData: Article
 }
 
 const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
-  const params = useParams();
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const [data] = useState<Article>(initialData);
-  const [loading] = useState<boolean>(false);
-  const [error] = useState<string | null>(null);
+  const params = useParams()
+  const id = Array.isArray(params.id) ? params.id[0] : params.id
+  const [data] = useState<Article>(initialData)
+  const [loading] = useState<boolean>(false)
+  const [error] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>(
     initialData.data.comments || []
-  );
-  const { setCategoryId } = useCategory();
-  const [newComment, setNewComment] = useState<NewComment>({
-    Name: "",
-    Email: "",
-    comment: "",
-  });
+  )
+  const { setCategoryId } = useCategory()
 
   useEffect(() => {
-    if (!id) return;
+    if (!id) return
 
-    setCategoryId(data.data.categories[0].documentId);
+    setCategoryId(data.data.categories[0].documentId)
 
     if (data.viewCount !== undefined) {
-      viewCounter(id, data.viewCount);
+      viewCounter(id, data.viewCount)
     }
-  }, [id, data, setCategoryId]);
+  }, [id, data, setCategoryId])
 
-  const handleCommentSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}comments/`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer " + process.env.NEXT_PUBLIC_STRAPI_KEY,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            data: {
-              blog: id,
-              Email: newComment.Email,
-              Name: newComment.Name,
-              comment: newComment.comment,
-            },
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Failed to post comment");
-      }
-      const commentData = await response.json();
-      setComments((prevComments) => [
-        ...prevComments,
-        commentData.data as Comment,
-      ]);
-      setNewComment({ Name: "", Email: "", comment: "" });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const handleCommentSubmit = () => {
+    // Refresh the comments
+    // In a real app, you might want to fetch only the new comment or use a more efficient method
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}?populate=*`)
+      .then((res) => res.json())
+      .then((newData) => {
+        setComments(newData.data.attributes.comments.data || [])
+      })
+      .catch(console.error)
+  }
 
   const renderContent = React.useMemo(() => {
     if (loading) {
@@ -160,7 +137,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           <div className="bg-gray-800 h-4 mb-4 w-1/2 mx-auto rounded"></div>
           <div className="bg-gray-800 h-4 mb-4 w-2/3 mx-auto rounded"></div>
         </div>
-      );
+      )
     }
 
     if (error) {
@@ -169,11 +146,11 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           <FaServer className="w-16 h-16 mx-auto mb-4" />
           Error: {error}
         </div>
-      );
+      )
     }
 
-    const { Title, publishedAt, img, description } = data.data;
-    const imageUrl = img[0].url;
+    const { Title, publishedAt, img, description } = data.data
+    const imageUrl = img[0].url
 
     return (
       <article className="text-green-400 bg-gray-900 rounded-lg p-5 animate-fadeIn">
@@ -210,17 +187,16 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           <ContentRenderer description={description} />
         </div>
       </article>
-    );
-  }, [loading, error, data]);
+    )
+  }, [loading, error, data])
 
   return (
     <div className="container">
       {renderContent}
       <MemoizedCommentsSection
         comments={comments}
-        newComment={newComment}
-        setNewComment={setNewComment}
-        handleCommentSubmit={handleCommentSubmit}
+        blogId={id}
+        onCommentSubmit={handleCommentSubmit}
       />
       <SocialSharing
         shareUrl={typeof window !== "undefined" ? window.location.href : ""}
@@ -228,9 +204,9 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
         description={data.data.description || ""}
       />
     </div>
-  );
-};
+  )
+}
 
-ArticleClient.displayName = "ArticleClient";
+ArticleClient.displayName = 'ArticleClient'
 
-export default ArticleClient;
+export default ArticleClient
