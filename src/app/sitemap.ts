@@ -51,7 +51,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .filter(isValidArticle) // Ensure that only valid articles are processed
       .map(post => {
         const lastModified = post.publishedAt ? new Date(post.publishedAt) : new Date();
-        console.log('Processing article slug:', post.slug);
         return {
           url: `${baseUrl}/article/${post.slug}`,
           lastModified: lastModified.toISOString(),
@@ -59,8 +58,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           priority: 0.7,
         };
       });
-
-    console.log('Generated post entries:', JSON.stringify(postEntries, null, 2)); // Debug: log the generated post entries
 
     // Static entries for main pages
     const staticEntries: MetadataRoute.Sitemap = [
@@ -80,7 +77,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Combine static and dynamic entries
     const sitemapEntries = [...staticEntries, ...postEntries];
-    console.log('Full Sitemap Entries:', JSON.stringify(sitemapEntries, null, 2)); // Debug: log the combined sitemap entries
 
     return sitemapEntries;
   } catch (error) {

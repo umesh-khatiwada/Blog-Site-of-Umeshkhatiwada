@@ -25,7 +25,7 @@ interface useMetaData {
     description: "Initial Description",
     setCategoryId: (id) => set({ blogId: id }),
     setMetaData: (payload) => {
-      console.log("setMetaData called with:", payload); // Debugging state update
+      ("setMetaData called with:", payload); // Debugging state update
       set({ title: payload.title, description: payload.description });
     },
   }));

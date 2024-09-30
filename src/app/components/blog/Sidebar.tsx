@@ -67,12 +67,12 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }
 
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-      <div className="md:hidden fixed top-4 right-4 z-50">
+      <div className="md:hidden fixed top-20 right-5 z-50">
         <button
           className="text-cyan-400 focus:outline-none"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {isSidebarOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
         </button>
       </div>
 

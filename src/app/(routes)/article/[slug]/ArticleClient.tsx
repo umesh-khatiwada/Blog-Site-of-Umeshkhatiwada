@@ -106,11 +106,9 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const { setCategoryId } = useCategory()
 
   useEffect(() => {
-    console.log("datadasdasdasa",data)
     setComments(data.data[0].comments || [])
     if (!initialData.data.slug) return
 
-    console.log("datadasdasdasa",data)
     setCategoryId(data.data.categories[0].documentId)
 
     

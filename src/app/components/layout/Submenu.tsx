@@ -48,14 +48,14 @@ export default function Submenu({ categories }: SubmenuProps) {
     <div className="bg-gray-900 py-2 border-b border-green-500">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          
-          {/* Hidden Home Link on Mobile */}
-          <div className="flex items-center mb-2 md:mb-0 hidden md:block">
+
+          {/* Home Link visible in mobile view */}
+          <div className="hidden md:flex items-center mb-2 md:mb-0">
             <Link href="/" className="text-green-400 hover:text-green-300 transition-colors duration-300">
               <FaHome size={24} />
             </Link>
           </div>
-          
+
           {/* Middle Section: Categories */}
           <div className="flex justify-center flex-wrap space-x-2 md:space-x-4 mb-2 md:mb-0 text-center">
             {categories && categories.length > 0 ? (
@@ -97,6 +97,13 @@ export default function Submenu({ categories }: SubmenuProps) {
             <button onClick={handleSearchClick} className="hidden md:block text-green-400 hover:text-green-300 transition-colors duration-300">
               <FaSearch />
             </button>
+
+            {/* Home Link visible in mobile view, hidden on desktop */}
+            <div className="flex items-center mb-2 md:mb-0 block md:hidden">
+              <Link href="/" className="text-green-400 hover:text-green-300 transition-colors duration-300">
+                <FaHome size={24} />
+              </Link>
+            </div>
           </div>
 
         </div>
