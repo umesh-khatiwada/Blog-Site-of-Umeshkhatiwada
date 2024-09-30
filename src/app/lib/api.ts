@@ -41,10 +41,11 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
 };
 
 // You can include any authorization tokens here if needed
-export const fetchBlogDetailData = async (id: string): Promise<Article> => {
+export const fetchBlogDetailData = async (slug: string): Promise<Article> => {
   const url = 'blogs';
+  console.log("slug",slug)
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}?slug=Domain-Routing-with-Cloudflared&populate=*`, {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}?filters[slug][$eq]=${slug}&populate=*`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

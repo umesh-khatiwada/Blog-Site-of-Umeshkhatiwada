@@ -19,7 +19,9 @@ async function getArticle(slug: string): Promise<Article> {
 
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+ 
   const article = await getArticle(params.slug)
+  console.log('Params:', article)
   
   return {
     title: article.data.Title,
@@ -34,6 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const article = await getArticle(params.slug)
+  // console.log('Article:', JSON.stringify(article, null, 2))
   
   return <ArticleClient initialData={article} />
 }
