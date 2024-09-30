@@ -45,38 +45,44 @@ export default function Submenu({ categories }: SubmenuProps) {
   };
 
   return (
-    <div className="bg-gray-900 py-4 border-b border-green-500">
+    <div className="bg-gray-900 py-2 border-b border-green-500">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
+        <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           
-          {/* Left Section: Home Link */}
-          <div className="flex space-x-4 mb-4 md:mb-0">
+          {/* Hidden Home Link on Mobile */}
+          <div className="flex items-center mb-2 md:mb-0 hidden md:block">
             <Link href="/" className="text-green-400 hover:text-green-300 transition-colors duration-300">
               <FaHome size={24} />
             </Link>
           </div>
           
           {/* Middle Section: Categories */}
-          <div className="flex justify-center flex-wrap space-x-4 mb-4 md:mb-0">
+          <div className="flex justify-center flex-wrap space-x-2 md:space-x-4 mb-2 md:mb-0 text-center">
             {categories && categories.length > 0 ? (
               categories.map((item) => (
                 <Link
                   key={item.id}
                   href={`/article/category/${item.Title}`}
-                  className="text-green-400 hover:text-green-300 mb-2 md:mb-0 font-mono transition-colors duration-300 flex items-center"
+                  className="text-green-400 hover:text-green-300 font-mono transition-colors duration-300 flex items-center justify-center text-sm md:text-base"
                 >
                   <FaServer className="mr-1" />
                   {toUpperCase(item.Title)}
                 </Link>
               ))
             ) : (
-              <div className="text-yellow-500 font-mono">$ No categories found</div>
+              <div className="text-yellow-500 font-mono text-sm md:text-base">$ No categories found</div>
             )}
           </div>
 
           {/* Right Section: Search Input */}
-          <div className="flex items-center space-x-2" ref={searchRef}>
-            <div className="relative">
+          <div className="flex items-center space-x-2 w-full md:w-auto" ref={searchRef}>
+            <div className="relative w-full md:w-auto">
+              <button
+                onClick={toggleSearch}
+                className="text-green-400 md:hidden"
+              >
+                <FaSearch />
+              </button>
               <input
                 id="blog-search"
                 type="text"
@@ -84,14 +90,8 @@ export default function Submenu({ categories }: SubmenuProps) {
                 value={blogSearchTerm}
                 onChange={handleBlogSearchChange}
                 onKeyDown={handleKeyDown}
-                className={`px-4 py-2 rounded-lg bg-gray-800 text-green-400 border border-green-500 focus:outline-none focus:border-green-300 transition-all duration-300 font-mono ${isSearchVisible ? 'w-full' : 'w-0 md:w-48'}`}
+                className={`px-4 py-2 rounded-lg bg-gray-800 text-green-400 border border-green-500 focus:outline-none focus:border-green-300 transition-all duration-300 font-mono w-full md:w-48 ${isSearchVisible ? "block" : "hidden md:block"}`}
               />
-              <button
-                onClick={toggleSearch}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-green-400 md:hidden"
-              >
-                <FaSearch />
-              </button>
             </div>
 
             <button onClick={handleSearchClick} className="hidden md:block text-green-400 hover:text-green-300 transition-colors duration-300">

@@ -7,13 +7,14 @@ export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full flex flex-col md:flex-row justify-between p-6 bg-gray-900 shadow-md relative">
-      <div className="flex items-center justify-between">
+    <header className="w-full flex flex-col md:flex-row justify-between p-4 bg-gray-900 shadow-md relative">
+      <div className="flex items-center justify-between w-full md:w-auto">
         <Image
           src="/assets/logo.png"
           alt="The Cloud Mechanic Logo"
-          width={140}
-          height={140}
+          width={70} // Smaller logo width for mobile view
+          height={70} // Smaller logo height for mobile view
+          className="md:w-[110px] md:h-[80px]"
         />
         <button
           onClick={() => setMenuOpen(!isMenuOpen)}
@@ -26,9 +27,9 @@ export default function Header() {
       <nav
         className={`${
           isMenuOpen ? 'block' : 'hidden'
-        } md:flex md:space-x-8 space-y-4 md:space-y-0 text-lg bg-gray-800 md:bg-transparent w-full md:w-auto text-white mt-4 md:mt-0 md:relative p-4 md:p-0 transition-all duration-300 ease-in-out`}
+        } md:flex md:space-x-8 space-y-4 md:space-y-0 text-lg bg-gray-800 md:bg-transparent w-full md:w-auto text-white mt-4 md:mt-0 p-4 md:p-0 transition-all duration-300 ease-in-out`}
       >
-        <div className={`p-4 rounded-lg shadow-lg md:shadow-none bg-gray-800 md:bg-transparent flex flex-col md:flex-row md:items-center md:space-x-8`}>
+        <div className="flex flex-col md:flex-row md:items-center md:space-x-8 w-full md:w-auto">
           {[
             { href: "https://umeshkhatiwada.com.np", label: "Home" },
             { href: "https://umeshkhatiwada.com.np/about.html", label: "About" },
