@@ -34,13 +34,9 @@ function isValidArticle(article: Article): boolean {
 // Main sitemap generation function
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    const apiResponse = await fetchPosts();
-    console.log('Fetched posts:', JSON.stringify(apiResponse, null, 2)); // Debug: log the fetched posts
-
+    const apiResponse = await fetchPosts()
     const posts = apiResponse.data;
-
     const baseUrl = BASE_URL || 'http://localhost:3000';
-
     // Log each post before filtering
     posts.forEach((post, index) => {
       console.log(`Raw post #${index + 1}:`, JSON.stringify(post, null, 2));
