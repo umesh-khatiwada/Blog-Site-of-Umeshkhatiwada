@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import ArticleClient from './ArticleClient'
 import { fetchBlogDetailData } from "@/app/lib/api"
 import { Article } from "@/app/types/blog"
+import { useCategory } from '@/app/hooks/store'
 
 interface PageProps {
   params: { slug: string }
@@ -11,6 +12,7 @@ interface PageProps {
 async function getArticle(slug: string): Promise<Article> {
   try {
     const article = await fetchBlogDetailData(slug)
+    
     return article
   } catch (error) {
     notFound()
@@ -36,7 +38,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const article = await getArticle(params.slug)
-  // console.log('Article:', JSON.stringify(article, null, 2))
   
   return <ArticleClient initialData={article} />
 }

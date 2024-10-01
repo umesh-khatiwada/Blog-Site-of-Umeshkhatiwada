@@ -108,7 +108,7 @@ export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ da
 
 // Fetch categories from API
 export async function fetchCategories(): Promise<Category[]> {
-  const url = "https://api-blog.umeshkhatiwada.com.np/api/categories?populate=%2A";
+  const url = "https://api-blog.umeshkhatiwada.com.np/api/categories?populate=*";
   try {
     const response = await fetch(url);
     const data = await response.json();
