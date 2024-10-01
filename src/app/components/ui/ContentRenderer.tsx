@@ -7,7 +7,7 @@ interface ContentRendererProps {
   description: Article["data"]["description"];
 }
 
-const ContentRenderer: React.FC<ContentRendererProps> = ({ description }) => {
+const ContentRenderer: React.FC<ContentRendererProps> = ({ description}) => {
   return (
     <div className="flex justify-center">
       <div className="prose prose-lg prose-invert w-[150%] max-w-7xl font-mono px-4">

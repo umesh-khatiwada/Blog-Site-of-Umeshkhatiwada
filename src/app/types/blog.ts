@@ -90,6 +90,7 @@ export interface Article {
   documentId: string;
   Title: string;
   description: string;
+  description_2: string;
   slug: string;
   viewCount: number;
   createdAt: string;

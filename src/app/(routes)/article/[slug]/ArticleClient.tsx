@@ -9,6 +9,7 @@ import { FaTerminal, FaServer, FaEye, FaCalendarAlt } from 'react-icons/fa'
 import { useCategory } from '@/app/hooks/store'
 import ContentRenderer from '@/app/components/ui/ContentRenderer'
 import { postComment } from './postComment'
+import ContentRendererDesc from '@/app/components/ui/ContentRendererDesc'
 
 const MemoizedCommentsSection = React.memo(
   ({
@@ -107,10 +108,9 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
 
   useEffect(() => {
     setComments(data.data[0].comments || [])
-    setCategoryId(data.data[0].categories[0].documentId)
     if (!initialData.data.slug) return
 
-
+    setCategoryId(data.data.categories[0].documentId)
 
     
     if (data.viewCount !== undefined) {
@@ -148,7 +148,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
       )
     }
 
-    const { Title, publishedAt, img, description } = data.data[0]
+    const { Title, publishedAt, img, description ,description_2} = data.data[0]
     const imageUrl = img[0].url
 
     return (
@@ -183,7 +183,12 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           )}
         </div>
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
-          <ContentRenderer description={description} />
+          {/* <ContentRenderer description={description}/> */}
+          {description_2.length == 0 ? (
+  <ContentRenderer description={description} />
+) : (
+   <ContentRendererDesc description_2={description_2} />
+)}
         </div>
       </article>
     )
