@@ -89,7 +89,6 @@ const MemoizedCommentsSection = React.memo(
     )
   }
 )
-
 MemoizedCommentsSection.displayName = 'MemoizedCommentsSection'
 
 interface ArticleClientProps {
@@ -108,15 +107,11 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
 
   useEffect(() => {
     setComments(data.data[0].comments || [])
-    if (!initialData.data.slug) return
-
-    setCategoryId(data.data.categories[0].documentId)
-
-    
+    setCategoryId(data.data[0].categories[0].documentId)
     if (data.viewCount !== undefined) {
       viewCounter(id, data.viewCount)
     }
-  }, [id, data, setCategoryId, initialData.data.slug])
+  }, [id, data, setCategoryId])
 
   const handleCommentSubmit = () => {
     fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${initialData.data[0].documentId}?populate=*`)
@@ -148,7 +143,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
       )
     }
 
-    const { Title, publishedAt, img, description ,description_2} = data.data[0]
+    const { Title, publishedAt, img, description,description_2 } = data.data[0]
     const imageUrl = img[0].url
 
     return (
@@ -183,12 +178,13 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           )}
         </div>
         <div className="prose prose-invert max-w-none overflow-hidden break-words">
-          {/* <ContentRenderer description={description}/> */}
-          {description_2.length == 0 ? (
+        {description_2.length == 0 ? (
   <ContentRenderer description={description} />
 ) : (
    <ContentRendererDesc description_2={description_2} />
 )}
+
+
         </div>
       </article>
     )

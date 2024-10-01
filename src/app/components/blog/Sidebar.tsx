@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+"use client";
+
 import React, { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -37,72 +40,24 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
     fetchData();
   }, [categoryId]);
 
-  // Loading Skeleton for Sidebar
-  const LoadingSkeleton = () => (
-    <div className="animate-pulse space-y-4">
-      <div className="bg-gray-700 h-8 w-3/4 rounded"></div>
-      <div className="bg-gray-700 h-5 w-1/2 rounded"></div>
-      <div className="bg-gray-700 h-5 w-3/4 rounded"></div>
-      <div className="bg-gray-700 h-5 w-3/4 rounded"></div>
+  // Sidebar Loading Skeleton
+  const SidebarLoadingSkeleton = () => (
+    <div className="p-4">
+      <div className="animate-pulse">
+        <div className="bg-gray-700 h-8 w-3/4 mb-6 rounded"></div>
+        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
+        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
+        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
+      </div>
     </div>
   );
 
-  const renderSidebarContent = () => {
-    if (isLoading) {
-      return <LoadingSkeleton />;
-    }
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
 
-    if (!categoryData || !categoryData.data) {
-      return <div>No categories found.</div>;
-    }
-
-    const { sub_categories: categories, Title: fullCategoryTitle } = categoryData.data;
-
-    return (
-      <>
-        <div className="flex items-center space-x-2 mb-6">
-          <FaServer className="text-green-400" size={24} />
-          <h2 className="text-xl font-bold text-green-400">
-            {fullCategoryTitle.charAt(0).toUpperCase() + fullCategoryTitle.slice(1)}
-          </h2>
-        </div>
-        <ul className="space-y-4">
-          {categories.map((category) => (
-            <li key={category.id} className="mb-4">
-              <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
-                <FaCodeBranch className="mr-2 text-green-400" size={16} />
-                <span className="text-lg font-semibold text-green-200">
-                  {category.Title}
-                </span>
-              </div>
-              <ul className="pl-4 space-y-2">
-                {category.blogs.map((blog) => (
-                  <li
-                    key={blog.id}
-                    className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150"
-                  >
-                    <Link
-                      href={`/article/${blog.slug}`}
-                      className="block p-3"
-                    >
-                      <div className="flex items-center mb-1">
-                        <FaBook
-                          className="mr-2 text-green-400"
-                          size={14}
-                        />
-                        <span className="text-sm font-medium text-green-100">
-                          {blog.Title.length > 25 ? blog.Title.slice(0, 25) + "..." : blog.Title}
-                        </span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
-      </>
-    );
+  const truncateTitle = (title: string, limit: number) => {
+    return title.length > limit ? title.slice(0, limit) + "..." : title;
   };
 
   return (
@@ -112,7 +67,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
           className="text-green-400 focus:outline-none"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
-          {isSidebarOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+          {isSidebarOpen ? <FaTimes size={18} className="text-green-400" /> : <FaBars size={18} className="text-green-400" />}
         </button>
       </div>
 
@@ -121,13 +76,64 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        <div className="p-4">
-          {renderSidebarContent()}
-        </div>
+        {isLoading ? (
+          <SidebarLoadingSkeleton />
+        ) : categoryData && categoryData.data ? (
+          <div className="p-4">
+            <div className="flex items-center space-x-2 mb-6">
+              <FaServer className="text-green-400" size={24} />
+              <h2 className="text-xl font-bold text-green-400 font-mono">
+                {capitalizeFirstLetter(categoryData.data.Title)}
+              </h2>
+            </div>
+            <ul className="space-y-4">
+              {categoryData.data.sub_categories.map((category) => (
+                <li key={category.id} className="mb-4">
+                  <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
+                    <FaCodeBranch className="mr-2 text-green-400" size={16} />
+                    <span className="text-lg font-semibold text-white font-mono">
+                      {category.Title}
+                    </span>
+                  </div>
+                  <ul className="pl-4 space-y-2">
+                    {category.blogs.map((blog) => (
+                      <li
+                        key={blog.id}
+                        className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150"
+                      >
+                        <Link
+                          href={`/article/${blog.slug}`}
+                          className="block p-3"
+                        >
+                          <div className="flex items-center mb-1">
+                            <FaBook className="mr-2 text-green-400" size={14} />
+                            <span className="text-sm font-medium text-white font-mono">
+                              {truncateTitle(blog.Title, 25)}
+                            </span>
+                          </div>
+                          <div className="flex items-center text-xs text-gray-400">
+                            {/* <FaClock className="mr-1" size={12} />
+                            <span>
+                              {new Date(blog.publishedAt).toLocaleDateString()}
+                            </span> */}
+                          </div>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <div className="p-4">
+            <div>No categories found.</div>
+          </div>
+        )}
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
-        {children}
+        <div>{children}</div>
       </main>
     </div>
   );
