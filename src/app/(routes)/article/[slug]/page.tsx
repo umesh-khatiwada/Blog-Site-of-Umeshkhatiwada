@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation'
 import ArticleClient from './ArticleClient'
 import { fetchBlogDetailData } from "@/app/lib/api"
 import { Article } from "@/app/types/blog"
-import { useCategory } from '@/app/hooks/store'
 
 interface PageProps {
   params: { slug: string }
