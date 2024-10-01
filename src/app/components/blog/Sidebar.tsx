@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-"use client";
-
 import React, { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import {
@@ -55,7 +52,6 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
       return <LoadingSkeleton />;
     }
 
-    // Check if categoryData is available
     if (!categoryData || !categoryData.data) {
       return <div>No categories found.</div>;
     }
@@ -65,8 +61,8 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
     return (
       <>
         <div className="flex items-center space-x-2 mb-6">
-          <FaServer className="text-cyan-400" size={24} />
-          <h2 className="text-xl font-bold text-cyan-400">
+          <FaServer className="text-green-400" size={24} />
+          <h2 className="text-xl font-bold text-green-400">
             {fullCategoryTitle.charAt(0).toUpperCase() + fullCategoryTitle.slice(1)}
           </h2>
         </div>
@@ -74,8 +70,8 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
           {categories.map((category) => (
             <li key={category.id} className="mb-4">
               <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
-                <FaCodeBranch className="mr-2 text-cyan-400" size={16} />
-                <span className="text-lg font-semibold text-white">
+                <FaCodeBranch className="mr-2 text-green-400" size={16} />
+                <span className="text-lg font-semibold text-green-200">
                   {category.Title}
                 </span>
               </div>
@@ -91,19 +87,13 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
                     >
                       <div className="flex items-center mb-1">
                         <FaBook
-                          className="mr-2 text-cyan-400"
+                          className="mr-2 text-green-400"
                           size={14}
                         />
-                        <span className="text-sm font-medium text-white">
+                        <span className="text-sm font-medium text-green-100">
                           {blog.Title.length > 25 ? blog.Title.slice(0, 25) + "..." : blog.Title}
                         </span>
                       </div>
-                      {/* <div className="flex items-center text-xs text-gray-400">
-                        <FaClock className="mr-1" size={12} />
-                        <span>
-                          {new Date(blog.publishedAt).toLocaleDateString()}
-                        </span>
-                      </div> */}
                     </Link>
                   </li>
                 ))}
@@ -119,7 +109,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
     <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
       <div className="md:hidden fixed top-20 right-5 z-50">
         <button
-          className="text-cyan-400 focus:outline-none"
+          className="text-green-400 focus:outline-none"
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         >
           {isSidebarOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
