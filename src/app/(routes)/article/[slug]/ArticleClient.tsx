@@ -107,9 +107,10 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
 
   useEffect(() => {
     setComments(data.data[0].comments || [])
+    setCategoryId(data.data[0].categories[0].documentId)
     if (!initialData.data.slug) return
 
-    setCategoryId(data.data.categories[0].documentId)
+
 
     
     if (data.viewCount !== undefined) {

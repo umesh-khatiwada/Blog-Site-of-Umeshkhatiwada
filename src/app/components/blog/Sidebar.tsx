@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FaServer,
@@ -13,26 +13,44 @@ import {
 } from "react-icons/fa";
 import { fetchCategoriesWithSubcategories } from "@/app/lib/api";
 import { Category } from "@/app/types/blog";
-import { GetServerSideProps } from "next";
+import { useCategory } from "@/app/hooks/store";
 
 interface SidebarProps {
   children: ReactNode;
   initialCategoryData: { data: Category | null };
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const categoryId = context.query.categoryId || "0";
-  const initialCategoryData = await fetchCategoriesWithSubcategories(categoryId.toString());
-
-  return {
-    props: {
-      initialCategoryData: initialCategoryData || { data: null },
-    },
-  };
-};
-
 const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }) => {
-  if (!initialCategoryData.data) {
+  const [categoryData, setCategoryData] = useState(initialCategoryData);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { categoryId } = useCategory();
+  const [isLoading, setIsLoading] = useState(categoryId === '0');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (categoryId === '0') {
+        setIsLoading(true);
+      }
+      console.log("categoryId", categoryId);
+      const data = await fetchCategoriesWithSubcategories(categoryId);
+      console.log("data123", data);
+      setCategoryData(data || { data: null });
+      setIsLoading(false);
+    };
+    fetchData();
+  }, [categoryId]);
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
+        <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
+          <div>Loading...</div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!categoryData.data) {
     return (
       <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
         <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
@@ -40,22 +58,10 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }
         </main>
       </div>
     );
-/*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Fetches categories from the API and updates the component state.
-   * Only fetches categories if the current category ID is not "0" and
-   * does not match the ID of the initial category data.
-   * Updates the component state with the response data.
-   * If there is an error, logs the error to the console and sets the
-   * component state to an empty array.
-   * Finally, sets the isLoading state to false.
-   */
-/******  c3dbcaec-bbbb-4645-a4d2-2dc6dc5e4491  *******/  }
+  }
 
-  const categories = initialCategoryData.data.sub_categories;
-  const fullCategory = initialCategoryData.data;
-
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+  const categories = categoryData.data.sub_categories;
+  const fullCategory = categoryData.data;
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
