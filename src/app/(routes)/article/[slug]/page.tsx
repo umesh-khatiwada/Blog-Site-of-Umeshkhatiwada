@@ -22,7 +22,6 @@ async function getArticle(slug: string): Promise<Article> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
  
   const article = await getArticle(params.slug)
-  console.log('Params:', article)
   
   return {
     title: article.data.Title,

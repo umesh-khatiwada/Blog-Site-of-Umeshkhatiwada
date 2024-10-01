@@ -105,7 +105,16 @@ export interface Article {
 }
 
 
-
+export interface ArticlesProps {
+  initialData: {
+    data: Article[];
+    meta: {
+      pagination: {
+        total: number;
+      };
+    };
+  };
+}
 
 
 

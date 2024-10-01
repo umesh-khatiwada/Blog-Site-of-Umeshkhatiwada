@@ -7,6 +7,7 @@ import { Article } from "@/app/types/blog";
 import Image from 'next/image'; // Import the Image component
 import { fetchCategoryDetailsData } from '@/app/lib/api';
 import SkeletonCard from '@/app/components/blog/DummyCard';
+import Footer from '@/app/components/layout/Footer';
 
 export default function Articles() {
   const { category } = useParams<{ category: string }>();
@@ -40,6 +41,7 @@ export default function Articles() {
   }, [category]);
 
   return (
+    <>
     <div className="min-h-screen bg-gray-900 text-gray-100">
 
       <DynamicBanner />
@@ -110,5 +112,7 @@ export default function Articles() {
         )}
       </main>
     </div>
+     <Footer />
+     </>
   );
 }

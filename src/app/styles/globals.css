@@ -90,3 +90,19 @@ Copy code
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Add this to your global or component-specific styles */
+.btn-read-more {
+  background-color: #28a745; /* Green color */
+  color: #fff;               /* White text */
+  padding: 0.5rem 1rem;       /* Consistent padding */
+  border-radius: 0.375rem;    /* Rounded corners */
+  text-align: center;         /* Center text */
+  display: inline-block;      /* Ensure button-like appearance */
+  font-size: 1rem;            /* Font size for consistency */
+  transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.btn-read-more:hover {
+  background-color: #218838;  /* Darker green on hover */
+}

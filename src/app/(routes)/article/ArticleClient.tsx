@@ -3,22 +3,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import DynamicBanner from '@/app/components/blog/Blogroute';
-import { Article } from '@/app/types/blog';
+import { Article, ArticlesProps } from '@/app/types/blog';
 import { fetchBlogData } from '@/app/lib/api';
 import Pagination from '@/app/components/blog/Pagination';
 import { DummyCard } from '@/app/components/blog/DummyCard';
 import Footer from '@/app/components/layout/Footer';
-
-interface ArticlesProps {
-  initialData: {
-    data: Article[];
-    meta: {
-      pagination: {
-        total: number;
-      };
-    };
-  };
-}
 
 export default function Articles({ initialData }: ArticlesProps) {
   const [data, setData] = useState<Article[]>(initialData.data);
@@ -28,6 +17,7 @@ export default function Articles({ initialData }: ArticlesProps) {
     Math.ceil(initialData.meta.pagination.total / 6)
   );
   const [loading, setLoading] = useState<boolean>(false);
+  const [linkLoading, setLinkLoading] = useState<boolean>(false);
 
   const fetchPageData = async (page: number) => {
     setLoading(true);
@@ -56,6 +46,10 @@ export default function Articles({ initialData }: ArticlesProps) {
     }
   };
 
+  const handleLinkClick = () => {
+    setLinkLoading(true);
+  };
+
   if (error) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
@@ -68,7 +62,7 @@ export default function Articles({ initialData }: ArticlesProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className={`min-h-screen bg-gray-900 text-white ${linkLoading ? 'cursor-wait' : ''}`}>
       <DynamicBanner />
 
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -89,42 +83,46 @@ export default function Articles({ initialData }: ArticlesProps) {
                   No posts found. Check back later!
                 </div>
               )
-            : data.map((post) => (
-              <article
-                key={post.id}
-                className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
-              >
-                {post.img && post.img[0]?.formats?.thumbnail?.url && (
-                  <div className="relative h-48">
-                    <Image
-                      src={post.img[0].formats.thumbnail.url}
-                      alt={post.Title}
-                      layout="fill"
-                      objectFit="cover"
-                      className="transition-opacity duration-300 hover:opacity-80"
-                    />
+            : data.map((post) => {
+              const title = post.Title.split(' ').slice(0, 5).join(' ') + (post.Title.split(' ').length > 5 ? '...' : '');
+              return (
+                <article
+                  key={post.id}
+                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                >
+                  {post.img && post.img[0]?.formats?.thumbnail?.url && (
+                    <div className="relative h-48">
+                      <Image
+                        src={post.img[0].formats.thumbnail.url}
+                        alt={post.Title}
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-opacity duration-300 hover:opacity-80"
+                      />
+                    </div>
+                  )}
+                  <div className="p-6">
+                    <h2 className="text-2xl font-semibold mb-2 text-blue-300">
+                      {title}
+                    </h2>
+                    <p className="text-gray-400 text-sm mb-4">
+                      {post.shortDescription}
+                    </p>
+                    <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                      <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      <span>Last updated: {new Date(post.updatedAt).toLocaleDateString()}</span>
+                    </div>
+                    <Link
+                      href={`/article/${post.slug}`}
+                      className="btn-read-more"
+                      onClick={handleLinkClick}
+                    >
+                      Read more &rarr;
+                    </Link>
                   </div>
-                )}
-                <div className="p-6">
-                  <h2 className="text-2xl font-semibold mb-2 text-blue-300">
-                    {post.Title}
-                  </h2>
-                  <p className="text-gray-400 text-sm mb-4">
-                    {post.shortDescription}
-                  </p>
-                  <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
-                    <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                    <span>Last updated: {new Date(post.updatedAt).toLocaleDateString()}</span>
-                  </div>
-                  <Link
-                    href={`/article/${post.slug}`}
-                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300"
-                  >
-                    Read more &rarr;
-                  </Link>
-                </div>
-              </article>
-            ))}
+                </article>
+              );
+            })}
         </div>
 
         <Pagination
