@@ -17,40 +17,50 @@ import { useCategory } from "@/app/hooks/store";
 
 interface SidebarProps {
   children: ReactNode;
-  initialCategoryData: { data: Category | null };
 }
 
-const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }) => {
-  const [categoryData, setCategoryData] = useState(initialCategoryData);
+const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
+  const [categoryData, setCategoryData] = useState<{ data: Category | null } | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { categoryId } = useCategory();
-  const [isLoading, setIsLoading] = useState(categoryId === '0');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (categoryId === '0') {
-        setIsLoading(true);
+      setIsLoading(true);
+      try {
+        const data = await fetchCategoriesWithSubcategories(categoryId);
+        setCategoryData(data || { data: null });
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      } finally {
+        setIsLoading(false);
       }
-      console.log("categoryId", categoryId);
-      const data = await fetchCategoriesWithSubcategories(categoryId);
-      console.log("data123", data);
-      setCategoryData(data || { data: null });
-      setIsLoading(false);
     };
+
     fetchData();
   }, [categoryId]);
 
+  // Loading Skeleton
+  const LoadingSkeleton = () => (
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
+      <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
+        <div className="animate-pulse">
+          <div className="bg-gray-700 h-8 w-3/4 mb-4 rounded"></div>
+          <div className="bg-gray-700 h-5 w-1/2 mb-2 rounded"></div>
+          <div className="bg-gray-700 h-5 w-3/4 mb-2 rounded"></div>
+          <div className="bg-gray-700 h-5 w-3/4 mb-2 rounded"></div>
+        </div>
+      </main>
+    </div>
+  );
+
   if (isLoading) {
-    return (
-      <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
-          <div>Loading...</div>
-        </main>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
-  if (!categoryData.data) {
+  // Check if categoryData is available
+  if (!categoryData || !categoryData.data) {
     return (
       <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
         <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
@@ -60,8 +70,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }
     );
   }
 
-  const categories = categoryData.data.sub_categories;
-  const fullCategory = categoryData.data;
+  const { sub_categories: categories, Title: fullCategoryTitle } = categoryData.data;
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -91,7 +100,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children, initialCategoryData }
           <div className="flex items-center space-x-2 mb-6">
             <FaServer className="text-cyan-400" size={24} />
             <h2 className="text-xl font-bold text-cyan-400">
-              {capitalizeFirstLetter(fullCategory.Title)}
+              {capitalizeFirstLetter(fullCategoryTitle)}
             </h2>
           </div>
           <ul className="space-y-4">
