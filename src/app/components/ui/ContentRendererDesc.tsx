@@ -37,7 +37,6 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
   return (
     <div className="min-h-screen p-8 custom-scrollbar bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Markdown Renderer</h1>
         {content ? (
           <div 
             className="prose prose-lg max-w-none dark:prose-invert prose-headings:text-gray-900 dark:prose-headings:text-gray-100 prose-a:text-blue-600 dark:prose-a:text-blue-400 hover:prose-a:text-blue-800 dark:hover:prose-a:text-blue-300 prose-strong:text-gray-900 dark:prose-strong:text-gray-100 prose-code:text-gray-800 dark:prose-code:text-gray-200 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-800 prose-blockquote:border-l-4 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-700 prose-blockquote:pl-4 prose-blockquote:italic"
