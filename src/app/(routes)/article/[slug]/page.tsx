@@ -24,6 +24,7 @@ async function getArticle(slug: string): Promise<Article | null> {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const article = await getArticle(params.slug)
+  console.log("article",article)
 
   if (!article || !article.data || !article.data[0]) {
     return { title: 'Article not found', description: '' }
@@ -33,10 +34,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: articleData.Title || 'Untitled',
-    description: articleData.description || 'No description available',
+    description: articleData.shortDescription || 'No description available',
     openGraph: {
       title: articleData.Title || 'Untitled',
-      description: articleData.description || 'No description available',
+      description: articleData.shortDescription || 'No description available',
       images: articleData.img?.[0]?.url || '/default-image.jpg',
     },
   }
