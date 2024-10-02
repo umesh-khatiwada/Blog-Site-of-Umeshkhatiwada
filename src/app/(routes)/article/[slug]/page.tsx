@@ -4,39 +4,50 @@ import ArticleClient from './ArticleClient'
 import { fetchBlogDetailData } from "@/app/lib/api"
 import { Article } from "@/app/types/blog"
 
+
 interface PageProps {
   params: { slug: string }
 }
 
-async function getArticle(slug: string): Promise<Article> {
+async function getArticle(slug: string): Promise<Article | null> {
   try {
     const article = await fetchBlogDetailData(slug)
     return article
   } catch (error) {
+    console.error('Error fetching article:', error)
     notFound()
+    return null // to avoid potential type issues
   }
 }
 
 
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
- 
   const article = await getArticle(params.slug)
-  console.log('Params:', article)
-  
+
+  if (!article || !article.data || !article.data[0]) {
+    return { title: 'Article not found', description: '' }
+  }
+
+  const articleData = article.data[0]
+
   return {
-    title: article.data.Title,
-    description: article.data.description,
+    title: articleData.Title || 'Untitled',
+    description: articleData.description || 'No description available',
     openGraph: {
-      title: article.data.Title,
-      description: article.data.description,
-      images: article.data[0].img[0]?.url,
+      title: articleData.Title || 'Untitled',
+      description: articleData.description || 'No description available',
+      images: articleData.img?.[0]?.url || '/default-image.jpg',
     },
   }
 }
 
 export default async function Page({ params }: PageProps) {
   const article = await getArticle(params.slug)
-  // console.log('Article:', JSON.stringify(article, null, 2))
-  
+
+  if (!article || !article.data || !article.data[0]) {
+    return <p>Article not found</p>
+  }
+
   return <ArticleClient initialData={article} />
 }

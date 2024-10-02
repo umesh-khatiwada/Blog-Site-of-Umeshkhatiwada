@@ -9,7 +9,6 @@ import {
   FaBook,
   FaBars,
   FaTimes,
-  FaClock,
 } from "react-icons/fa";
 import { fetchCategoriesWithSubcategories } from "@/app/lib/api";
 import { Category } from "@/app/types/blog";
@@ -59,16 +58,6 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
 
   const truncateTitle = (title: string, limit: number) => {
     return title.length > limit ? title.slice(0, limit) + "..." : title;
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit',
-      timeZone: 'UTC'  // Ensure consistent timezone
-    });
   };
 
   return (
@@ -123,10 +112,10 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
                             </span>
                           </div>
                           <div className="flex items-center text-xs text-gray-400">
-                            <FaClock className="mr-1" size={12} />
+                            {/* <FaClock className="mr-1" size={12} />
                             <span>
-                              {formatDate(blog.publishedAt)}
-                            </span>
+                              {new Date(blog.publishedAt).toLocaleDateString()}
+                            </span> */}
                           </div>
                         </Link>
                       </li>

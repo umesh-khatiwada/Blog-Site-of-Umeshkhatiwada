@@ -93,7 +93,7 @@ export default function Articles({ initialData }: ArticlesProps) {
                   {post.img && post.img[0]?.formats?.thumbnail?.url && (
                     <div className="relative h-48">
                       <Image
-                        src={post.img[0].formats.thumbnail.url}
+                        src={post.img[0]?.url}
                         alt={post.Title}
                         layout="fill"
                         objectFit="cover"

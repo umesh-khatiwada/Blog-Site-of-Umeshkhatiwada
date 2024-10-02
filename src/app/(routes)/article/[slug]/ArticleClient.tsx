@@ -101,8 +101,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const [loading] = useState<boolean>(false)
   const [error] = useState<string | null>(null)
   const [comments, setComments] = useState<Comment[]>(
-    initialData.data.comments || []
-  )
+    initialData.data.comments || [])
   const { setCategoryId } = useCategory()
 
   useEffect(() => {
@@ -183,9 +182,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
 ) : (
    <ContentRendererDesc description_2={description_2} />
 )}
-
-
-        </div>
+  </div>
       </article>
     )
   }, [loading, error, data])
