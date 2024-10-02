@@ -1,8 +1,8 @@
 import type { Config } from "tailwindcss";
-import typography from '@tailwindcss/typography';
+import typography from "@tailwindcss/typography";
 
 const config: Config = {
-  darkMode: 'media',
+  darkMode: 'media', // or 'class' if you prefer manual dark mode switching
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -50,7 +50,11 @@ const config: Config = {
       },
     },
   },
-  plugins: [typography],
+  plugins: [
+    typography({
+      // Optionally customize typography plugin here if needed
+    }),
+  ],
 };
 
 export default config;
