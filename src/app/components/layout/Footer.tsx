@@ -30,7 +30,7 @@ export default function Footer() {
         }
       );
 
-      setMessage(response.status === 200 ? 'Subscription successful!' : 'Subscription failed.');
+      setMessage(response.status === 201 ? 'Subscription successful!' : 'Subscription failed.');
     } catch {
       setMessage('An error occurred. Please try again.');
     } finally {
