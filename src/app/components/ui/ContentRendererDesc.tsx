@@ -34,6 +34,20 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
     parseMarkdown();
   }, [description_2]);
 
+  const SkeletonLoader = () => (
+    <div className="animate-pulse">
+      <div className="h-6 bg-gray-700 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-5/6 mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-4/5 mb-4"></div>
+      <div className="h-6 bg-gray-700 rounded w-2/3 mb-4"></div>
+      <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-5/6 mb-2"></div>
+      <div className="h-4 bg-gray-700 rounded w-4/5 mb-4"></div>
+      <div className="h-32 bg-gray-700 rounded w-full mb-4"></div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen p-8 custom-scrollbar bg-gray-900 text-gray-100">
       <div className="max-w-5xl mx-auto">
@@ -51,11 +65,8 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
             dangerouslySetInnerHTML={{ __html: content }} 
           />
         ) : (
-          <p className="text-xl animate-pulse text-gray-300">Loading...</p>
+          <SkeletonLoader />
         )}
-        <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200">
-          Read More
-        </button>
       </div>
     </div>
   );
