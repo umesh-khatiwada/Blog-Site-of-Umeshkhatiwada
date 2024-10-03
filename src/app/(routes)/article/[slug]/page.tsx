@@ -24,7 +24,7 @@ async function getArticle(slug: string): Promise<Article | null> {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const article = await getArticle(params.slug)
-  console.log("article",article)
+  // console.log("article",article)
 
   if (!article || !article.data || !article.data[0]) {
     return { title: 'Article not found', description: '' }

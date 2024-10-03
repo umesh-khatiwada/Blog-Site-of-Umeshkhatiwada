@@ -26,8 +26,20 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!categoryId) {
+        setIsLoading(true);
+        return;
+      }
+
       setIsLoading(true);
       try {
+        console.log("categoryId", categoryId);
+        if (categoryId === "null") {
+          setCategoryData(null);
+          return;
+        } else {
+          
+        }
         const data = await fetchCategoriesWithSubcategories(categoryId);
         setCategoryData(data || { data: null });
       } catch (error) {
@@ -60,6 +72,69 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
     return title.length > limit ? title.slice(0, limit) + "..." : title;
   };
 
+  const renderSidebarContent = () => {
+    if (isLoading || !categoryId) {
+      return <SidebarLoadingSkeleton />;
+    }
+
+    if (categoryData && categoryData.data) {
+      return (
+        <div className="p-4">
+          <div className="flex items-center space-x-2 mb-6">
+            <FaServer className="text-green-400" size={24} />
+            <h2 className="text-xl font-bold text-green-400 font-mono">
+              {capitalizeFirstLetter(categoryData.data.Title)}
+            </h2>
+          </div>
+          <ul className="space-y-4">
+            {categoryData.data.sub_categories.map((category) => (
+              <li key={category.id} className="mb-4">
+                <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
+                  <FaCodeBranch className="mr-2 text-green-400" size={16} />
+                  <span className="text-lg font-semibold text-white font-mono">
+                    {category.Title}
+                  </span>
+                </div>
+                <ul className="pl-4 space-y-2">
+                  {category.blogs.map((blog) => (
+                    <li
+                      key={blog.id}
+                      className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150"
+                    >
+                      <Link
+                        href={`/article/${blog.slug}`}
+                        className="block p-3"
+                      >
+                        <div className="flex items-center mb-1">
+                          <FaBook className="mr-2 text-green-400" size={14} />
+                          <span className="text-sm font-medium text-white font-mono">
+                            {truncateTitle(blog.Title, 25)}
+                          </span>
+                        </div>
+                        <div className="flex items-center text-xs text-white-400">
+                          {/* <FaClock className="mr-1" size={12} />
+                          <span>
+                            {new Date(blog.publishedAt).toLocaleDateString()}
+                          </span> */}
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    return (
+      <div className="p-4">
+        <div>No categories found.</div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col md:flex-row h-screen overflow-hidden text-gray-300">
       <div className="md:hidden fixed top-20 right-5 z-50">
@@ -76,60 +151,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        {isLoading ? (
-          <SidebarLoadingSkeleton />
-        ) : categoryData && categoryData.data ? (
-          <div className="p-4">
-            <div className="flex items-center space-x-2 mb-6">
-              <FaServer className="text-green-400" size={24} />
-              <h2 className="text-xl font-bold text-green-400 font-mono">
-                {capitalizeFirstLetter(categoryData.data.Title)}
-              </h2>
-            </div>
-            <ul className="space-y-4">
-              {categoryData.data.sub_categories.map((category) => (
-                <li key={category.id} className="mb-4">
-                  <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
-                    <FaCodeBranch className="mr-2 text-green-400" size={16} />
-                    <span className="text-lg font-semibold text-white font-mono">
-                      {category.Title}
-                    </span>
-                  </div>
-                  <ul className="pl-4 space-y-2">
-                    {category.blogs.map((blog) => (
-                      <li
-                        key={blog.id}
-                        className="bg-gray-750 rounded-md hover:bg-gray-700 transition-colors duration-150"
-                      >
-                        <Link
-                          href={`/article/${blog.slug}`}
-                          className="block p-3"
-                        >
-                          <div className="flex items-center mb-1">
-                            <FaBook className="mr-2 text-green-400" size={14} />
-                            <span className="text-sm font-medium text-white font-mono">
-                              {truncateTitle(blog.Title, 25)}
-                            </span>
-                          </div>
-                          <div className="flex items-center text-xs text-white-400">
-                            {/* <FaClock className="mr-1" size={12} />
-                            <span>
-                              {new Date(blog.publishedAt).toLocaleDateString()}
-                            </span> */}
-                          </div>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <div className="p-4">
-            <div>No categories found.</div>
-          </div>
-        )}
+        {renderSidebarContent()}
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6 transition-all duration-300">

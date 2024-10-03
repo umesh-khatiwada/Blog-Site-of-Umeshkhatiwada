@@ -37,10 +37,12 @@ interface useMetaData {
     setCategoryId: (id: string) => void;
   }
   
-  export const useCategory = create<CategoryStore>((set) => ({
-    categoryId: 'v03n7pfes1ipjvdi0tv2ik95',
+  export const useCategory = create<CategoryStore>((set, get) => ({
+    categoryId: 'null',
     setCategoryId: (id) => {
       console.log(`Setting categoryId to: ${id}`);
       set({ categoryId: id });
+      // Check the updated state
+      console.log(`Updated categoryId state: ${get().categoryId}`);
     },
   }));

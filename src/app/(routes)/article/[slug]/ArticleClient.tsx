@@ -1,5 +1,4 @@
 'use client'
-
 import React, { useEffect, useState, useTransition } from 'react'
 import Image from 'next/image'
 import { viewCounter } from '@/app/lib/api'
@@ -107,6 +106,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   useEffect(() => {
     setComments(data.data[0].comments || [])
     setCategoryId(data.data[0].categories[0].documentId)
+    console.log(data.data[0].categories[0].documentId)
     if (data.viewCount !== undefined) {
       viewCounter(id, data.viewCount)
     }
