@@ -54,7 +54,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
     };
 
     fetchData();
-  }, [categoryId]);
+  }, [categoryId, oldcategoryid]);
 
   // Sidebar Loading Skeleton
   const SidebarLoadingSkeleton = () => (
