@@ -64,15 +64,15 @@ export default function Articles() {
                   <SkeletonCard key={index} />
                 ))
               : data.length > 0
-              ? data.map((post, index) => (
+              ? data.map((post) => (
                   <article
                     key={post.id}
                     className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                   >
                     <div className="relative h-48 bg-gray-700">
-                      {post.img[index]?.url ? (
+                      {post.img[0]?.url ? (
                         <Image
-                          src={post.img[index]?.url || '/default-image-url.jpg'}
+                          src={post.img[0]?.url}
                           alt={post.Title}
                           layout="fill"
                           objectFit="cover" 
