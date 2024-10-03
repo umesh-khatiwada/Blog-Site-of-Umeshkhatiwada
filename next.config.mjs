@@ -4,7 +4,6 @@ const nextConfig = {
     // output: 'export',
     reactStrictMode: false,
     trailingSlash: true,
-    plugins: [],
     images: {
       unoptimized: true,  // Disable image optimization for static export
     },

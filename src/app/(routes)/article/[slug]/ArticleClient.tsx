@@ -151,7 +151,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
             {Title}
           </h1>
-          <div className="flex items-center text-gray-400 text-sm space-x-6">
+          <div className="flex items-center text-white-400 text-sm space-x-6">
             <span className="flex items-center">
               <FaCalendarAlt className="w-4 h-4 mr-2" />
               {new Date(publishedAt).toLocaleDateString()}

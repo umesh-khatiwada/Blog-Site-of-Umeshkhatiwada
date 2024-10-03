@@ -105,10 +105,10 @@ export default function Articles({ initialData }: ArticlesProps) {
                     <h2 className="text-2xl font-semibold mb-2 text-blue-300">
                       {title}
                     </h2>
-                    <p className="text-gray-400 text-sm mb-4">
+                    <p className="text-white-400 text-sm mb-4">
                       {post.shortDescription}
                     </p>
-                    <div className="flex justify-between items-center text-sm text-gray-500 mb-4">
+                    <div className="flex justify-between items-center text-sm text-white-500 mb-4">
                       <span>{new Date(post.createdAt).toLocaleDateString()}</span>
                       <span>Last updated: {new Date(post.updatedAt).toLocaleDateString()}</span>
                     </div>

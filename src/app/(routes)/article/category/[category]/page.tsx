@@ -79,7 +79,7 @@ export default function Articles() {
                           className="w-full h-full"
                         />
                       ) : (
-                        <div className="flex items-center justify-center h-full text-4xl text-gray-500">
+                        <div className="flex items-center justify-center h-full text-4xl text-white-500">
                           &#123; &#125;
                         </div>
                       )}
@@ -89,7 +89,7 @@ export default function Articles() {
                         <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                         {post.Title}
                       </h2>
-                      <div className="text-sm text-gray-400 mb-4 font-mono">
+                      <div className="text-sm text-white-400 mb-4 font-mono">
                         <p>Created: {new Date(post.createdAt).toLocaleDateString()}</p>
                         <p>Updated: {new Date(post.updatedAt).toLocaleDateString()}</p>
                       </div>
@@ -103,7 +103,7 @@ export default function Articles() {
                   </article>
                 ))
               : (
-                <div className="col-span-full text-center text-gray-400 py-8">
+                <div className="col-span-full text-center text-white-400 py-8">
                   <p className="text-2xl mb-4">No posts found in ~/articles/{category}</p>
                   <p className="text-lg">Try updating your search parameters or check back later.</p>
                 </div>

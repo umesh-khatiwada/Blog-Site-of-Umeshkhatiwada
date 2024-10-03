@@ -111,7 +111,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
                               {truncateTitle(blog.Title, 25)}
                             </span>
                           </div>
-                          <div className="flex items-center text-xs text-gray-400">
+                          <div className="flex items-center text-xs text-white-400">
                             {/* <FaClock className="mr-1" size={12} />
                             <span>
                               {new Date(blog.publishedAt).toLocaleDateString()}

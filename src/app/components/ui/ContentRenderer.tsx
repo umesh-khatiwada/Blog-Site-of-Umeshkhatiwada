@@ -68,7 +68,7 @@ const ContentRenderer: React.FC<ContentRendererProps> = ({ description}) => {
                   className="rounded-lg shadow-xl border-2 border-green-500"
                 />
                 {image.caption && (
-                  <figcaption className="text-center text-gray-400 mt-3 italic">
+                  <figcaption className="text-center text-white-400 mt-3 italic">
                     {image.caption}
                   </figcaption>
                 )}

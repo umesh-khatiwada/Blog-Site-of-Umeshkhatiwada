@@ -47,7 +47,7 @@ export default function Footer() {
               <FaCode className="mr-2 text-green-400" />
               Digital Footprint
             </h2>
-            <p className="text-gray-400">Crafting digital experiences that leave a lasting impression.</p>
+            <p className="text-white-400">Crafting digital experiences that leave a lasting impression.</p>
             <div className="flex space-x-4">
               {[
                 { href: 'https://facebook.com', icon: <FaFacebook /> },
@@ -55,7 +55,7 @@ export default function Footer() {
                 { href: 'https://instagram.com', icon: <FaInstagram /> },
               ].map(({ href, icon }, index) => (
                 <a key={index} href={href} target="_blank" rel="noopener noreferrer" aria-label="Social Media" className="transform hover:scale-110 transition-transform">
-                  {React.cloneElement(icon, { className: 'text-gray-500 hover:text-green-400', size: 24 })}
+                  {React.cloneElement(icon, { className: 'text-white-500 hover:text-green-400', size: 24 })}
                 </a>
               ))}
             </div>
@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-white">Newsletter</h3>
-            <p className="text-gray-400">Stay updated with our latest news and offers.</p>
+            <p className="text-white-400">Stay updated with our latest news and offers.</p>
             <form className="flex" onSubmit={handleSubscribe}>
               <input
                 type="email"
@@ -92,11 +92,11 @@ export default function Footer() {
                 {loading ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
-            {message && <p className="text-gray-500 mt-2">{message}</p>}
+            {message && <p className="text-white-500 mt-2">{message}</p>}
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-          <p className="text-gray-500">© {new Date().getFullYear()} umeshkhatiwada.com.np. All rights reserved.</p>
+          <p className="text-white-500">© {new Date().getFullYear()} umeshkhatiwada.com.np. All rights reserved.</p>
         </div>
       </div>
       <div className="absolute inset-0 z-0">
