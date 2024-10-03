@@ -106,7 +106,7 @@ export default function Articles({ initialData }: ArticlesProps) {
                       {title}
                     </h2>
                     <p className="text-white-400 text-sm mb-4">
-                      {post.shortDescription}
+                      {post.shortDescription.split(' ').slice(0, 20).join(' ') + (post.shortDescription.split(' ').length > 20 ? '...' : '')}
                     </p>
                     <div className="flex justify-between items-center text-sm text-white-500 mb-4">
                       <span>{new Date(post.createdAt).toLocaleDateString()}</span>
