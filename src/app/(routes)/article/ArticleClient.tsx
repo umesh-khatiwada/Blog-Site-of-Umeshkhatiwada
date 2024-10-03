@@ -88,7 +88,7 @@ export default function Articles({ initialData }: ArticlesProps) {
               return (
                 <article
                   key={post.id}
-                  className="bg-gray-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                  className="bg-white-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                 >
                   {post.img && post.img[0]?.formats?.thumbnail?.url && (
                     <div className="relative h-48">
