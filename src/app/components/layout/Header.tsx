@@ -7,14 +7,14 @@ export default function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="w-full flex flex-col md:flex-row justify-between p-4 bg-gray-900 shadow-md relative">
+    <header className="w-full flex flex-col md:flex-row justify-between p-4 shadow-md relative">
       <div className="flex items-center justify-between w-full md:w-auto">
         <Image
-          src="/assets/logo.png"
-          alt="The Cloud Mechanic Logo"
-          width={70} // Smaller logo width for mobile view
-          height={70} // Smaller logo height for mobile view
-          className="md:w-[110px] md:h-[80px]"
+          src="/assets/profile.png"
+          alt="Umesh Khatiwada"
+          width={50} 
+          height={100} 
+          className="md:w-[60px] md:h-[90px]"
         />
         <button
           onClick={() => setMenuOpen(!isMenuOpen)}

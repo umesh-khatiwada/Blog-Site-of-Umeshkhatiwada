@@ -45,7 +45,7 @@ export default function Submenu({ categories }: SubmenuProps) {
   };
 
   return (
-    <div className="bg-gray-900 py-2 border-b border-green-500">
+    <div className="py-2 border-b border-green-500">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
 

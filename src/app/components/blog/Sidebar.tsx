@@ -61,7 +61,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-hidden bg-gray-900 text-gray-300">
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden text-gray-300">
       <div className="md:hidden fixed top-20 right-5 z-50">
         <button
           className="text-green-400 focus:outline-none"
@@ -132,7 +132,7 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
         )}
       </aside>
 
-      <main className="flex-1 overflow-y-auto p-6 bg-gray-900 transition-all duration-300">
+      <main className="flex-1 overflow-y-auto p-6 transition-all duration-300">
         <div>{children}</div>
       </main>
     </div>

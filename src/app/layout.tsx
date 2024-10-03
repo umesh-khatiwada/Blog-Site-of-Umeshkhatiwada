@@ -5,10 +5,6 @@ import Submenu from "./components/layout/Submenu";
 import { fetchCategories } from "./lib/api";
 
 // eslint-disable-next-line react-hooks/rules-of-hooks
-
-
-
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",

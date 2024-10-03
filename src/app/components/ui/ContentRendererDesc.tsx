@@ -49,7 +49,7 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
   );
 
   return (
-    <div className="min-h-screen p-8 custom-scrollbar bg-gray-900 text-gray-100">
+    <div className="min-h-screen p-8 custom-scrollbar text-gray-100">
       <div className="max-w-5xl mx-auto">
         {content ? (
           <div 

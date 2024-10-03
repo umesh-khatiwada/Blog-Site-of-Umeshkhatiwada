@@ -6,12 +6,12 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #2e5466;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #11445c;
     --foreground: #ededed;
   }
 }
@@ -73,8 +73,6 @@ body {
   display: none;
 }
 
-
-Copy code
 /* For Chrome and Safari */
 .custom-scrollbar::-webkit-scrollbar {
   width: 8px;

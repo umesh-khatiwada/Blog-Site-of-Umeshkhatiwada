@@ -39,7 +39,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-gray-900 text-gray-300 py-12 relative overflow-hidden">
+    <footer className=" text-gray-300 py-12 relative overflow-hidden">
       <div className="container mx-auto px-8 sm:px-16 lg:px-32 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">

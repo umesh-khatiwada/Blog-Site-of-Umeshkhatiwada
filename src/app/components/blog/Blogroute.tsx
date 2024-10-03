@@ -13,7 +13,7 @@ const DynamicBanner = () => {
 
   if (pathName === null) {
     return (
-      <div className="relative w-full h-64 bg-gray-900 overflow-hidden">
+      <div className="relative w-full h-64 overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-8 h-8 border-t-2 border-blue-500 rounded-full animate-spin"></div>
         </div>
@@ -22,7 +22,7 @@ const DynamicBanner = () => {
   }
 
   return (
-    <div className="relative w-full h-64 bg-gray-900 overflow-hidden">
+    <div className="relative w-full h-64 overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-800 opacity-20"></div>

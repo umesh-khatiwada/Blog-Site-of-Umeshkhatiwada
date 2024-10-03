@@ -146,7 +146,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
     const imageUrl = img[0].url
 
     return (
-      <article className="text-green-400 bg-gray-900 rounded-lg p-5 animate-fadeIn">
+      <article className="text-green-400 rounded-lg p-5 animate-fadeIn">
         <header className="mb-8">
           <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
             {Title}

@@ -52,7 +52,7 @@ export default function Articles({ initialData }: ArticlesProps) {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="min-h-screen text-white flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-4">Oops! Something went wrong.</h2>
           <p className="text-xl">{error}</p>
@@ -62,7 +62,7 @@ export default function Articles({ initialData }: ArticlesProps) {
   }
 
   return (
-    <div className={`min-h-screen bg-gray-900 text-white ${linkLoading ? 'cursor-wait' : ''}`}>
+    <div className={`min-h-screen text-white ${linkLoading ? 'cursor-wait' : ''}`}>
       <DynamicBanner />
 
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
