@@ -20,6 +20,7 @@ interface SidebarProps {
 
 const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
   const [categoryData, setCategoryData] = useState<{ data: Category | null } | null>(null);
+  const [oldcategoryid, setoldcategoryid] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { categoryId } = useCategory();
   const [isLoading, setIsLoading] = useState(true);
@@ -34,12 +35,15 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
       setIsLoading(true);
       try {
         console.log("categoryId", categoryId);
+        if (oldcategoryid == categoryId) {
+          return;
+          
+        }
         if (categoryId === "null") {
           setCategoryData(null);
           return;
-        } else {
-          
-        }
+        } 
+        setoldcategoryid(categoryId);
         const data = await fetchCategoriesWithSubcategories(categoryId);
         setCategoryData(data || { data: null });
       } catch (error) {
