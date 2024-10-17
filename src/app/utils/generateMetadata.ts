@@ -4,7 +4,6 @@ import { fetchBlogDetailData } from '@/app/lib/api'
 
 export async function generateMetadata({ params }: { params: { id: string, slug: string } }): Promise<Metadata> {
   const id = params.id
-  const slug = params.slug
   const postData = await fetchBlogDetailData(id)
   
   if (!postData || !postData.data) {
@@ -15,7 +14,7 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
   }
 
   const { Title, shortDescription, img } = postData.data
-  const canonicalUrl = `https://blog.umeshkhatiwada.com.np/article/${slug}`
+  const canonicalUrl = `https://blog.umeshkhatiwada.com.np/article/${Title}`
   return {
     title: Title,
     description: shortDescription,
