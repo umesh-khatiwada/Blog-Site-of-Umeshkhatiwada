@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: articleData.Title || 'Untitled',
     description: articleData.shortDescription || 'No description available',
     alternates: { 
-      canonical: `blog.umeshkhatiwada.com.np/article/${articleData.Title}` 
+      canonical: `blog.umeshkhatiwada.com.np/article/${articleData.slug}` 
     },
     openGraph: {
       title: articleData.Title || 'Untitled',
