@@ -35,6 +35,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: articleData.Title || 'Untitled',
     description: articleData.shortDescription || 'No description available',
+    alternates: { 
+      canonical: 'blog.umeshkhatiwada.com.np/article/Key-features-of-ChatGPT/' 
+    },
     openGraph: {
       title: articleData.Title || 'Untitled',
       description: articleData.shortDescription || 'No description available',
