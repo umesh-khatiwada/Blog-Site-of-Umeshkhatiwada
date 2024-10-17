@@ -4,7 +4,9 @@ import { fetchBlogDetailData } from '@/app/lib/api'
 
 export async function generateMetadata({ params }: { params: { id: string, slug: string } }): Promise<Metadata> {
   const id = params.id
+  const slug = params.slug
   const postData = await fetchBlogDetailData(id)
+  
   if (!postData || !postData.data) {
     return {
       title: 'Blog Post Not Found',
@@ -13,7 +15,7 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
   }
 
   const { Title, shortDescription, img } = postData.data
-
+  const canonicalUrl = `https://blog.umeshkhatiwada.com.np/article/${slug}`
   return {
     title: Title,
     description: shortDescription,
@@ -21,12 +23,16 @@ export async function generateMetadata({ params }: { params: { id: string, slug:
       title: Title,
       description: shortDescription,
       images: img?.[0]?.url ? [img?.[0].url] : [],
+      url: canonicalUrl,
     },
     twitter: {
       card: 'summary_large_image',
       title: Title,
       description: shortDescription,
       images: img?.[0]?.url ? [img?.[0].url] : [],
+    },
+    alternates: {
+      canonical: canonicalUrl, 
     },
   }
 }
