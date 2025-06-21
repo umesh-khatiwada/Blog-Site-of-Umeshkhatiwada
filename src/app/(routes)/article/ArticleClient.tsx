@@ -10,35 +10,46 @@ import { DummyCard } from '@/app/components/blog/DummyCard';
 import Footer from '@/app/components/layout/Footer';
 
 export default function Articles({ initialData }: ArticlesProps) {
-  const [data, setData] = useState<Article[]>(initialData.data);
+  const [data, setData] = useState<Article[]>(initialData?.data || []);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(initialData.meta.pagination.total / 6)
+    initialData?.meta?.pagination?.total 
+      ? Math.ceil(initialData.meta.pagination.total / 6)
+      : 1
   );
   const [loading, setLoading] = useState<boolean>(false);
   const [linkLoading, setLinkLoading] = useState<boolean>(false);
 
   const fetchPageData = async (page: number) => {
     setLoading(true);
+    setError(null);
     try {
       const result = await fetchBlogData(page);
+      if (!result || !result.data) {
+        throw new Error('No data received from the server');
+      }
       setData(result.data);
       const totalPages = Math.ceil(result.meta.pagination.total / 6);
       setTotalPages(totalPages);
-      setLoading(false);
     } catch (err) {
       console.error("Error fetching data:", err);
-      setError("Error fetching data");
+      setError("Unable to load articles. Please try again later.");
+      setData([]);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (currentPage > 1) {
+    // Fetch initial data if not provided
+    if (!initialData) {
+      fetchPageData(1);
+    }
+    else if (currentPage > 1) {
       fetchPageData(currentPage);
     }
-  }, [currentPage]);
+  }, [currentPage, initialData]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
