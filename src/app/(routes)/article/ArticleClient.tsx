@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import DynamicBanner from '@/app/components/blog/Blogroute';
 import { Article, ArticlesProps } from '@/app/types/blog';
 import { fetchBlogData } from '@/app/lib/api';
@@ -18,38 +18,46 @@ export default function Articles({ initialData }: ArticlesProps) {
       ? Math.ceil(initialData.meta.pagination.total / 6)
       : 1
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(!initialData);
   const [linkLoading, setLinkLoading] = useState<boolean>(false);
 
-  const fetchPageData = async (page: number) => {
+  const fetchPageData = useCallback(async (page: number) => {
     setLoading(true);
     setError(null);
     try {
       const result = await fetchBlogData(page);
       if (!result || !result.data) {
-        throw new Error('No data received from the server');
+        throw new Error('No data received');
       }
       setData(result.data);
-      const totalPages = Math.ceil(result.meta.pagination.total / 6);
-      setTotalPages(totalPages);
-    } catch (err) {
+      const total = result.meta?.pagination?.total || 0;
+      setTotalPages(Math.max(1, Math.ceil(total / 6)));
+    } catch (err: Error | unknown) {
       console.error("Error fetching data:", err);
-      setError("Unable to load articles. Please try again later.");
-      setData([]);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'object' && err && 'response' in err) {
+        const axiosError = err as { response?: { data?: { message?: string } } };
+        setError(axiosError.response?.data?.message || "Unable to load articles. Please try again later.");
+      } else {
+        setError("An unexpected error occurred");
+      }
+      // Keep existing data if available
+      if (!data.length) {
+        setData([]);
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [data.length]);
 
   useEffect(() => {
-    // Fetch initial data if not provided
-    if (!initialData) {
+    if (!initialData && currentPage === 1) {
       fetchPageData(1);
-    }
-    else if (currentPage > 1) {
+    } else if (currentPage > 1) {
       fetchPageData(currentPage);
     }
-  }, [currentPage, initialData]);
+  }, [currentPage, initialData, fetchPageData]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
