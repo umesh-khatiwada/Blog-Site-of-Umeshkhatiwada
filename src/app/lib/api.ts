@@ -4,7 +4,7 @@ import { Article, Category } from '../types/blog';
 import { GetServerSideProps, Metadata } from 'next';
 
 export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
-  const url = 'blogs';
+  const url = '/blogs';
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`, {
       params: {
@@ -25,7 +25,7 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
 };
 
 export const fetchCategoryDetailsData = async (category: string): Promise<Article[]> => {
-  const url = `blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
+  const url = `/blogs?populate=*&filters[categories][Title][$eq]=${encodeURIComponent(category)}`;
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}`,{
       method: 'GET',
@@ -42,7 +42,7 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
 
 // You can include any authorization tokens here if needed
 export const fetchBlogDetailData = async (slug: string): Promise<Article> => {
-  const url = 'blogs';
+  const url = '/blogs';
   console.log("slug",slug)
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}?filters[slug][$eq]=${slug}&populate=*`, {
@@ -75,7 +75,7 @@ export const viewCounter = async (id: string, count: number) => {
 
   try {
     await axios.put(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${id}`, 
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/${id}`, 
       {
         data: { viewCount: totalViewCounter },
       },
@@ -94,7 +94,7 @@ export const viewCounter = async (id: string, count: number) => {
 
 
 export const fetchCategoriesWithSubcategories = async (id: string): Promise<{ data: Category }> => {
-  const url = "categories";
+  const url = "/categories";
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}${url}/${id}?populate[sub_categories][populate][0]=blogs`
     );

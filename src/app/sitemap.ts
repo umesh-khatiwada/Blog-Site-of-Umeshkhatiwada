@@ -8,7 +8,7 @@ interface ArticlesResponse {
 
 async function fetchPosts(): Promise<ArticlesResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`,
     {
       headers: {
         'Cache-Control': 'no-cache', // Ensure no caching
