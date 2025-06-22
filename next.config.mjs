@@ -2,11 +2,15 @@
 const nextConfig = {
     reactStrictMode: false,
     images: {
-      domains: ['api-blog.do.umeshkhatiwada.com.np'],
       remotePatterns: [
         {
           protocol: 'https',
           hostname: 'api-blog.do.umeshkhatiwada.com.np',
+          pathname: '/**',
+        },
+        {
+          protocol: 'https',
+          hostname: 'api-blog-image-assests.s3.us-east-1.amazonaws.com',
           pathname: '/**',
         },
       ],

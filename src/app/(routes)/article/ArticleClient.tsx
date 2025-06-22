@@ -114,8 +114,8 @@ export default function Articles({ initialData }: ArticlesProps) {
                       <Image
                         src={post.img[0]?.url}
                         alt={post.Title}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: 'cover' }}
                         className="transition-opacity duration-300 hover:opacity-80"
                       />
                     </div>

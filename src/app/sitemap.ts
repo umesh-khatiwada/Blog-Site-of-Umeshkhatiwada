@@ -7,20 +7,26 @@ interface ArticlesResponse {
 }
 
 async function fetchPosts(): Promise<ArticlesResponse> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`,
-    {
-      headers: {
-        'Cache-Control': 'no-cache', // Ensure no caching
-      },
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs?fields[0]=slug&fields[1]=publishedAt&populate[img][fields][0]=url`,
+      {
+        headers: {
+          'Cache-Control': 'no-cache', // Ensure no caching
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch posts');
     }
-  );
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch posts');
+    return response.json();
+  } catch (error) {
+    console.warn('Unable to fetch posts for sitemap, returning empty array:', error);
+    // Return empty array when backend is unavailable during build
+    return { data: [] };
   }
-
-  return response.json();
 }
 
 function isValidArticle(article: Article): boolean {

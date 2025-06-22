@@ -20,6 +20,22 @@ export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching data:', error);
+    
+    // Return empty data structure for build process when backend is unavailable
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ECONNREFUSED') {
+      return {
+        data: [],
+        meta: {
+          pagination: {
+            page: page,
+            pageSize: limit,
+            pageCount: 0,
+            total: 0
+          }
+        }
+      };
+    }
+    
     throw error;
   }
 };
@@ -36,6 +52,12 @@ export const fetchCategoryDetailsData = async (category: string): Promise<Articl
     return response.data.data || [];
   } catch (error) {
     console.error('Error fetching data:', error);
+    
+    // Return empty array for build process when backend is unavailable
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ECONNREFUSED') {
+      return [];
+    }
+    
     throw new Error('Unable to fetch blog posts at this time. Please try again later.');
   }
 };
@@ -60,6 +82,13 @@ export const fetchBlogDetailData = async (slug: string): Promise<Article> => {
     if (axios.isAxiosError(error) && error.response?.status === 404) {
       throw new Error('Blog post not found');
     }
+    
+    // Handle connection refused errors during build
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'ECONNREFUSED') {
+      // Return a fallback article structure for build process
+      throw new Error('Backend unavailable during build');
+    }
+    
     throw new Error('Error fetching data');
   }
 };
