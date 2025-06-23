@@ -113,7 +113,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   }, [id, data, setCategoryId])
 
   const handleCommentSubmit = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs/${initialData.data[0].documentId}?populate=*`)
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/${initialData.data[0].documentId}?populate=*`)
       .then((res) => res.json())
       .then((newData) => {
         setComments(newData.data.comments || [])

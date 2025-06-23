@@ -11,7 +11,7 @@ import Footer from '@/app/components/layout/Footer';
 // Fetch blog data from API
 const fetchBlogData = async (search: string): Promise<Article[]> => {
   try {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}blogs?filters[Title][$contains]=${search}&populate=*`);
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs?filters[Title][$contains]=${search}&populate=*`);
     return response.data.data || [];
   } catch (error) {
     console.error('Error fetching data:', error);
