@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
-import { Article, Category } from '../types/blog';
+import { Article, Category, SubCategory } from '../types/blog';
 import { GetServerSideProps, Metadata } from 'next';
 
 export const fetchBlogData = async (page: number = 1, limit: number = 6) => {
@@ -86,7 +86,67 @@ export const fetchBlogDetailData = async (slug: string): Promise<Article> => {
     // Handle connection refused errors during build
     if (error && typeof error === 'object' && 'code' in error && error.code === 'ECONNREFUSED') {
       // Return a fallback article structure for build process
-      throw new Error('Backend unavailable during build');
+      const fallbackArticle: Article = {
+        attributes: {},
+        data: [{
+          id: 1,
+          documentId: 'fallback-id',
+          Title: 'Article Not Available',
+          description: 'This article is currently unavailable.',
+          description_2: '',
+          slug: slug,
+          viewCount: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          publishedAt: new Date().toISOString(),
+          locale: 'en',
+          shortDescription: 'This article is currently unavailable.',
+          img: [],
+          comments: [],
+          sub_category: null as unknown as SubCategory,
+          categories: [{
+            id: 1,
+            documentId: 'fallback-category',
+            Title: 'General',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            publishedAt: new Date().toISOString(),
+            locale: 'en',
+            sub_categories: [],
+            blogs: []
+          }],
+          localizations: []
+        }],
+        id: 1,
+        documentId: 'fallback-id',
+        Title: 'Article Not Available',
+        description: 'This article is currently unavailable.',
+        description_2: '',
+        slug: slug,
+        viewCount: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        publishedAt: new Date().toISOString(),
+        locale: 'en',
+        shortDescription: 'This article is currently unavailable.',
+        img: [],
+        comments: [],
+        sub_category: null as unknown as SubCategory,
+        categories: [{
+          id: 1,
+          documentId: 'fallback-category',
+          Title: 'General',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          publishedAt: new Date().toISOString(),
+          locale: 'en',
+          sub_categories: [],
+          blogs: []
+        }],
+        localizations: []
+      };
+      
+      return fallbackArticle;
     }
     
     throw new Error('Error fetching data');
