@@ -20,9 +20,13 @@ export default function Articles({ initialData }: ArticlesProps) {
   );
   const [loading, setLoading] = useState<boolean>(!initialData);
   const [linkLoading, setLinkLoading] = useState<boolean>(false);
+  const [lastFetched, setLastFetched] = useState<Date | null>(null);
+  const [showRefreshNotification, setShowRefreshNotification] = useState<boolean>(false);
 
-  const fetchPageData = useCallback(async (page: number) => {
-    setLoading(true);
+  const fetchPageData = useCallback(async (page: number, isAutoRefresh = false) => {
+    if (!isAutoRefresh) {
+      setLoading(true);
+    }
     setError(null);
     try {
       const result = await fetchBlogData(page);
@@ -32,22 +36,37 @@ export default function Articles({ initialData }: ArticlesProps) {
       setData(result.data);
       const total = result.meta?.pagination?.total || 0;
       setTotalPages(Math.max(1, Math.ceil(total / 6)));
+      setLastFetched(new Date());
+      
+      if (isAutoRefresh) {
+        console.log('Data auto-refreshed at:', new Date().toLocaleTimeString());
+        setShowRefreshNotification(true);
+        // Hide notification after 3 seconds
+        setTimeout(() => setShowRefreshNotification(false), 3000);
+      }
     } catch (err: Error | unknown) {
       console.error("Error fetching data:", err);
-      if (err instanceof Error) {
-        setError(err.message);
-      } else if (typeof err === 'object' && err && 'response' in err) {
-        const axiosError = err as { response?: { data?: { message?: string } } };
-        setError(axiosError.response?.data?.message || "Unable to load articles. Please try again later.");
+      if (!isAutoRefresh) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else if (typeof err === 'object' && err && 'response' in err) {
+          const axiosError = err as { response?: { data?: { message?: string } } };
+          setError(axiosError.response?.data?.message || "Unable to load articles. Please try again later.");
+        } else {
+          setError("An unexpected error occurred");
+        }
+        // Keep existing data if available
+        if (!data.length) {
+          setData([]);
+        }
       } else {
-        setError("An unexpected error occurred");
-      }
-      // Keep existing data if available
-      if (!data.length) {
-        setData([]);
+        // For auto-refresh, just log the error silently
+        console.warn('Auto-refresh failed, keeping existing data');
       }
     } finally {
-      setLoading(false);
+      if (!isAutoRefresh) {
+        setLoading(false);
+      }
     }
   }, [data.length]);
 
@@ -59,6 +78,19 @@ export default function Articles({ initialData }: ArticlesProps) {
     }
   }, [currentPage, initialData, fetchPageData]);
 
+  // Set up auto-refresh every hour
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Only auto-refresh if we're on the first page and have data
+      if (currentPage === 1 && data.length > 0) {
+        fetchPageData(1, true); // true indicates this is an auto-refresh
+      }
+    }, 60 * 60 * 1000); // 1 hour in milliseconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [currentPage, data.length, fetchPageData]);
+
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -67,6 +99,10 @@ export default function Articles({ initialData }: ArticlesProps) {
 
   const handleLinkClick = () => {
     setLinkLoading(true);
+  };
+
+  const handleManualRefresh = () => {
+    fetchPageData(currentPage);
   };
 
   if (error) {
@@ -84,12 +120,34 @@ export default function Articles({ initialData }: ArticlesProps) {
     <div className={`min-h-screen text-white ${linkLoading ? 'cursor-wait' : ''}`}>
       <DynamicBanner />
 
+      {/* Auto-refresh notification */}
+      {showRefreshNotification && (
+        <div className="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-fade-in">
+          Articles updated automatically
+        </div>
+      )}
+
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold mb-8 text-center">
           <span className="text-blue-400">&lt;</span>
           DevOps and Coding Articles
           <span className="text-blue-400">/&gt;</span>
         </h1>
+
+        <div className="flex justify-between items-center mb-6">
+          <div className="text-sm text-gray-400">
+            {lastFetched && (
+              <span>Last updated: {lastFetched.toLocaleString()}</span>
+            )}
+          </div>
+          <button
+            onClick={handleManualRefresh}
+            disabled={loading}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+          >
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {loading
