@@ -103,7 +103,9 @@ export default function Articles({ initialData }: ArticlesProps) {
                 </div>
               )
             : data.map((post) => {
-              const title = post.Title.split(' ').slice(0, 5).join(' ') + (post.Title.split(' ').length > 5 ? '...' : '');
+              const title = post.Title && typeof post.Title === 'string' 
+                ? post.Title.split(' ').slice(0, 5).join(' ') + (post.Title.split(' ').length > 5 ? '...' : '')
+                : 'Untitled Article';
               return (
                 <article
                   key={post.id}
@@ -125,7 +127,9 @@ export default function Articles({ initialData }: ArticlesProps) {
                       {title}
                     </h2>
                     <p className="text-white-400 text-sm mb-4">
-                      {post.shortDescription.split(' ').slice(0, 20).join(' ') + (post.shortDescription.split(' ').length > 20 ? '...' : '')}
+                      {post.shortDescription && typeof post.shortDescription === 'string'
+                        ? post.shortDescription.split(' ').slice(0, 20).join(' ') + (post.shortDescription.split(' ').length > 20 ? '...' : '')
+                        : 'No description available.'}
                     </p>
                     <div className="flex justify-between items-center text-sm text-white-500 mb-4">
                       <span>{new Date(post.createdAt).toLocaleDateString()}</span>
