@@ -35,39 +35,38 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
   }, [description_2]);
 
   const SkeletonLoader = () => (
-    <div className="animate-pulse">
-      <div className="h-6 bg-gray-700 rounded w-3/4 mb-4"></div>
-      <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-5/6 mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-4/5 mb-4"></div>
-      <div className="h-6 bg-gray-700 rounded w-2/3 mb-4"></div>
-      <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-5/6 mb-2"></div>
-      <div className="h-4 bg-gray-700 rounded w-4/5 mb-4"></div>
-      <div className="h-32 bg-gray-700 rounded w-full mb-4"></div>
+    <div className="medium-loading-article">
+      <div className="medium-loading-title"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-title"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-paragraph"></div>
+      <div className="medium-loading-image"></div>
     </div>
   );
 
   return (
-    <div className="min-h-screen p-8 custom-scrollbar text-gray-100">
-      <div className="max-w-5xl mx-auto">
-        {content ? (
-          <div 
-            className="prose prose-lg max-w-none prose-invert
-                       prose-headings:text-gray-100
-                       prose-a:text-blue-400
-                       hover:prose-a:text-blue-300
-                       prose-strong:text-gray-100
-                       prose-code:text-gray-200
-                       prose-pre:bg-gray-800
-                       prose-blockquote:border-l-4 prose-blockquote:border-gray-700
-                       prose-blockquote:pl-4 prose-blockquote:italic"
-            dangerouslySetInnerHTML={{ __html: content }} 
-          />
-        ) : (
-          <SkeletonLoader />
-        )}
-      </div>
+    <div className="medium-content">
+      {content ? (
+        <div 
+          className="medium-article-body prose prose-lg max-w-none
+                    prose-headings:font-bold prose-headings:text-inherit prose-headings:mb-6 prose-headings:mt-8
+                    prose-p:mb-5 prose-p:leading-relaxed
+                    prose-a:text-medium-green prose-a:no-underline hover:prose-a:underline
+                    prose-strong:font-bold prose-strong:text-inherit
+                    prose-code:font-mono prose-code:text-sm prose-code:bg-medium-lightest-gray prose-code:p-1 prose-code:rounded
+                    prose-pre:bg-medium-lightest-gray prose-pre:text-medium-black prose-pre:p-4 prose-pre:rounded
+                    prose-blockquote:border-l-4 prose-blockquote:border-medium-light-gray
+                    prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-medium-dark-gray
+                    prose-img:w-full prose-img:rounded"
+          dangerouslySetInnerHTML={{ __html: content }} 
+        />
+      ) : (
+        <SkeletonLoader />
+      )}
     </div>
   );
 };

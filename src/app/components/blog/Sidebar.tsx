@@ -4,8 +4,6 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  FaServer,
-  FaCodeBranch,
   FaBook,
   FaBars,
   FaTimes,
@@ -58,12 +56,12 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
 
   // Sidebar Loading Skeleton
   const SidebarLoadingSkeleton = () => (
-    <div className="p-4">
-      <div className="animate-pulse">
-        <div className="bg-gray-700 h-8 w-3/4 mb-6 rounded"></div>
-        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
-        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
-        <div className="bg-gray-700 h-6 w-full mb-4 rounded"></div>
+    <div className="medium-sidebar-content">
+      <div className="medium-loading-skeleton">
+        <div className="medium-loading-title"></div>
+        <div className="medium-loading-line"></div>
+        <div className="medium-loading-line"></div>
+        <div className="medium-loading-line"></div>
       </div>
     </div>
   );
@@ -83,19 +81,17 @@ const DevOpsSidebar: React.FC<SidebarProps> = ({ children }) => {
 
     if (categoryData && categoryData.data) {
       return (
-        <div className="p-4">
-          <div className="flex items-center space-x-2 mb-6">
-            <FaServer className="text-green-400" size={24} />
-            <h2 className="text-xl font-bold text-green-400 font-mono">
+        <div className="medium-sidebar-content">
+          <div className="medium-sidebar-header">
+            <h2 className="medium-sidebar-title">
               {capitalizeFirstLetter(categoryData.data.Title)}
             </h2>
           </div>
-          <ul className="space-y-4">
+          <ul className="medium-sidebar-list">
             {categoryData.data.sub_categories.map((category) => (
-              <li key={category.id} className="mb-4">
-                <div className="flex items-center mb-2 bg-gray-700 p-2 rounded-md">
-                  <FaCodeBranch className="mr-2 text-green-400" size={16} />
-                  <span className="text-lg font-semibold text-white font-mono">
+              <li key={category.id} className="medium-sidebar-item">
+                <div className="medium-sidebar-category">
+                  <span className="medium-sidebar-category-title">
                     {category.Title}
                   </span>
                 </div>

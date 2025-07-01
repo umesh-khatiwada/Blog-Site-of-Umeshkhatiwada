@@ -117,7 +117,7 @@ export default function Articles({ initialData }: ArticlesProps) {
   }
 
   return (
-    <div className={`min-h-screen text-white ${linkLoading ? 'cursor-wait' : ''}`}>
+    <div className={`medium-bg ${linkLoading ? 'cursor-wait' : ''}`}>
       <DynamicBanner />
 
       {/* Auto-refresh notification */}
@@ -127,15 +127,13 @@ export default function Articles({ initialData }: ArticlesProps) {
         </div>
       )}
 
-      <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">
-          <span className="text-blue-400">&lt;</span>
-          DevOps and Coding Articles
-          <span className="text-blue-400">/&gt;</span>
+      <main className="medium-container">
+        <h1 className="medium-heading-xl mb-8 text-center">
+          Featured Articles
         </h1>
 
-        <div className="flex justify-between items-center mb-6">
-          <div className="text-sm text-gray-400">
+        <div className="medium-section-header mb-6">
+          <div className="medium-meta-text">
             {lastFetched && (
               <span>Last updated: {lastFetched.toLocaleString()}</span>
             )}
@@ -143,20 +141,20 @@ export default function Articles({ initialData }: ArticlesProps) {
           <button
             onClick={handleManualRefresh}
             disabled={loading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            className="medium-button medium-button-outline"
           >
             {loading ? 'Refreshing...' : 'Refresh'}
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="medium-article-grid">
           {loading
             ? Array.from({ length: 6 }).map((_, index) => (
                 <DummyCard key={index} />
               ))
             : data.length === 0
             ? (
-                <div className="col-span-full text-center text-xl">
+                <div className="medium-empty-state">
                   No posts found. Check back later!
                 </div>
               )
@@ -167,40 +165,45 @@ export default function Articles({ initialData }: ArticlesProps) {
               return (
                 <article
                   key={post.id}
-                  className="bg-white-800 rounded-lg overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                  className="medium-article-card"
                 >
-                  {post.img && post.img[0]?.formats?.thumbnail?.url && (
-                    <div className="relative h-48">
-                      <Image
-                        src={post.img[0]?.url}
-                        alt={post.Title}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        className="transition-opacity duration-300 hover:opacity-80"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <h2 className="text-2xl font-semibold mb-2 text-blue-300">
+                  <div className="medium-article-content">
+                    <h2 className="medium-article-title">
                       {title}
                     </h2>
-                    <p className="text-white-400 text-sm mb-4">
+                    <p className="medium-article-excerpt">
                       {post.shortDescription && typeof post.shortDescription === 'string'
                         ? post.shortDescription.split(' ').slice(0, 20).join(' ') + (post.shortDescription.split(' ').length > 20 ? '...' : '')
                         : 'No description available.'}
                     </p>
-                    <div className="flex justify-between items-center text-sm text-white-500 mb-4">
+                    <div className="medium-article-meta">
                       <span>{new Date(post.createdAt).toLocaleDateString()}</span>
-                      <span>Last updated: {new Date(post.updatedAt).toLocaleDateString()}</span>
+                      <span className="medium-dot">·</span>
+                      <span className="medium-read-time">5 min read</span>
                     </div>
-                    <Link
-                      href={`/article/${post.slug}`}
-                      className="btn-read-more"
-                      onClick={handleLinkClick}
-                    >
-                      Read more &rarr;
-                    </Link>
                   </div>
+                  
+                  {post.img && post.img[0]?.url && (
+                    <div className="medium-article-image">
+                      <Image
+                        src={post.img[0]?.url}
+                        alt={post.Title}
+                        width={112}
+                        height={112}
+                        style={{ objectFit: 'cover' }}
+                        className="medium-thumbnail"
+                      />
+                    </div>
+                  )}
+                  
+                  <Link
+                    href={`/article/${post.slug}`}
+                    className="medium-article-link"
+                    onClick={handleLinkClick}
+                    aria-label={`Read article: ${title}`}
+                  >
+                    <span className="sr-only">Read article</span>
+                  </Link>
                 </article>
               );
             })}

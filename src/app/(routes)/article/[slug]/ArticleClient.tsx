@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { viewCounter } from '@/app/lib/api'
 import { Article, Comment } from '@/app/types/blog'
 import SocialSharing from '@/app/components/ui/SocialMedia'
-import { FaTerminal, FaServer, FaEye, FaCalendarAlt } from 'react-icons/fa'
+import { FaServer } from 'react-icons/fa'
 import { useCategory } from '@/app/hooks/store'
 import ContentRenderer from '@/app/components/ui/ContentRenderer'
 import { postComment } from './postComment'
@@ -23,18 +23,35 @@ const MemoizedCommentsSection = React.memo(
     const [isPending, startTransition] = useTransition()
 
     return (
-      <section className="mt-8 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-green-400 mb-2">Comments</h2>
-        <ul className="mb-4 space-y-3">
-          {comments.map((comm) => (
-            <li key={comm.documentId} className="bg-gray-800 p-3 rounded-md shadow-sm">
-              <p className="text-green-300 font-semibold text-sm">
-                {comm.Name}
-              </p>
-              <p className="text-gray-300 text-sm">{comm.comment}</p>
-            </li>
-          ))}
-        </ul>
+      <section className="medium-comments-section">
+        <h2 className="medium-section-title">Responses</h2>
+        
+        {comments.length > 0 ? (
+          <ul className="medium-comments-list">
+            {comments.map((comm) => (
+              <li key={comm.documentId} className="medium-comment">
+                <div className="medium-comment-header">
+                  <div className="medium-comment-avatar">
+                    {/* Placeholder avatar with first letter of name */}
+                    <div className="medium-avatar-circle">
+                      {comm.Name?.charAt(0).toUpperCase() || '?'}
+                    </div>
+                  </div>
+                  <div className="medium-comment-meta">
+                    <p className="medium-comment-author">{comm.Name}</p>
+                  </div>
+                </div>
+                <div className="medium-comment-body">
+                  <p>{comm.comment}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="medium-no-comments">
+            <p>No responses yet. Be the first to respond!</p>
+          </div>
+        )}
 
         <form
           action={async (formData) => {
@@ -44,44 +61,45 @@ const MemoizedCommentsSection = React.memo(
                 onCommentSubmit()
               } else {
                 console.error(result.error)
-                // Here you could set an error state and display it to the user
               }
             })
           }}
-          className="space-y-3"
+          className="medium-comment-form"
         >
+          <h3 className="medium-form-title">Write a response</h3>
           <input type="hidden" name="blogId" value={blogId} />
-          <div className="flex flex-col sm:flex-row sm:space-x-3 space-y-3 sm:space-y-0">
+          
+          <div className="medium-form-row">
             <input
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="Your name"
               required
-              className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="medium-input"
             />
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Your email"
               required
-              className="flex-1 p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+              className="medium-input"
             />
           </div>
 
           <textarea
             name="comment"
-            placeholder="Your Comment"
+            placeholder="What are your thoughts?"
             required
-            className="w-full p-2 bg-gray-700 text-gray-300 text-sm rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="medium-textarea"
             rows={4}
           />
 
           <button
             type="submit"
             disabled={isPending}
-            className="w-full py-2 bg-green-500 text-white text-base font-medium rounded-md hover:bg-green-400 transition-colors disabled:bg-gray-400"
+            className="medium-button medium-button-primary"
           >
-            {isPending ? 'Submitting...' : 'Submit Comment'}
+            {isPending ? 'Publishing...' : 'Publish'}
           </button>
         </form>
       </section>
@@ -124,82 +142,108 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const renderContent = React.useMemo(() => {
     if (loading) {
       return (
-        <div className="text-center text-green-400 py-10 animate-pulse">
-          <FaTerminal className="w-16 h-16 mx-auto mb-4" />
-          <div className="bg-gray-800 h-8 mb-4 w-3/4 mx-auto rounded"></div>
-          <div className="bg-gray-800 h-4 mb-4 w-1/2 mx-auto rounded"></div>
-          <div className="bg-gray-800 h-4 mb-4 w-2/3 mx-auto rounded"></div>
+        <div className="medium-loading-article">
+          <div className="medium-loading-title"></div>
+          <div className="medium-loading-meta"></div>
+          <div className="medium-loading-image"></div>
+          <div className="medium-loading-paragraph"></div>
+          <div className="medium-loading-paragraph"></div>
+          <div className="medium-loading-paragraph"></div>
         </div>
       )
     }
 
     if (error) {
       return (
-        <div className="text-center text-red-500 text-xl py-10 animate-fadeIn">
-          <FaServer className="w-16 h-16 mx-auto mb-4" />
-          Error: {error}
+        <div className="medium-error">
+          <FaServer className="medium-error-icon" />
+          <h2 className="medium-error-title">Error loading article</h2>
+          <p className="medium-error-message">{error}</p>
         </div>
       )
     }
 
-    const { Title, publishedAt, img, description,description_2 } = data.data[0]
+    const { Title, publishedAt, img, description, description_2 } = data.data[0]
     const imageUrl = img[0].url
 
     return (
-      <article className="text-green-400 rounded-lg p-5 animate-fadeIn">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-4 text-green-400 animate-fadeInDown">
+      <article className="medium-article">
+        <header className="medium-article-header">
+          <h1 className="medium-article-title-lg">
             {Title}
           </h1>
-          <div className="flex items-center text-white-400 text-sm space-x-6">
-            <span className="flex items-center">
-              <FaCalendarAlt className="w-4 h-4 mr-2" />
-              {new Date(publishedAt).toLocaleDateString()}
-            </span>
-            <span className="flex items-center">
-              <FaEye className="w-4 h-4 mr-2" />
-              {/* {viewCount} views */}
-            </span>
+          <div className="medium-article-meta-large">
+            <div className="medium-author-info">
+              <div className="medium-author-avatar">
+                {/* Could add author avatar here if available */}
+                <div className="medium-author-placeholder"></div>
+              </div>
+              <div className="medium-author-details">
+                <div className="medium-author-name">Umesh Khatiwada</div>
+                <div className="medium-article-date">
+                  <time dateTime={new Date(publishedAt).toISOString()}>
+                    {new Date(publishedAt).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric'
+                    })}
+                  </time>
+                  <span className="medium-dot">·</span>
+                  <span className="medium-read-time">5 min read</span>
+                </div>
+              </div>
+            </div>
           </div>
         </header>
-        <div className="flex justify-center">
-          {imageUrl && (
-            <figure className="mb-8 animate-fadeInScale">
-              <Image
-                src={imageUrl}
-                alt={Title}
-                width={400}
-                height={200}
-                objectFit="cover"
-                className="rounded-lg shadow-lg border border-green-500"
-              />
-            </figure>
+        
+        {imageUrl && (
+          <figure className="medium-article-feature-image">
+            <Image
+              src={imageUrl}
+              alt={Title}
+              width={700}
+              height={400}
+              style={{ 
+                width: '100%', 
+                height: 'auto', 
+                maxHeight: '500px', 
+                objectFit: 'cover'
+              }}
+              priority
+            />
+          </figure>
+        )}
+        
+        <div className="medium-article-body">
+          {description_2.length == 0 ? (
+            <ContentRenderer description={description} />
+          ) : (
+            <ContentRendererDesc description_2={description_2} />
           )}
         </div>
-        <div className="prose prose-invert max-w-none overflow-hidden break-words">
-        {description_2.length == 0 ? (
-  <ContentRenderer description={description} />
-) : (
-   <ContentRendererDesc description_2={description_2} />
-)}
-  </div>
       </article>
     )
   }, [loading, error, data])
 
   return (
-    <div className="container">
-      {renderContent}
-      <MemoizedCommentsSection
-        comments={comments}
-        blogId={data.data[0].documentId}
-        onCommentSubmit={handleCommentSubmit}
-      />
-      <SocialSharing
-        shareUrl={typeof window !== "undefined" ? window.location.href : ""}
-        title={data.data.Title || ""}
-        description={data.data.description || ""}
-      />
+    <div className="medium-bg">
+      <div className="medium-article-container">
+        {renderContent}
+        <div className="medium-article-responses">
+          <MemoizedCommentsSection
+            comments={comments}
+            blogId={data.data[0].documentId}
+            onCommentSubmit={handleCommentSubmit}
+          />
+          <div className="medium-share-section">
+            <SocialSharing
+              shareUrl={typeof window !== "undefined" ? window.location.href : ""}
+              title={data.data.Title || ""}
+              description={data.data.description || ""}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

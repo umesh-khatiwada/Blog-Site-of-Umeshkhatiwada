@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaFacebook, FaTwitter, FaLinkedin, FaCopy } from "react-icons/fa";
 
 interface SocialSharingProps {
@@ -8,44 +8,55 @@ interface SocialSharingProps {
 }
 
 const SocialSharing: React.FC<SocialSharingProps> = ({ shareUrl, title, description }) => {
+  const [copied, setCopied] = useState(false);
+  
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
-    alert("Link copied to clipboard!");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="mt-8">
-      <h3 className="text-2xl text-green-400 mb-4 font-mono">Share this deployment:</h3>
-      <div className="flex space-x-4">
+    <div className="medium-share">
+      <h3 className="medium-section-title">Share this article</h3>
+      <div className="medium-share-buttons">
         <a
           href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 hover:text-blue-600 transition-colors duration-200"
+          className="medium-share-button medium-facebook"
+          aria-label="Share on Facebook"
         >
-          <FaFacebook size={32} />
+          <FaFacebook size={20} />
+          <span className="medium-share-label">Share</span>
         </a>
         <a
-          href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${title}`}
+          href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${encodeURIComponent(title)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-400 hover:text-blue-500 transition-colors duration-200"
+          className="medium-share-button medium-twitter"
+          aria-label="Share on Twitter"
         >
-          <FaTwitter size={32} />
+          <FaTwitter size={20} />
+          <span className="medium-share-label">Tweet</span>
         </a>
         <a
-          href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${title}&summary=${description}`}
+          href={`https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(description)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-700 transition-colors duration-200"
+          className="medium-share-button medium-linkedin"
+          aria-label="Share on LinkedIn"
         >
-          <FaLinkedin size={32} />
+          <FaLinkedin size={20} />
+          <span className="medium-share-label">Post</span>
         </a>
         <button
           onClick={handleCopyLink}
-          className="text-green-500 hover:text-green-600 transition-colors duration-200"
+          className="medium-share-button medium-copy"
+          aria-label="Copy link"
         >
-          <FaCopy size={32} />
+          <FaCopy size={20} />
+          <span className="medium-share-label">{copied ? "Copied!" : "Copy link"}</span>
         </button>
       </div>
     </div>
