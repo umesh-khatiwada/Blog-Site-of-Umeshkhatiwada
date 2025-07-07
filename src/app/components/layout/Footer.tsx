@@ -45,9 +45,9 @@ export default function Footer() {
           <div className="space-y-4">
             <h2 className="text-3xl font-bold flex items-center text-gray-900 dark:text-white">
               <FaCode className="mr-2 text-green-400" />
-              Digital Footprint
+            Blog for Developers/DevOps
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">Crafting digital experiences that leave a lasting impression.</p>
+            <p className="text-gray-600 dark:text-gray-400">Making technology accessible to everyone.</p>
             <div className="flex space-x-4">
               {[
                 { href: 'https://facebook.com', icon: <FaFacebook /> },
