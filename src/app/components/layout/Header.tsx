@@ -25,9 +25,11 @@ export default function Header() {
         </button>
       </div>
       <nav
-        className={`${
-          isMenuOpen ? 'block' : 'hidden'
-        } md:flex md:space-x-8 space-y-4 md:space-y-0 text-lg bg-gray-800 md:bg-transparent w-full md:w-auto text-white mt-4 md:mt-0 p-4 md:p-0 transition-all duration-300 ease-in-out`}
+        className={`$
+          {isMenuOpen ? 'block' : 'hidden'} md:flex md:space-x-8 space-y-4 md:space-y-0 text-lg
+          bg-gray-800 md:bg-transparent w-full md:w-auto
+          mt-4 md:mt-0 p-4 md:p-0 transition-all duration-300 ease-in-out
+        `}
       >
         <div className="flex flex-col md:flex-row md:items-center md:space-x-8 w-full md:w-auto">
           {[
@@ -42,7 +44,7 @@ export default function Header() {
             <a
               key={item.label}
               href={item.href}
-              className="block md:inline-block text-gray-200 hover:text-green-400 transition-colors"
+              className="block md:inline-block text-gray-900 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400 transition-colors"
             >
               {item.label}
             </a>
