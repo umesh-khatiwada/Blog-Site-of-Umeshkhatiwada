@@ -234,7 +234,7 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
         )}
         
         <div className="medium-article-body">
-          <div className="prose-neutral dark:prose-invert max-w-none">
+          <div className="prose prose-neutral dark:prose-invert max-w-none">
             {description_2.length == 0 ? (
               <ContentRenderer description={description} />
             ) : (
