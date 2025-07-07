@@ -39,15 +39,15 @@ export default function Footer() {
   };
 
   return (
-    <footer className=" text-gray-300 py-12 relative overflow-hidden">
+    <footer className="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-300 py-12 relative overflow-hidden border-t border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-8 sm:px-16 lg:px-32 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
-            <h2 className="text-3xl font-bold flex items-center text-white">
+            <h2 className="text-3xl font-bold flex items-center text-gray-900 dark:text-white">
               <FaCode className="mr-2 text-green-400" />
               Digital Footprint
             </h2>
-            <p className="text-white-400">Crafting digital experiences that leave a lasting impression.</p>
+            <p className="text-gray-600 dark:text-gray-400">Crafting digital experiences that leave a lasting impression.</p>
             <div className="flex space-x-4">
               {[
                 { href: 'https://facebook.com', icon: <FaFacebook /> },
@@ -55,17 +55,17 @@ export default function Footer() {
                 { href: 'https://instagram.com', icon: <FaInstagram /> },
               ].map(({ href, icon }, index) => (
                 <a key={index} href={href} target="_blank" rel="noopener noreferrer" aria-label="Social Media" className="transform hover:scale-110 transition-transform">
-                  {React.cloneElement(icon, { className: 'text-white-500 hover:text-green-400', size: 24 })}
+                  {React.cloneElement(icon, { className: 'text-gray-700 dark:text-white hover:text-green-400', size: 24 })}
                 </a>
               ))}
             </div>
           </div>
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-white">Quick Links</h3>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Quick Links</h3>
             <ul className="space-y-2">
               {['Home', 'About', 'Services', 'Blog', 'Contact'].map((item) => (
                 <li key={item}>
-                  <Link href={`https://umeshkhatiwada.com.np/${item.toLowerCase()}.html`} className="hover:text-green-400 transition-colors">
+                  <Link href={`https://umeshkhatiwada.com.np/${item.toLowerCase()}.html`} className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 transition-colors">
                     {item}
                   </Link>
                 </li>
@@ -73,15 +73,15 @@ export default function Footer() {
             </ul>
           </div>
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-white">Newsletter</h3>
-            <p className="text-white-400">Stay updated with our latest news and offers.</p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Newsletter</h3>
+            <p className="text-gray-600 dark:text-gray-400">Stay updated with our latest news and offers.</p>
             <form className="flex" onSubmit={handleSubscribe}>
               <input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="p-2 rounded-l-md flex-grow bg-gray-800 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="p-2 rounded-l-md flex-grow bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
               />
               <button
@@ -92,11 +92,11 @@ export default function Footer() {
                 {loading ? 'Subscribing...' : 'Subscribe'}
               </button>
             </form>
-            {message && <p className="text-white-500 mt-2">{message}</p>}
+            {message && <p className="text-gray-700 dark:text-gray-300 mt-2">{message}</p>}
           </div>
         </div>
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center">
-          <p className="text-white-500">© {new Date().getFullYear()} umeshkhatiwada.com.np. All rights reserved.</p>
+        <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
+          <p className="text-gray-700 dark:text-gray-300">© {new Date().getFullYear()} umeshkhatiwada.com.np. All rights reserved.</p>
         </div>
       </div>
       <div className="absolute inset-0 z-0">
