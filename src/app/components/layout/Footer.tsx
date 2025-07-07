@@ -44,7 +44,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="space-y-4">
             <h2 className="text-3xl font-bold flex items-center text-gray-900 dark:text-white">
-              <FaCode className="mr-2 text-green-400" />
+              <FaCode className="mr-3 text-green-300" />
             Blog for Developers/DevOps
             </h2>
             <p className="text-gray-600 dark:text-gray-400">Making technology accessible to everyone.</p>

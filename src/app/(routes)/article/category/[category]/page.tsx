@@ -10,7 +10,8 @@ import SkeletonCard from '@/app/components/blog/DummyCard';
 import Footer from '@/app/components/layout/Footer';
 
 export default function Articles() {
-  const { category } = useParams<{ category: string }>();
+  const params = useParams<{ category: string }>();
+  const category = params?.category;
   const [data, setData] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,12 +43,14 @@ export default function Articles() {
 
   return (
     <>
-    <div className="min-h-screen text-gray-100">
+
+    {/* Use theme-aware background and text color for full inversion */}
+    <div className="min-h-screen bg-white text-black dark:bg-neutral-900 dark:text-white transition-colors duration-300">
 
       <DynamicBanner />
 
       <main className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">
+        <h1 className="text-4xl font-bold mb-8 text-center text-black dark:text-white">
           <span className="text-green-400">&lt;</span>
           {category} Articles
           <span className="text-green-400">/&gt;</span>
@@ -67,9 +70,9 @@ export default function Articles() {
               ? data.map((post) => (
                   <article
                     key={post.id}
-                    className="bg-gray-800 border border-gray-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                    className="bg-white text-black dark:bg-neutral-800 dark:text-white border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
                   >
-                    <div className="relative h-48 bg-gray-700">
+                    <div className="relative h-48 bg-gray-100 dark:bg-neutral-700">
                       {post.img[0]?.url ? (
                         <Image
                           src={post.img[0]?.url}
@@ -79,17 +82,17 @@ export default function Articles() {
                           className="w-full h-full"
                         />
                       ) : (
-                        <div className="flex items-center justify-center h-full text-4xl text-white-500">
+                        <div className="flex items-center justify-center h-full text-4xl text-gray-400 dark:text-gray-500">
                           &#123; &#125;
                         </div>
                       )}
                     </div>
                     <div className="p-6">
-                      <h2 className="text-xl font-semibold mb-2 text-green-400">
+                      <h2 className="text-xl font-semibold mb-2 text-green-700 dark:text-green-400">
                         <span className="inline-block w-3 h-3 bg-green-500 rounded-full mr-2"></span>
                         {post.Title}
                       </h2>
-                      <div className="text-sm text-white-400 mb-4 font-mono">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-mono">
                         <p>Created: {new Date(post.createdAt).toLocaleDateString()}</p>
                         <p>Updated: {new Date(post.updatedAt).toLocaleDateString()}</p>
                       </div>
@@ -103,7 +106,7 @@ export default function Articles() {
                   </article>
                 ))
               : (
-                <div className="col-span-full text-center text-white-400 py-8">
+                <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-8">
                   <p className="text-2xl mb-4">No posts found in ~/articles/{category}</p>
                   <p className="text-lg">Try updating your search parameters or check back later.</p>
                 </div>
