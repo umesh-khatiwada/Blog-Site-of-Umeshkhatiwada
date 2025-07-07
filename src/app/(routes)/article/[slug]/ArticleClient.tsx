@@ -120,6 +120,19 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const [comments, setComments] = useState<Comment[]>(
     initialData.data.comments || [])
   const { setCategoryId } = useCategory()
+  const [theme, setTheme] = useState('')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const updateTheme = () => {
+        setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+      }
+      updateTheme()
+      const observer = new MutationObserver(updateTheme)
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+      return () => observer.disconnect()
+    }
+  }, [])
 
   useEffect(() => {
     setComments(data.data[0].comments || [])
@@ -175,8 +188,14 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
           <div className="medium-article-meta-large">
             <div className="medium-author-info">
               <div className="medium-author-avatar">
-                {/* Could add author avatar here if available */}
-                <div className="medium-author-placeholder"></div>
+                <Image
+                  src="/assets/profile.png"
+                  alt="Umesh Khatiwada"
+                  width={48}
+                  height={48}
+                  style={{ borderRadius: '50%', objectFit: 'cover', width: 48, height: 48 }}
+                  priority
+                />
               </div>
               <div className="medium-author-details">
                 <div className="medium-author-name">Umesh Khatiwada</div>
@@ -215,18 +234,20 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
         )}
         
         <div className="medium-article-body">
-          {description_2.length == 0 ? (
-            <ContentRenderer description={description} />
-          ) : (
-            <ContentRendererDesc description_2={description_2} />
-          )}
+          <div className="prose-neutral dark:prose-invert max-w-none">
+            {description_2.length == 0 ? (
+              <ContentRenderer description={description} />
+            ) : (
+              <ContentRendererDesc description_2={description_2} />
+            )}
+          </div>
         </div>
       </article>
     )
   }, [loading, error, data])
 
   return (
-    <div className="medium-bg">
+    <div className={`medium-bg ${theme}`}>
       <div className="medium-article-container">
         {renderContent}
         <div className="medium-article-responses">

@@ -52,7 +52,7 @@ const ContentRendererDesc: React.FC<ContentRendererDescProps> = ({ description_2
     <div className="medium-content">
       {content ? (
         <div 
-          className="medium-article-body prose prose-lg max-w-none
+          className="medium-article-body prose-lg max-w-none
                     prose-headings:font-bold prose-headings:text-inherit prose-headings:mb-6 prose-headings:mt-8
                     prose-p:mb-5 prose-p:leading-relaxed
                     prose-a:text-medium-green prose-a:no-underline hover:prose-a:underline
