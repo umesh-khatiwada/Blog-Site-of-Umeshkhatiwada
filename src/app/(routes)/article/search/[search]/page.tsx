@@ -52,7 +52,7 @@ export default function Articlee() {
     <div className="min-h-screen text-white">
       <DynamicBanner />
       <div className="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">
+        <h1 className="text-4xl font-bold mb-8 text-center text-black dark:text-white">
           <span className="text-green-400">&lt;</span>
           DevOps and Coding Articles
           <span className="text-green-400">/&gt;</span>
