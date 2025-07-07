@@ -1,0 +1,55 @@
+/* Article text color for light/dark theme */
+.medium-article, .medium-article-body, .medium-article-title-lg, .medium-article-title, .medium-article-excerpt, .medium-article-content, .medium-article-meta, .medium-article-meta-large, .medium-article-header, .medium-article-link {
+  color: var(--text-color);
+}
+
+body.dark .medium-article, body.dark .medium-article-body, body.dark .medium-article-title-lg, body.dark .medium-article-title, body.dark .medium-article-excerpt, body.dark .medium-article-content, body.dark .medium-article-meta, body.dark .medium-article-meta-large, body.dark .medium-article-header, body.dark .medium-article-link {
+  color: #e6e6e6;
+}
+
+body.dark .medium-article-body, body.dark .medium-article-content, body.dark .medium-article-excerpt {
+  color: #e0e0e0;
+}
+
+body.dark .medium-article-title-lg, body.dark .medium-article-title {
+  color: #fff;
+}
+
+body.dark .medium-article-meta, body.dark .medium-article-meta-large {
+  color: #b0b0b0;
+}
+
+body:not(.dark) .medium-article, body:not(.dark) .medium-article-body, body:not(.dark) .medium-article-title-lg, body:not(.dark) .medium-article-title, body:not(.dark) .medium-article-excerpt, body:not(.dark) .medium-article-content, body:not(.dark) .medium-article-meta, body:not(.dark) .medium-article-meta-large, body:not(.dark) .medium-article-header, body:not(.dark) .medium-article-link {
+  color: #111;
+}
+/* ...existing code... */
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #222222;
+  --link-color: #1a0dab;
+  --header-bg: #f5f5f5;
+}
+
+body.dark {
+  --bg-color: #181818;
+  --text-color: #f5f5f5;
+  --link-color: #8ab4f8;
+  --header-bg: #232323;
+}
+
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.2s, color 0.2s;
+}
+
+a {
+  color: var(--link-color);
+}
+
+header {
+  background: var(--header-bg);
+}
+
+/* ...existing code... */
