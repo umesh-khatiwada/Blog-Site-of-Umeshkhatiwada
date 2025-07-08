@@ -103,11 +103,7 @@ export default function Submenu({ categories }: SubmenuProps) {
             </div>
 
             {/* Home Link visible in mobile view, hidden on desktop */}
-            <div className="flex items-center mb-2 md:mb-0 block md:hidden">
-              <Link href="/" className="text-green-400 hover:text-green-300 transition-colors duration-300">
-                <FaHome size={24} />
-              </Link>
-            </div>
+
           </div>
 
         </div>
