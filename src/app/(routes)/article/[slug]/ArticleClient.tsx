@@ -117,8 +117,11 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   const [data] = useState<Article>(initialData)
   const [loading] = useState<boolean>(false)
   const [error] = useState<string | null>(null)
-  const [comments, setComments] = useState<Comment[]>(
-    initialData.data.comments || [])
+  const [comments, setComments] = useState<Comment[]>(() => {
+    // Handle different response structures for initial comments
+    const articleData = Array.isArray(initialData.data) ? initialData.data[0] : initialData.data
+    return articleData?.comments || []
+  })
   const { setCategoryId } = useCategory()
   const [theme, setTheme] = useState('')
 
@@ -135,19 +138,28 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
   }, [])
 
   useEffect(() => {
-    setComments(data.data[0].comments || [])
-    setCategoryId(data.data[0].categories[0].documentId)
-    console.log(data.data[0].categories[0].documentId)
+    // Handle different response structures
+    const articleData = Array.isArray(data.data) ? data.data[0] : data.data
+    
+    setComments(articleData.comments || [])
+    if (articleData.categories && articleData.categories.length > 0) {
+      setCategoryId(articleData.categories[0].documentId)
+      console.log(articleData.categories[0].documentId)
+    }
     if (data.viewCount !== undefined) {
       viewCounter(id, data.viewCount)
     }
   }, [id, data, setCategoryId])
 
   const handleCommentSubmit = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/${initialData.data[0].documentId}?populate=*`)
+    // Handle different response structures for fetching comments
+    const documentId = Array.isArray(initialData.data) ? initialData.data[0].documentId : initialData.data.documentId
+    
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/blogs/${documentId}?populate=*`)
       .then((res) => res.json())
       .then((newData) => {
-        setComments(newData.data.comments || [])
+        const articleData = Array.isArray(newData.data) ? newData.data[0] : newData.data
+        setComments(articleData.comments || [])
       })
       .catch(console.error)
   }
@@ -176,8 +188,22 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
       )
     }
 
-    const { Title, publishedAt, img, description, description_2, pdf_files } = data.data[0]
-    const imageUrl = img[0]?.url
+    // Handle different response structures - data could be an array or direct object
+    const articleData = Array.isArray(data.data) ? data.data[0] : data.data
+    
+    // Check if articleData exists
+    if (!articleData) {
+      return (
+        <div className="medium-error">
+          <FaServer className="medium-error-icon" />
+          <h2 className="medium-error-title">Article Not Found</h2>
+          <p className="medium-error-message">The requested article could not be found or may have been removed.</p>
+        </div>
+      )
+    }
+    
+    const { Title, publishedAt, img, description, description_2, pdf_files } = articleData
+    const imageUrl = img && img.length > 0 ? img[0]?.url : null
     
     // Handle PDF file scenarios
     const hasPdfFile = pdf_files && pdf_files !== null && pdf_files.trim() !== ''
@@ -238,83 +264,75 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
         
         <div className="medium-article-body">
           <div className="prose prose-neutral dark:prose-invert max-w-none">
-            {description_2.length == 0 ? (
+            {description_2 && description_2.length > 0 ? (
+              <ContentRendererDesc description_2={description_2} />
+            ) : description ? (
               <ContentRenderer description={description} />
             ) : (
-              <ContentRendererDesc description_2={description_2} />
+              <p className="text-gray-500 dark:text-gray-400 italic">No content available for this article.</p>
             )}
           </div>
         </div>
 
-        {/* PDF Preview Section */}
-        {hasPdfFile ? (
-          <div className="medium-pdf-section mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-              <svg className="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-              </svg>
-              PDF Document Available
-            </h3>
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a
-                  href={pdf_files}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                  Download PDF
-                </a>
-                <button
-                  onClick={() => window.open(pdf_files, '_blank')}
-                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                    <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-                  </svg>
-                  Preview PDF
-                </button>
-              </div>
-              <div className="bg-white dark:bg-gray-900 rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
-                <iframe
-                  src={pdf_files}
-                  className="w-full h-96 border-0"
-                  title="PDF Preview"
-                  onError={(e) => {
-                    const iframe = e.currentTarget;
-                    iframe.style.display = 'none';
-                    const errorDiv = iframe.nextElementSibling as HTMLElement;
-                    if (errorDiv) errorDiv.style.display = 'block';
+        {/* PDF Preview Section - Only show if PDF exists */}
+        {hasPdfFile && (
+          <div className="mt-6">
+            {/* Full Screen Button positioned top-right */}
+            <div className="flex justify-end mb-2">
+              <button
+                onClick={() => {
+                  // Create a full-screen modal
+                  const modal = document.createElement('div');
+                  modal.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4';
+                  modal.innerHTML = `
+                    <div class="relative w-full h-full max-w-6xl">
+                      <button class="absolute top-4 right-4 z-10 text-white bg-gray-800 hover:bg-gray-700 rounded-full p-2" onclick="this.closest('.fixed').remove()">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                          </svg>
+                        </button>
+                        <iframe 
+                          src="${pdf_files}#toolbar=1&navpanes=1&scrollbar=1&page=1&view=FitH" 
+                          class="w-full h-full border-0 rounded-lg"
+                          title="PDF Full Screen Preview"
+                        ></iframe>
+                      </div>
+                    `;
+                    document.body.appendChild(modal);
+                    
+                    // Close on escape key
+                    const handleEscape = (e: KeyboardEvent) => {
+                      if (e.key === 'Escape') {
+                        modal.remove();
+                        document.removeEventListener('keydown', handleEscape);
+                      }
+                    };
+                    document.addEventListener('keydown', handleEscape);
+                    
+                    // Close on background click
+                    modal.addEventListener('click', (e) => {
+                      if (e.target === modal) {
+                        modal.remove();
+                        document.removeEventListener('keydown', handleEscape);
+                      }
+                    });
                   }}
-                />
-                <div className="hidden p-8 text-center text-gray-500 dark:text-gray-400">
-                  <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm6 10a1 1 0 11-2 0V9a1 1 0 112 0v5zm-1-7a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-                  </svg>
-                  <h4 className="text-lg font-medium mb-2">PDF Preview Not Available</h4>
-                  <p className="text-sm">The PDF cannot be previewed in the browser. Please download to view the file.</p>
-                </div>
-              </div>
+                className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                title="View PDF in fullscreen"
+              >
+                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 11-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 010-2h4a1 1 0 011 1v4a1 1 0 01-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 012 0v1.586l2.293-2.293a1 1 0 111.414 1.414L6.414 15H8a1 1 0 010 2H4a1 1 0 01-1-1v-4zm13-1a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 010-2h1.586l-2.293-2.293a1 1 0 111.414-1.414L15 13.586V12a1 1 0 011-1z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
-          </div>
-        ) : (
-          <div className="medium-pdf-section mt-8 p-6 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
-              <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm6 10a1 1 0 11-2 0V9a1 1 0 112 0v5zm-1-7a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
-              </svg>
-              PDF Document
-            </h3>
-            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
-              <svg className="w-16 h-16 mx-auto mb-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clipRule="evenodd" />
-              </svg>
-              <h4 className="text-lg font-medium mb-2">No PDF Available</h4>
-              <p className="text-sm">No PDF document is associated with this article.</p>
+            
+            {/* PDF Embedded Preview - minimal styling */}
+            <div className="relative w-full h-96 bg-white dark:bg-gray-900 rounded border border-gray-300 dark:border-gray-600 overflow-hidden">
+              <iframe 
+                src={`${pdf_files}#toolbar=0&navpanes=0&scrollbar=1&page=1&view=FitH`}
+                className="w-full h-full border-0"
+                title="PDF Document Preview"
+              />
             </div>
           </div>
         )}
@@ -326,19 +344,18 @@ const ArticleClient: React.FC<ArticleClientProps> = ({ initialData }) => {
     <div className={`medium-bg ${theme}`}>
       <div className="medium-article-container">
         {renderContent}
-        <div className="medium-article-responses">
-          <MemoizedCommentsSection
-            comments={comments}
-            blogId={data.data[0].documentId}
-            onCommentSubmit={handleCommentSubmit}
+        <div className="medium-article-responses">        <MemoizedCommentsSection
+          comments={comments}
+          blogId={(Array.isArray(data.data) ? data.data[0]?.documentId : data.data?.documentId) || ''}
+          onCommentSubmit={handleCommentSubmit}
+        />
+        <div className="medium-share-section">
+          <SocialSharing
+            shareUrl={typeof window !== "undefined" ? window.location.href : ""}
+            title={(Array.isArray(data.data) ? data.data[0]?.Title : data.data?.Title) || ""}
+            description={(Array.isArray(data.data) ? data.data[0]?.description : data.data?.description) || ""}
           />
-          <div className="medium-share-section">
-            <SocialSharing
-              shareUrl={typeof window !== "undefined" ? window.location.href : ""}
-              title={data.data.Title || ""}
-              description={data.data.description || ""}
-            />
-          </div>
+        </div>
         </div>
       </div>
     </div>
